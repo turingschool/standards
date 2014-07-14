@@ -1,5 +1,5 @@
 Environmment
-  shell
+  Shell
     PATH
     bash_profile
     readline quick-keys
@@ -14,18 +14,44 @@ Environmment
       git/editor (vim/mate/atom/subl)/ack/ls/cd/cat/ruby/find/rm/mv/gem/curl/env/mkdir/which
     aliases
     functions
-  editor
-    common keyboard shortcuts
-  getting ruby installed and running it
-  getting rails installed and running it
-  pry
-  seeing is believing
+    Common commands
+      cd
+      ls
+      pwd
+      rm
+      rm -rf
+      mv
+      mkdir
+      touch
+      cp
+  Editor
+    Common keyboard shortcuts
+    Installing packages
+  Getting ruby installed and running it
+  Getting rails installed and running it
+  Pry
+  Seeing is believing
 Ruby
+  Basics
+    Index numbers
+      SW know that computers start counting at 0.
+      SW know that a negative index number counts from the end of the element.
   Strings
-    interpolation
+    Substrings with #slice/word[]
+    Interpolation
+      "#{}"
+      "" + variable + ""
+    Regular Expressions
   Numbers
-    floats
-    integers
+    Operations
+      +
+      -
+      /
+      *
+      %
+      **
+    Floats
+    Integers
     BigDecimal
   Constants
   Arrays
@@ -33,23 +59,80 @@ Ruby
   Symbols
   Blocks
   Conditionals
-    if/elsif/else
-    while
-    unless
-  Logic comparison operators
-    <, >, <=, >=, ==, &&, ||
-    true/truthy, false/falsy
+    If/elsif/else
+      1-line if statement
+      ternary
+    While
+    Unless
+  Boolean Logic
+    True/truthy, false/falsy
+    Comparison operators
+      <, >, <=, >=, ==, !=
+      SW know that comparison operators return true or false.
+    Logical operators
+      &&, ||
   Methods
-    looping methods
-    parameters for methods
+    Changing class
+      #to_i
+      #to_f
+      #to_s
+      #to_a
+      #to_hash
+    Looping methods
+      #times
+      break
+    Parameters for methods
+    String Methods
+      #split with and without parameters
+      #length/#size
     Enumerable methods
+      SW know that enumerable methods traverse and search through collections.
+      #each
+        SW know that the each method is the base for all enumerable methods but that it should be used infrequently.
+      iterating over collection
+        #map/#collect
+        #inject
+        #sort_by
+      filtering a collection
+        #select
+        #detect
+        #min & #max
+        #reject
+        #find
+          SW know that find is a method used on collections.
+          SW know that find returns the first element that meets a specified criteria.
+      others
+        #count
+        #reduce/#inject
+        #zip
+        #group_by
+          SW know that group_by returns a hash.
+          SW know that the keys of the returned hash are the results of the block and the values are arrays of the original elements.
     Predicate methods
+      SW know that a predicate method is written "___?" and returns true or false.
+      #none?
+        SW know that none? is a method used on collections.
+        SW know that this method checks that no elements meet a specified criteria and returns true or false.
+      #one?
+        SW know that one? is a method used on collections.
+        SW know that this method checks to see if exactly one element meets a specified criteria and returns true or false.
+      #all?
+        SW know that all? is a method used on collections.
+        SW know that this method checks to see if every element meets a specified criteria and returns true or false.
+      #any?
+        SW know that any? is a method used on collections.
+        SW know that this method checks for an element in an array that meets specified criteria and returns true or false.
+      #include?
   Variables
     naming conventions
-    assignment vs. comparision
+    assignment vs. comparison
+    reassignment
+    change and reassign value by increment (+=, -=, *=, /=)
   Nil
   Classes
     instances of classes
+  Style Best Practices
+    indentation
   irb
   bundler
   installing gems
@@ -70,8 +153,17 @@ Git
   adding remote
   Committing code
     commit message conventions
+      start with present-tense verb
   Pushing code
 Testing
+  Best Practices
+    first write test that will fail
+    run tests to show failure
+    implement smallest possible change to make test pass
   Rspec
   Minitest
 Rails
+Collaboration
+  Pairing
+    Driver/navigator
+  Communication
