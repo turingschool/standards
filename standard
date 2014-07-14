@@ -24,6 +24,8 @@ Environmment
       mkdir
       touch
       cp
+    Permissions
+    SSH & keys
   Editor
     Common keyboard shortcuts
     Installing packages
@@ -36,6 +38,7 @@ Ruby
     Index numbers
       SW know that computers start counting at 0.
       SW know that a negative index number counts from the end of the element.
+    Object-Oriented Programming
   Strings
     Substrings with #slice/word[]
     Interpolation
@@ -89,9 +92,11 @@ Ruby
       SW know that enumerable methods traverse and search through collections.
       #each
         SW know that the each method is the base for all enumerable methods but that it should be used infrequently.
+        SW know that the return value for each is the original collection.
       iterating over collection
         #map/#collect
-        #inject
+        #reduce/#inject
+          SW know that reduce/inject combines the elements in a collection.
         #sort_by
       filtering a collection
         #select
@@ -103,8 +108,14 @@ Ruby
           SW know that find returns the first element that meets a specified criteria.
       others
         #count
+          SW know that count is a method used on collections.
+          SW know that count returns the number of elements that meet a specified criteria.
         #reduce/#inject
+          SW know that inject/reduce is a method used on collections.
+          SW know that
         #zip
+          SW know that zip is a method used on arrays.
+          SW know that zip produces a 2D array by pairing elements at the same index position in two or more starting arrays.
         #group_by
           SW know that group_by returns a hash.
           SW know that the keys of the returned hash are the results of the block and the values are arrays of the original elements.
@@ -138,6 +149,7 @@ Ruby
   installing gems
   using gems
   APIs
+  CSV
   Finding code
     (gem which)
     which
@@ -148,22 +160,38 @@ Ruby
 Thinking
   read that debugging thing
 Git
-  initialize a repository
-  adding files (all vs. one at a time)
-  adding remote
+  Setting up Github
+  Initialize a repository
+  Adding files (all vs. one at a time)
+  Creating remote
+  Adding remote
   Committing code
     commit message conventions
       start with present-tense verb
   Pushing code
+  Pulling code
+    rebasing
+    fetching
+  Branches
+    Master
+    Creating a feature branch
+  Pull request on Github
 Testing
   Best Practices
-    first write test that will fail
-    run tests to show failure
-    implement smallest possible change to make test pass
+    First write test that will fail
+    Run tests to show failure
+    Implement smallest possible change to make test pass
   Rspec
   Minitest
 Rails
 Collaboration
+  Setup
   Pairing
-    Driver/navigator
+  Driver/navigator
   Communication
+  Switching roles
+Workflow
+  Fast file switching
+  Screen setup
+  Window manager
+  Keyboard shortcuts
