@@ -15,17 +15,63 @@ Environmment
     aliases
     functions
   editor
+    common keyboard shortcuts
   getting ruby installed and running it
+  getting rails installed and running it
   pry
   seeing is believing
 Ruby
+  Strings
+    interpolation
+  Numbers
+    floats
+    integers
+    BigDecimal
+  Constants
+  Arrays
+  Hashes
+  Symbols
+  Blocks
+  Conditionals
+    if/elsif/else
+    while
+    unless
+  Logic comparison operators
+    <, >, <=, >=, ==, &&, ||
+    true/truthy, false/falsy
+  Methods
+    looping methods
+    parameters for methods
+    Enumerable methods
+    Predicate methods
+  Variables
+    naming conventions
+    assignment vs. comparision
+  Nil
+  Classes
+    instances of classes
+  irb
   bundler
+  installing gems
+  using gems
+  APIs
   Finding code
     (gem which)
     which
     pry show-source
     method.source_location
   reflection
+  using documentation
 Thinking
   read that debugging thing
-
+Git
+  initialize a repository
+  adding files (all vs. one at a time)
+  adding remote
+  Committing code
+    commit message conventions
+  Pushing code
+Testing
+  Rspec
+  Minitest
+Rails
