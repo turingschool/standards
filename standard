@@ -1,0 +1,31 @@
+Environmment
+  shell
+    PATH
+    bash_profile
+    readline quick-keys
+    program [args]
+    stdin/stdout/stderr
+    env vars
+    dirs
+    current dir
+    paths
+      / ~ . ..
+    common programs
+      git/editor (vim/mate/atom/subl)/ack/ls/cd/cat/ruby/find/rm/mv/gem/curl/env/mkdir/which
+    aliases
+    functions
+  editor
+  getting ruby installed and running it
+  pry
+  seeing is believing
+Ruby
+  bundler
+  Finding code
+    (gem which)
+    which
+    pry show-source
+    method.source_location
+  reflection
+Thinking
+  read that debugging thing
+
