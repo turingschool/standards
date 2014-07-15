@@ -12,9 +12,6 @@ Environmment
       / ~ . ..
     common programs
       git/editor (vim/mate/atom/subl)/ack/ls/cd/cat/ruby/find/rm/mv/gem/curl/env/mkdir/which
-    aliases
-    functions
-    Common commands
       cd
       ls
       pwd
@@ -24,6 +21,9 @@ Environmment
       mkdir
       touch
       cp
+      hidden files
+    aliases
+    functions
     Permissions
     SSH & keys
   Editor
