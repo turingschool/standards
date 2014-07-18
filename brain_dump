@@ -39,8 +39,18 @@ Ruby
       SW know that computers start counting at 0.
       SW know that a negative index number counts from the end of the element.
     Object-Oriented Programming
+      Design Principles
+        Single Responsibility Principle
+        Open-Closed Principle
+        Liskov Substitution Principle
+        Interface Segregation Principle
+        Dependency Inversion Principle
+        Law of Demeter
+        Tell, Don't Ask (Duck Typing)
   Strings
     Substrings with #slice/word[]
+    Differences between gingle and double quoted strings
+    HEREDOCs, %Q{}, %q{}
     Interpolation
       "#{}"
       "" + variable + ""
@@ -58,22 +68,31 @@ Ruby
     BigDecimal
   Constants
   Arrays
+  Ranges
   Hashes
   Symbols
+    SW understand the equal symbols are stored in the same place in memory (line integers, unlike strings)
   Blocks
+  Procs and Lamdas
   Conditionals
     If/elsif/else
       1-line if statement
       ternary
     While
     Unless
+    Ternary operator
+    defined?
   Boolean Logic
     True/truthy, false/falsy
     Comparison operators
       <, >, <=, >=, ==, !=
+      .equal? vs. .eql?
       SW know that comparison operators return true or false.
+      Spaceship operator <=>
     Logical operators
       &&, ||
+  Bitwise Operators
+  Operator Precedence
   Methods
     Changing class
       #to_i
@@ -81,6 +100,10 @@ Ruby
       #to_s
       #to_a
       #to_hash
+      #to_h
+      #to_int (an the difference between it and #to_i)
+      #to_ary (an the difference between it and #to_a)
+      #to_str (an the difference between it and #to_s)
     Looping methods
       #times
       break
@@ -142,12 +165,14 @@ Ruby
   Nil
   Classes
     instances of classes
+  Modules
   Style Best Practices
     indentation
   irb
   bundler
   installing gems
   using gems
+  Managing GEM sets
   APIs
   CSV
   Finding code
@@ -195,3 +220,15 @@ Workflow
   Screen setup
   Window manager
   Keyboard shortcuts
+JavaScript
+  Prototypal inheritance
+  this
+  First-class functions
+  NaN
+  Null vs. Undefined
+  Closures
+  Async and Callbacks
+  Promises
+  Events
+CSS
+  Rule priorities
