@@ -22,6 +22,7 @@ Environmment
       touch
       cp
       hidden files
+    file path relationships (ie .., .)
     aliases
     functions
     Permissions
@@ -47,6 +48,8 @@ Ruby
         Dependency Inversion Principle
         Law of Demeter
         Tell, Don't Ask (Duck Typing)
+  File Setup
+    requiring files and gems (require vs require_relative)
   Strings
     Substrings with #slice/word[]
     Differences between gingle and double quoted strings
