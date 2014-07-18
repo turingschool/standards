@@ -68,6 +68,7 @@ Ruby
     BigDecimal
   Constants
   Arrays
+    Array-like classes (e.g. Set)
   Ranges
   Hashes
   Symbols
@@ -80,7 +81,6 @@ Ruby
       ternary
     While
     Unless
-    Ternary operator
     defined?
   Boolean Logic
     True/truthy, false/falsy
@@ -108,6 +108,9 @@ Ruby
       #times
       break
     Parameters for methods
+      named arguments
+      splat methods
+      default parameters
     String Methods
       #split with and without parameters
       #length/#size
@@ -157,22 +160,30 @@ Ruby
         SW know that any? is a method used on collections.
         SW know that this method checks for an element in an array that meets specified criteria and returns true or false.
       #include?
+    return (and Ruby's implicit return)
   Variables
     naming conventions
     assignment vs. comparison
     reassignment
     change and reassign value by increment (+=, -=, *=, /=)
   Nil
+    #nil?
   Classes
     instances of classes
+    super
+    BaseObject
+    class methods
   Modules
+    include
+    extend
   Style Best Practices
     indentation
+    alignment
   irb
   bundler
   installing gems
   using gems
-  Managing GEM sets
+  managing gemsets
   APIs
   CSV
   Finding code
@@ -232,3 +243,5 @@ JavaScript
   Events
 CSS
   Rule priorities
+HTTP
+  Verbs: GET, POST, PUT, DELETE
