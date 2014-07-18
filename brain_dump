@@ -48,11 +48,12 @@ Ruby
         Dependency Inversion Principle
         Law of Demeter
         Tell, Don't Ask (Duck Typing)
+        DRY
   File Setup
     requiring files and gems (require vs require_relative)
   Strings
     Substrings with #slice/word[]
-    Differences between gingle and double quoted strings
+    Differences between single and double quoted strings
     HEREDOCs, %Q{}, %q{}
     Interpolation
       "#{}"
@@ -104,13 +105,14 @@ Ruby
       #to_a
       #to_hash
       #to_h
-      #to_int (an the difference between it and #to_i)
-      #to_ary (an the difference between it and #to_a)
-      #to_str (an the difference between it and #to_s)
+      #to_int (and the difference between it and #to_i)
+      #to_ary (and the difference between it and #to_a)
+      #to_str (and the difference between it and #to_s)
     Looping methods
       #times
       break
     Parameters for methods
+      arity
       named arguments
       splat methods
       default parameters
@@ -244,7 +246,18 @@ JavaScript
   Async and Callbacks
   Promises
   Events
+  Serialize/deserialize JSON
+  localStorage/sessionStorage
+  Pub/Sub (data-binding)
 CSS
-  Rule priorities
+  Pseudo selectors
+  Box model
+  Specificity priorities
+  Form-based specificity
+  Transforms
+  Transitions
+  Media-queries and breakpoints
+  Layout (Floats)
+  SASS
 HTTP
   Verbs: GET, POST, PUT, DELETE
