@@ -217,11 +217,76 @@ Git
   Pull request on Github
 Testing
   Best Practices
+    SWBAT explain and demonstrate the TDD workflow.
     First write test that will fail
     Run tests to show failure
     Implement smallest possible change to make test pass
   Rspec
   Minitest
+    SW know how to create a test suite.
+    SWBAT write assertions using assert_true and assert.
+    SWBAT write refutations using refute.
+    SWBAT read and fix error messages.
+    SWBAT read and fix failing assertions.
+Sinatra
+  SWBAT set up server file.
+  SWBAT write route handlers with get, post, put, and delete verbs.
+  SWBAT identify the URL within the route handler.
+  SWBAT start and stop the server.
+  SW know what a port is.
+  SWBAT change the port Sinatra is running on.
+  SW know what the params hash is.
+  SW know what a named parameter is and how to represent one in the url.
+  SWBAT pull one or more named parameters out of the URL with params[:named_parameter].
+  SW know what ERB is and its purpose.
+  SWBAT set up views in a Sinatra app.
+  SWBAT render views using `erb :name_of_file` in the route handler.
+HTML
+  SW know the basic structure of an HTML document.
+  SW know that <head></head> contains information about scripts, stylesheets, the document title, meta information, etc.
+  SW know that <body></body> contains the content of the page.
+  SW know the difference between block and inline elements.
+  link
+  div
+  a
+  ul
+  li
+  img
+  form
+  input
+  table
+  thead
+  th
+  tbody
+  span
+  p
+  h1 - h6
+CSS
+  SW know that CSS is used to style HTML.
+  SW know the syntax for selecting HTML elements by class.
+  SW know the syntax for selecting HTML elements by id.
+  SW know the syntax for selecting HTML elements by element type.
+  Properties
+    background-color
+    border
+    border-radius
+    color
+    position
+    opacity
+    font-family
+    font-size
+    font-weight
+    text-decoration
+    float
+    height
+    width
+    padding
+    margin
+    z-index
+    line-height
+    text-transform
+    word-wrap
+    list-style-type
 Rails
 Collaboration
   Setup
