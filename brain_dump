@@ -48,27 +48,23 @@ Ruby
         Dependency Inversion Principle
         Law of Demeter
         Tell, Don't Ask (Duck Typing)
+        DRY
   File Setup
     requiring files and gems (require vs require_relative)
   Strings
     Substrings with #slice/word[]
-    Differences between gingle and double quoted strings
+    Differences between single and double quoted strings
     HEREDOCs, %Q{}, %q{}
     Interpolation
       "#{}"
       "" + variable + ""
     Regular Expressions
+      Capturing expressions
   Numbers
-    Operations
-      +
-      -
-      /
-      *
-      %
-      **
-    Floats
-    Integers
-    BigDecimal
+    Operations (+, -, /, *, %, **)
+        SW understand how to do basic arithmetic using binary operators.
+    Floats, Integers, BigDecimal
+        SW understand the difference between floats and integers and be able to demonstrate when to use each
   Constants
   Arrays
     Array-like classes (e.g. Set)
@@ -78,6 +74,7 @@ Ruby
     SW understand the equal symbols are stored in the same place in memory (line integers, unlike strings)
   Blocks
   Procs and Lamdas
+      SW be able to use procs and lambdas in the correct situations
   Conditionals
     If/elsif/else
       1-line if statement
@@ -89,9 +86,10 @@ Ruby
     True/truthy, false/falsy
     Comparison operators
       <, >, <=, >=, ==, !=
-      .equal? vs. .eql?
-      SW know that comparison operators return true or false.
-      Spaceship operator <=>
+      .equal? vs. .eql? vs. == vs. ===
+          SW know that comparison operators return true or false.
+      Spaceship operator: <=>
+          Students will be able to include 'Comparable' and implement comparison between instances of their own classes
     Logical operators
       &&, ||
   Bitwise Operators
@@ -104,13 +102,14 @@ Ruby
       #to_a
       #to_hash
       #to_h
-      #to_int (an the difference between it and #to_i)
-      #to_ary (an the difference between it and #to_a)
-      #to_str (an the difference between it and #to_s)
+      #to_int (and the difference between it and #to_i)
+      #to_ary (and the difference between it and #to_a)
+      #to_str (and the difference between it and #to_s)
     Looping methods
       #times
       break
     Parameters for methods
+      arity
       named arguments
       splat methods
       default parameters
@@ -176,6 +175,8 @@ Ruby
     super
     BaseObject
     class methods
+    access control
+    hooks (e.g. method_missing)
   Modules
     include
     extend
@@ -189,6 +190,9 @@ Ruby
   managing gemsets
   APIs
   CSV
+  IO
+    File
+    Network
   Finding code
     (gem which)
     which
@@ -309,7 +313,19 @@ JavaScript
   Async and Callbacks
   Promises
   Events
+  Serialize/deserialize JSON
+  localStorage/sessionStorage
+  Pub/Sub (data-binding)
+jQuery
 CSS
-  Rule priorities
+  Pseudo selectors
+  Box model
+  Specificity priorities
+  Form-based specificity
+  Transforms
+  Transitions
+  Media-queries and breakpoints
+  Layout (Floats)
+  SASS
 HTTP
   Verbs: GET, POST, PUT, DELETE
