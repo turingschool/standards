@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'json'
-puts JSON.dump title: "Regular Expressions", description: "Everything ever!"
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'standards'
+Standards::Binary.call(ARGV, $stdin, $stdout, $stderr)

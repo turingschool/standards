@@ -11,7 +11,7 @@ Feature: Add a category
       category.description = "Everything ever!"
     end
     """
-    When I run "standards add definitions/regex.rb"
+    When I run "standards define definitions/regex.rb"
     Then the exit status is 0
     When I run "standards show category title:'Regular Expressions'"
     And  stderr is empty
