@@ -20,9 +20,18 @@ module Standards
         category = eval File.read(filename)
         File.write STANDARD_DATA_FILE, JSON.dump(category.as_json)
       elsif argv.first == 'show'
-        # load the json file
+        # read in file
+        raw_standards      = File.read STANDARD_DATA_FILE
+        standards          = JSON.parse raw_standards
+
         # filter based on argv (category title:'Regular Expressions')
+        search_info        = argv.last
+        search_term, value = search_info.split(":")
+
         # print it to stdout
+        if standards[search_term] == value
+          stdout.puts JSON.dump(standards)
+        end
       else
         raise "wat? #{argv.inspect}"
       end
