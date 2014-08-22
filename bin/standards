@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'json'
+puts JSON.dump title: "Regular Expressions", description: "Everything ever!"
