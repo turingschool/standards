@@ -1,3 +1,12 @@
+Potential use cases for the future:
+  maybe configurable
+  validates input (e.g. names don't collide)
+  probably an intermediate way to show it (I don't need to save it to see it)
+  some way to modify
+  maybe versioning or maybe awareness of git?
+
+-----
+
 Uhm, apparently teachers teach to something
 called a "standard". Seemed like a good idea
 to at least identify what topics we'd like to
