@@ -49,6 +49,7 @@ Ruby
         Law of Demeter
         Tell, Don't Ask (Duck Typing)
         DRY
+      Breaking down projects into responsibilities
   File Setup
     requiring files and gems (require vs require_relative)
   Strings
@@ -99,6 +100,7 @@ Ruby
       #to_i
       #to_f
       #to_s
+        can be used to change nil input to ""
       #to_a
       #to_hash
       #to_h
@@ -180,9 +182,18 @@ Ruby
   Modules
     include
     extend
+    difference between class and module, when to use which
   Style Best Practices
     indentation
     alignment
+  Ruby Object Model
+    inheritance
+    binding
+    ancestors
+    variable scope
+    method lookup chain
+    overriding methods
+    method_missing
   irb
   bundler
   installing gems
@@ -225,6 +236,7 @@ Testing
     First write test that will fail
     Run tests to show failure
     Implement smallest possible change to make test pass
+    Ensuring both happy path/sad path outcomes
   Rspec
   Minitest
     SW know how to create a test suite.
@@ -270,6 +282,7 @@ CSS
   SW know the syntax for selecting HTML elements by class.
   SW know the syntax for selecting HTML elements by id.
   SW know the syntax for selecting HTML elements by element type.
+  Rule priorities
   Properties
     background-color
     border
