@@ -1,0 +1,50 @@
+Languages
+	Ruby
+	HTML/CSS
+	JavaScript
+
+Tools
+	Environment
+	Git
+	HTTP, APIs, JSON
+	Process tools (guard, rake, use of libraries)
+	DevOps
+		Cron
+	Databases
+		SQL
+		No SQL
+			Redis
+
+Web Applications
+	Security
+		Sanitizing input
+	Authorization & Authentication
+	Uploads
+		Images
+		Files
+	Frameworks
+		Sinatra
+		Rails
+		Ember
+	Pub/Sub
+
+Software Design
+	Testing
+		In design
+		In practice
+	OOP
+		Design Patterns
+		MVC
+		Separation of Responsibilties
+		SOLID
+	Service-Oriented Architecture
+	Performance
+
+Processes
+	Agile
+		User Stories
+	User Experience
+	Workflow
+	Thinking & Learning
+	Professional Competencies 
+

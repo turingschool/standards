@@ -39,19 +39,21 @@ Ruby
     Index numbers
       SW know that computers start counting at 0.
       SW know that a negative index number counts from the end of the element.
-    Object-Oriented Programming
-      Design Principles
-        Single Responsibility Principle
-        Open-Closed Principle
-        Liskov Substitution Principle
-        Interface Segregation Principle
-        Dependency Inversion Principle
-        Law of Demeter
-        Tell, Don't Ask (Duck Typing)
-        DRY
-      Breaking down projects into responsibilities
+  Object-Oriented Programming
+    Design Principles
+      Single Responsibility Principle
+      Open-Closed Principle
+      Liskov Substitution Principle
+      Interface Segregation Principle
+      Dependency Inversion Principle
+      Law of Demeter
+      Tell, Don't Ask (Duck Typing)
+      DRY
+    Breaking down projects into responsibilities
   File Setup
-    requiring files and gems (require vs require_relative)
+    requiring files and gems
+    require
+    require_relative
   Strings
     Substrings with #slice/word[]
     Differences between single and double quoted strings
@@ -283,6 +285,15 @@ CSS
   SW know the syntax for selecting HTML elements by id.
   SW know the syntax for selecting HTML elements by element type.
   Rule priorities
+  Pseudo selectors
+  Box model
+  Specificity priorities
+  Form-based specificity
+  Transforms
+  Transitions
+  Media-queries and breakpoints
+  Layout (Floats)
+  SASS
   Properties
     background-color
     border
@@ -305,17 +316,22 @@ CSS
     word-wrap
     list-style-type
 Rails
-Collaboration
+Professional Competencies 
+  Collaboration
   Setup
+    Splitting multi-step process
   Pairing
   Driver/navigator
   Communication
   Switching roles
+  Identifying and addressing problems
+
 Workflow
   Fast file switching
   Screen setup
   Window manager
   Keyboard shortcuts
+  touch typing
 JavaScript
   Prototypal inheritance
   this
@@ -329,16 +345,6 @@ JavaScript
   Serialize/deserialize JSON
   localStorage/sessionStorage
   Pub/Sub (data-binding)
-jQuery
-CSS
-  Pseudo selectors
-  Box model
-  Specificity priorities
-  Form-based specificity
-  Transforms
-  Transitions
-  Media-queries and breakpoints
-  Layout (Floats)
-  SASS
+  jQuery
 HTTP
   Verbs: GET, POST, PUT, DELETE
