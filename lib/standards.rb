@@ -1,27 +1,35 @@
 require 'json'
-class Category
-  attr_accessor :title, :description
-
-  def initialize
-    yield self
-  end
-
-  def as_json
-    {"title" => title, "description" => description}
-  end
-end
 
 module Standards
   module Binary
-    STANDARD_DATA_FILE = File.expand_path("../../standards.json", __FILE__)
+    # { "standards": [
+    #     { "id":       1,
+    #       "standard": "SW know that find is a method used on collections.",
+    #       "tags":     ["ruby", "enumerable"],
+    #     },
+    #     { "id":       2,
+    #       "standard": "SW know that map is a method used on collections.",
+    #       "tags":     ["ruby", "enumerable"],
+    #     },
+    #   ],
+    # }
+    STANDARD_DATA_FILENAME = "standards.json"
     def self.call(argv, stdin, stdout, stderr)
-      if argv.first == 'define'
-        filename = argv.last
-        category = eval File.read(filename)
-        File.write STANDARD_DATA_FILE, JSON.dump(category.as_json)
+      if argv.first == 'add'
+        initialize_data_file STANDARD_DATA_FILENAME
+        standard = {
+          'standard' => argv[1],
+          'tags'     => argv[2..-1].reject { |arg| arg == '--tag' },
+          'id'       => 1,
+        }
+        raw_structure = File.read STANDARD_DATA_FILENAME
+        structure     = JSON.parse(raw_structure)
+        structure['standards'] << standard
+        File.write STANDARD_DATA_FILENAME, JSON.dump(structure)
+        stdout.puts JSON.dump(standard)
       elsif argv.first == 'show'
         # read in file
-        raw_standards      = File.read STANDARD_DATA_FILE
+        raw_standards      = File.read STANDARD_DATA_FILENAME
         standards          = JSON.parse raw_standards
 
         # filter based on argv (category title:'Regular Expressions')
@@ -35,6 +43,11 @@ module Standards
       else
         raise "wat? #{argv.inspect}"
       end
+    end
+
+    def self.initialize_data_file(filename)
+      return if File.exist? filename
+      File.write filename, JSON.dump({'standards' => []})
     end
   end
 end
