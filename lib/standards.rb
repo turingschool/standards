@@ -27,19 +27,23 @@ module Standards
         structure['standards'] << standard
         File.write STANDARD_DATA_FILENAME, JSON.dump(structure)
         stdout.puts JSON.dump(standard)
-      elsif argv.first == 'show'
+      elsif argv.first == 'select'
+        initialize_data_file STANDARD_DATA_FILENAME
         # read in file
         raw_standards      = File.read STANDARD_DATA_FILENAME
         standards          = JSON.parse raw_standards
 
-        # filter based on argv (category title:'Regular Expressions')
+
+        # filter based on argv ('tag:tag1')
         search_info        = argv.last
         search_term, value = search_info.split(":")
 
-        # print it to stdout
-        if standards[search_term] == value
-          stdout.puts JSON.dump(standards)
+        selected_standards = standards["standards"].select do |standard_hash|
+          standard_hash["tags"].include?(value)
         end
+
+        # print it to stdout
+        stdout.puts JSON.dump(selected_standards)
       else
         raise "wat? #{argv.inspect}"
       end

@@ -21,12 +21,26 @@ Then 'stdout is the JSON:' do |json|
   expect(actual).to eq expected
 end
 
-Given /^I have a standard "(.*?)"(?:, with tags (\[.*?\]))?$/ do |expected_standard, tagstring|
-  expected_tags     = eval(tagstring||"[]")
-  raw_json          = Haiti::CommandLineHelpers.read_file 'standards.json'
-  standards         = JSON.parse(raw_json)['standards']
-  @current_standard = standards.find do |s|
-    s['standard'] == expected_standard && s['tags'] == expected_tags
+Then /^I have a standard "(.*?)", with tags (\[.*?\])?$/ do |expected_standard, tagstring|
+  Haiti::CommandLineHelpers.in_proving_grounds do
+    expected_tags     = eval(tagstring)
+    raw_json          = File.read Standards::Binary::STANDARD_DATA_FILENAME
+    standards         = JSON.parse(raw_json)['standards']
+    @current_standard = standards.find do |s|
+      s['standard'] == expected_standard && s['tags'] == expected_tags
+    end
   end
   expect(@current_standard).to be
+end
+
+Given /^I have previously added "(.*)", with tags (\[.*?\])?$/ do |standard, tagstring|
+  Haiti::CommandLineHelpers.in_proving_grounds do
+    standard_hash = {
+      'standard' => standard,
+      'tags'     => eval(tagstring),
+      'id'       => 1,
+    }
+    File.write Standards::Binary::STANDARD_DATA_FILENAME,
+               JSON.dump({'standards' => [standard_hash]})
+  end
 end

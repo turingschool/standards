@@ -21,7 +21,7 @@ Feature: CRUD for standards
     And I have a standard "SW know that find is a method used on collections.", with tags ["ruby", "enumerable"]
 
   Scenario: Successfully query the standards
-    Given I have a standard "the standard", with tags ["tag1"]
+    Given I have previously added "the standard", with tags ["tag1"]
     When I run "standards select tag:tag1"
     Then stderr is empty
     And  stdout is the JSON:
