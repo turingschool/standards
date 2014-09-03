@@ -41,6 +41,7 @@ Considerations going forward:
 * Cross referencing (might need an id... might not need to cross-reference)
 * Edit a specific standard (I prob want an id)
 * Hierarchy of tags (ie render a static site, what goes at top?)
+* Versioning
 
 
 ## To use this on Monday, we need:
