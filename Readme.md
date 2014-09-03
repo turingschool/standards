@@ -1,3 +1,56 @@
+## Definition of a standard
+
+Concepts that are known and can be demonstrated by a student who has mastery.
+
+## Users / Use Cases (who gives a shit and why)
+
+* Instructors
+  * Why we care
+    * Tailor lesson towards specific outcomes
+    * Remove lessons that don't progress us towards the standards
+    * Ensure curriculum covers these concepts
+    * Reflect on how well students are understanding
+  * How we use it
+    * Add and Standard
+    * Change standards
+    * Cross referencing
+* Students
+  * Can see standards being taught for a specific lesson
+
+## Structure
+
+For Monday:
+
+```json
+{ "standards": [
+    { "id":       1,
+      "standard": "SW know that find is a method used on collections.",
+      "tags":     ["ruby", "enumerable"],
+    },
+    { "id":       2,
+      "standard": "SW know that map is a method used on collections.",
+      "tags":     ["ruby", "enumerable"],
+    },
+  ],
+}
+
+```
+
+Considerations going forward:
+
+* Cross referencing (might need an id... might not need to cross-reference)
+* Edit a specific standard (I prob want an id)
+* Hierarchy of tags (ie render a static site, what goes at top?)
+
+
+## To use this on Monday, we need:
+
+* Structure described above
+* Standards for the lessons being taught next week
+* Basic presentation (ie render a static site)
+
+-----
+
 Potential use cases for the future:
   maybe configurable
   validates input (e.g. names don't collide)
