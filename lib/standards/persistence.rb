@@ -1,4 +1,4 @@
-# require 'standards/structure'
+require 'standards/structure'
 
 module Standards
   module Persistence
