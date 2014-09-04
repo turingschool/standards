@@ -45,16 +45,15 @@ Considerations going forward:
 * Edit a specific standard (I prob want an id)
 * Hierarchy of tags (ie render a static site, what goes at top?)
 * Versioning (store deltas? what does CouchDB do? <-- omg, student assignment!)
+* Abstract away from "standards.json" default filename by using env var or configuration file
+* Should standards (the array of Standard objs) have a repository (currently, Structure si becoming that)
 
 
 ## TODO before Monday, we need:
 
 * library
-  * Refactor `lib/standards.rb`
   * Extract into objects whose job is to perform these tasks
   * Ensure no bs implementation (e.g. not all have id of 1 :)
-  * Introduce data structures
-  * Update tests to use data structures/service objects
 * Write standards for lessons for next week
 * Use the lib to generate a static site, so students have something they can see
 
