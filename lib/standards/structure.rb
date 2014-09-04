@@ -25,5 +25,10 @@ module Standards
     def as_json
       {standards: standards.map(&:as_json)}
     end
+
+    def add_standard(standard_attributes)
+      Standard.new(standard_attributes)
+              .tap { |s| standards << s }
+    end
   end
 end
