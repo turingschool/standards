@@ -25,11 +25,6 @@ module Standards
     def as_json
       {standards: standards.map(&:as_json)}
     end
-
-    def add_standard(attributes)
-      Standard.new(attributes)
-              .tap { |standard| standards << standard }
-    end
   end
 
   class Standard
@@ -67,28 +62,27 @@ module Standards
         initialize_data_file STANDARD_DATA_FILENAME
         raw_structure = File.read STANDARD_DATA_FILENAME
         structure     = Structure.from_hash JSON.parse(raw_structure)
-        standard      = structure.add_standard standard: argv[1],
-                                               tags:     argv[2..-1].reject { |arg| arg == '--tag' },
-                                               id:       1
+        standard      = Standard.new standard: argv[1],
+                                     tags:     argv[2..-1].reject { |arg| arg == '--tag' },
+                                     id:       1
+        structure.standards << standard
         File.write STANDARD_DATA_FILENAME, structure.to_json
         stdout.puts standard.to_json
       elsif argv.first == 'select'
         initialize_data_file STANDARD_DATA_FILENAME
-        # read in file
-        raw_standards      = File.read STANDARD_DATA_FILENAME
-        standards          = JSON.parse raw_standards
-
+        raw_structure = File.read STANDARD_DATA_FILENAME
+        structure     = Structure.from_hash JSON.parse(raw_structure)
 
         # filter based on argv ('tag:tag1')
         search_info        = argv.last
         search_term, value = search_info.split(":")
 
-        selected_standards = standards["standards"].select do |standard_hash|
-          standard_hash["tags"].include?(value)
+        selected_standards = structure.standards.select do |standard|
+          standard.tags.include?(value)
         end
 
         # print it to stdout
-        stdout.puts JSON.dump(selected_standards)
+        stdout.puts selected_standards.map(&:as_json).to_json
       else
         raise "wat? #{argv.inspect}"
       end
