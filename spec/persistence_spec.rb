@@ -47,13 +47,13 @@ RSpec.describe 'Persistence' do
     it 'loads the JSON structure from the file and returns a Structure object' do
       dump(filename, structure)
       new_structure = load(filename)
-      expect(new_structure.as_json).to eq({standards: [{id: 123, standard: "my standard", tags: ["tag1", "tag2"]}]})
+      expect(new_structure.to_hash).to eq({standards: [{id: 123, standard: "my standard", tags: ["tag1", "tag2"]}]})
       expect(new_structure).to_not equal structure
     end
 
     it 'returns an empty Structure object when the file DNE' do
       expect(File.exist? filename).to eq false
-      expect(load(filename).as_json).to eq({standards: []})
+      expect(load(filename).to_hash).to eq({standards: []})
     end
   end
 

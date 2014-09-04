@@ -8,11 +8,11 @@ module Standards
     end
 
     def to_json
-      as_json.to_json
+      to_hash.to_json
     end
 
-    def as_json
-      {standards: standards.map(&:as_json)}
+    def to_hash
+      {standards: standards.map(&:to_hash)}
     end
 
     def add_standard(standard_attributes)

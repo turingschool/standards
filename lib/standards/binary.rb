@@ -24,7 +24,7 @@ module Standards
         end
 
         # print it to stdout
-        stdout.puts selected_standards.map(&:as_json).to_json
+        stdout.puts selected_standards.map(&:to_hash).to_json
       else
         raise "wat? #{argv.inspect}"
       end
