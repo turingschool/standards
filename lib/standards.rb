@@ -1,6 +1,54 @@
 require 'json'
 
 module Standards
+  class Structure
+    def self.from_hash(structure_hash)
+      standards =
+        structure_hash.fetch('standards')
+                      .map { |standard_hash|
+                        Standard.new id:       standard_hash.fetch('id'),
+                                     standard: standard_hash.fetch('standard'),
+                                     tags:     standard_hash.fetch('tags')
+                      }
+      Structure.new standards
+    end
+
+    attr_accessor :standards
+    def initialize(standards)
+      self.standards = standards
+    end
+
+    def to_json
+      as_json.to_json
+    end
+
+    def as_json
+      {standards: standards.map(&:as_json)}
+    end
+
+    def add_standard(attributes)
+      Standard.new(attributes)
+              .tap { |standard| standards << standard }
+    end
+  end
+
+  class Standard
+    attr_accessor :id, :standard, :tags
+    def initialize(attributes)
+      self.id       = attributes.fetch :id
+      self.standard = attributes.fetch :standard
+      self.tags     = attributes.fetch :tags
+    end
+
+    def to_json
+      as_json.to_json
+    end
+
+    def as_json
+      {id: id, standard: standard, tags: tags}
+    end
+  end
+
   module Binary
     # { "standards": [
     #     { "id":       1,
@@ -17,16 +65,13 @@ module Standards
     def self.call(argv, stdin, stdout, stderr)
       if argv.first == 'add'
         initialize_data_file STANDARD_DATA_FILENAME
-        standard = {
-          'standard' => argv[1],
-          'tags'     => argv[2..-1].reject { |arg| arg == '--tag' },
-          'id'       => 1,
-        }
         raw_structure = File.read STANDARD_DATA_FILENAME
-        structure     = JSON.parse(raw_structure)
-        structure['standards'] << standard
-        File.write STANDARD_DATA_FILENAME, JSON.dump(structure)
-        stdout.puts JSON.dump(standard)
+        structure     = Structure.from_hash JSON.parse(raw_structure)
+        standard      = structure.add_standard standard: argv[1],
+                                               tags:     argv[2..-1].reject { |arg| arg == '--tag' },
+                                               id:       1
+        File.write STANDARD_DATA_FILENAME, structure.to_json
+        stdout.puts standard.to_json
       elsif argv.first == 'select'
         initialize_data_file STANDARD_DATA_FILENAME
         # read in file
