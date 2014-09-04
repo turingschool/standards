@@ -53,4 +53,23 @@ RSpec.describe 'Filter' do
       expect(prc.call(Standard.new tags: ['b'])).to eq false
     end
   end
+
+  describe '==' do
+    it 'is false when other is not a Filter' do
+      filter = filter_for({})
+      expect(filter).to     eq filter_for({})
+      expect(filter).to_not eq nil
+      expect(filter).to_not eq 123
+      expect(filter).to_not eq BasicObject.new
+    end
+
+    it 'returns true when the initial options are ==' do
+      expect(filter_for tags: ['a']).to     eq filter_for(tags: ['a'])
+      expect(filter_for tags: ['a']).to_not eq filter_for(tags: ['b'])
+    end
+
+    it 'considers defaults' do
+      expect(filter_for tags: []).to eq filter_for({})
+    end
+  end
 end

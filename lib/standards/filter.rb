@@ -1,7 +1,7 @@
 module Standards
   class Filter
     def initialize(options)
-      self.options = options
+      self.tag_filters = options.fetch :tags, []
     end
 
     def allow?(standard)
@@ -14,12 +14,13 @@ module Standards
       method(:allow?).to_proc
     end
 
-    private
-
-    attr_accessor :options
-
-    def tag_filters
-      options[:tags]
+    def ==(other)
+      return false unless self.class === other
+      tag_filters == other.tag_filters
     end
+
+    protected
+
+    attr_accessor :tag_filters
   end
 end
