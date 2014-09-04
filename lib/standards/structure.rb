@@ -2,17 +2,6 @@ require 'standards/standard'
 
 module Standards
   class Structure
-    def self.from_hash(structure_hash)
-      standards =
-        structure_hash.fetch('standards')
-                      .map { |standard_hash|
-                        Standard.new id:       standard_hash.fetch('id'),
-                                     standard: standard_hash.fetch('standard'),
-                                     tags:     standard_hash.fetch('tags')
-                      }
-      Structure.new standards
-    end
-
     attr_accessor :standards
     def initialize(standards)
       self.standards = standards

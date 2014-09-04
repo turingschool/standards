@@ -5,8 +5,7 @@ module Standards
   module Persistence
     def self.load(filename)
       initialize_data_file filename
-      raw_structure = File.read filename
-      Structure.from_hash JSON.parse(raw_structure)
+      structure_from_json File.read filename
     end
 
     def self.dump(filename, structure)
@@ -18,6 +17,18 @@ module Standards
     end
 
     private
+
+    def self.structure_from_json(structure_json)
+      raw_structure = JSON.parse(structure_json)
+      raw_standards = raw_structure.fetch('standards')
+      standards     = raw_standards.map { |raw_standard|
+                        Standard.new id:       raw_standard.fetch('id'),
+                                     standard: raw_standard.fetch('standard'),
+                                     tags:     raw_standard.fetch('tags')
+                      }
+      Structure.new(standards)
+    end
+
 
     def self.initialize_data_file(filename)
       return if File.exist? filename
