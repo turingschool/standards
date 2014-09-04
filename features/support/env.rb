@@ -1,6 +1,6 @@
 # configuration
 $LOAD_PATH.unshift '../../../lib'
-require 'standards'
+require 'standards/binary'
 require 'haiti'
 Haiti.configure do |config|
   config.proving_grounds_dir = File.expand_path '../../../proving_grounds', __FILE__
