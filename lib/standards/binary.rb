@@ -3,6 +3,7 @@ require 'standards'
 module Standards
   module Binary
     STANDARD_DATA_FILENAME = "standards.json"
+
     def self.call(argv, stdin, stdout, stderr)
       structure = Persistence.load STANDARD_DATA_FILENAME
 

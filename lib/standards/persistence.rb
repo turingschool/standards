@@ -13,6 +13,10 @@ module Standards
       File.write filename, structure.to_json
     end
 
+    def self.delete(filename)
+      File.delete filename if File.exist? filename
+    end
+
     private
 
     def self.initialize_data_file(filename)
