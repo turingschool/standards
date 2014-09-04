@@ -25,6 +25,16 @@ RSpec.describe 'Standard' do
     it 'defaults tags to empty array' do
       expect(Standard.new.tags).to eq []
     end
+
+    it 'does not mutate the attribute hash it was initialized with' do
+      hash = {id: 1, standard: 's', tags: ['t']}
+      Standard.new hash
+      expect(hash).to eq({id: 1, standard: 's', tags: ['t']})
+    end
+
+    it 'blows up if given unexpected attributes' do
+      expect { Standard.new wat: 1 }.to raise_error ArgumentError, /wat/
+    end
   end
 
   it 'can be represented as a hash' do

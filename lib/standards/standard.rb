@@ -5,9 +5,11 @@ module Standards
     # should persister blow up if you try to persist one that
     # does not have an id or a standard?
     def initialize(attributes={})
-      self.id       = attributes.fetch :id,       nil
-      self.standard = attributes.fetch :standard, ""
-      self.tags     = attributes.fetch :tags,     []
+      attributes    = attributes.dup
+      self.id       = attributes.delete(:id)       || nil
+      self.standard = attributes.delete(:standard) || ""
+      self.tags     = attributes.delete(:tags)     || []
+      raise ArgumentError, "Unexpected attributes: #{attributes.inspect}" if attributes.any?
     end
 
     def to_json
