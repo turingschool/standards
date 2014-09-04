@@ -7,11 +7,12 @@ Haiti.configure do |config|
   config.bin_dir             = File.expand_path '../../../bin',             __FILE__
 end
 
+filename = Standards::Binary::STANDARD_DATA_FILENAME
+
 # step definitions
 Given 'I have not previously defined standards' do
   Haiti::CommandLineHelpers.in_proving_grounds do
-    filename = Standards::Binary::STANDARD_DATA_FILENAME
-    File.delete filename if File.exist? filename
+    Standards::Persistence.delete(filename)
   end
 end
 
@@ -24,10 +25,9 @@ end
 Then /^I have a standard "(.*?)", with tags (\[.*?\])?$/ do |expected_standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
     expected_tags     = eval(tagstring)
-    raw_json          = File.read Standards::Binary::STANDARD_DATA_FILENAME
-    standards         = JSON.parse(raw_json)['standards']
-    @current_standard = standards.find do |s|
-      s['standard'] == expected_standard && s['tags'] == expected_tags
+    structure = Standards::Persistence.load(filename)
+    @current_standard = structure.standards.find do |s|
+      s.standard == expected_standard && s.tags == expected_tags
     end
   end
   expect(@current_standard).to be
@@ -35,12 +35,11 @@ end
 
 Given /^I have previously added "(.*)", with tags (\[.*?\])?$/ do |standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
-    standard_hash = {
-      'standard' => standard,
-      'tags'     => eval(tagstring),
-      'id'       => 1,
-    }
-    File.write Standards::Binary::STANDARD_DATA_FILENAME,
-               JSON.dump({'standards' => [standard_hash]})
+    Standards::Persistence.dump filename,
+                                Standards::Structure.new([
+                                  Standards::Standard.new(standard: standard,
+                                                          tags:     eval(tagstring),
+                                                          id:       1)
+                                ])
   end
 end
