@@ -11,11 +11,14 @@ Concepts that are known and can be demonstrated by a student who has mastery.
     * Ensure curriculum covers these concepts
     * Reflect on how well students are understanding
   * How we use it
-    * Add and Standard
+    * Add a Standard
     * Change standards
-    * Cross referencing
+    * Delete standards
+    * Probably generate a static website from them
 * Students
   * Can see standards being taught for a specific lesson
+  * Can see whether they know all the things they should (a *standard* :D to measure themselves against)
+  * Can know what to review for assessments, etc
 
 ## Structure
 
@@ -41,14 +44,19 @@ Considerations going forward:
 * Cross referencing (might need an id... might not need to cross-reference)
 * Edit a specific standard (I prob want an id)
 * Hierarchy of tags (ie render a static site, what goes at top?)
-* Versioning
+* Versioning (store deltas? what does CouchDB do? <-- omg, student assignment!)
 
 
-## To use this on Monday, we need:
+## TODO before Monday, we need:
 
-* Structure described above
-* Standards for the lessons being taught next week
-* Basic presentation (ie render a static site)
+* library
+  * Refactor `lib/standards.rb`
+  * Extract into objects whose job is to perform these tasks
+  * Ensure no bs implementation (e.g. not all have id of 1 :)
+  * Introduce data structures
+  * Update tests to use data structures/service objects
+* Write standards for lessons for next week
+* Use the lib to generate a static site, so students have something they can see
 
 -----
 
