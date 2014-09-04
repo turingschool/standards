@@ -8,11 +8,12 @@ Haiti.configure do |config|
 end
 
 filename = Standards::Binary::STANDARD_DATA_FILENAME
+s        = Standards
 
 # step definitions
 Given 'I have not previously defined standards' do
   Haiti::CommandLineHelpers.in_proving_grounds do
-    Standards::Persistence.delete(filename)
+    s::Persistence.delete(filename)
   end
 end
 
@@ -25,7 +26,7 @@ end
 Then /^I have a standard "(.*?)", with tags (\[.*?\])?$/ do |expected_standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
     expected_tags     = eval(tagstring)
-    structure = Standards::Persistence.load(filename)
+    structure = s::Persistence.load(filename)
     @current_standard = structure.standards.find do |s|
       s.standard == expected_standard && s.tags == expected_tags
     end
@@ -35,11 +36,11 @@ end
 
 Given /^I have previously added "(.*)", with tags (\[.*?\])?$/ do |standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
-    Standards::Persistence.dump filename,
-                                Standards::Structure.new([
-                                  Standards::Standard.new(standard: standard,
-                                                          tags:     eval(tagstring),
-                                                          id:       1)
-                                ])
+    s::Persistence.dump filename,
+                        s::Structure.new([
+                          s::Standard.new(standard: standard,
+                                          tags:     eval(tagstring),
+                                          id:       1)
+                          ])
   end
 end
