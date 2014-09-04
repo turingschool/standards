@@ -19,14 +19,11 @@ module Standards
     private
 
     def self.structure_from_json(structure_json)
-      raw_structure = JSON.parse(structure_json)
-      raw_standards = raw_structure.fetch('standards')
-      standards     = raw_standards.map { |raw_standard|
-                        Standard.new id:       raw_standard.fetch('id'),
-                                     standard: raw_standard.fetch('standard'),
-                                     tags:     raw_standard.fetch('tags')
-                      }
-      Structure.new(standards)
+      Structure.new \
+        JSON::Ext::Parser.new(structure_json, symbolize_names: true)
+                         .parse
+                         .fetch(:standards)
+                         .map &Standard.method(:new)
     end
 
 
