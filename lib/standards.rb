@@ -1,4 +1,5 @@
 require 'json'
+require 'standards/load_structure'
 
 module Standards
   class Structure
@@ -45,22 +46,9 @@ module Standards
   end
 
   module Binary
-    # { "standards": [
-    #     { "id":       1,
-    #       "standard": "SW know that find is a method used on collections.",
-    #       "tags":     ["ruby", "enumerable"],
-    #     },
-    #     { "id":       2,
-    #       "standard": "SW know that map is a method used on collections.",
-    #       "tags":     ["ruby", "enumerable"],
-    #     },
-    #   ],
-    # }
     STANDARD_DATA_FILENAME = "standards.json"
     def self.call(argv, stdin, stdout, stderr)
-      initialize_data_file STANDARD_DATA_FILENAME
-      raw_structure = File.read STANDARD_DATA_FILENAME
-      structure     = Structure.from_hash JSON.parse(raw_structure)
+      structure = LoadStructure.call STANDARD_DATA_FILENAME
 
       if argv.first == 'add'
         standard      = Standard.new standard: argv[1],
@@ -83,11 +71,6 @@ module Standards
       else
         raise "wat? #{argv.inspect}"
       end
-    end
-
-    def self.initialize_data_file(filename)
-      return if File.exist? filename
-      File.write filename, JSON.dump({'standards' => []})
     end
   end
 end
