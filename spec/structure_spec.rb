@@ -1,9 +1,6 @@
-require 'standards'
+require 'spec_helper'
 
 RSpec.describe 'Structure' do
-  Standard  = Standards::Standard
-  Structure = Standards::Structure
-
   it 'has a collection of standards which default to an empty array' do
     structure = Structure.new
     expect(structure.standards).to eq []

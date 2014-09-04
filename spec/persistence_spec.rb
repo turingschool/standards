@@ -1,4 +1,4 @@
-require 'standards/persistence'
+require 'spec_helper'
 require 'fakefs/spec_helpers'
 
 RSpec.describe 'Persistence' do

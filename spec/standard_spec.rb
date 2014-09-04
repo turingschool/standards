@@ -1,4 +1,4 @@
-require 'standards'
+require 'spec_helper'
 
 RSpec.describe 'Standard' do
   let(:id)              { 12 }
