@@ -58,10 +58,11 @@ module Standards
     # }
     STANDARD_DATA_FILENAME = "standards.json"
     def self.call(argv, stdin, stdout, stderr)
+      initialize_data_file STANDARD_DATA_FILENAME
+      raw_structure = File.read STANDARD_DATA_FILENAME
+      structure     = Structure.from_hash JSON.parse(raw_structure)
+
       if argv.first == 'add'
-        initialize_data_file STANDARD_DATA_FILENAME
-        raw_structure = File.read STANDARD_DATA_FILENAME
-        structure     = Structure.from_hash JSON.parse(raw_structure)
         standard      = Standard.new standard: argv[1],
                                      tags:     argv[2..-1].reject { |arg| arg == '--tag' },
                                      id:       1
@@ -69,10 +70,6 @@ module Standards
         File.write STANDARD_DATA_FILENAME, structure.to_json
         stdout.puts standard.to_json
       elsif argv.first == 'select'
-        initialize_data_file STANDARD_DATA_FILENAME
-        raw_structure = File.read STANDARD_DATA_FILENAME
-        structure     = Structure.from_hash JSON.parse(raw_structure)
-
         # filter based on argv ('tag:tag1')
         search_info        = argv.last
         search_term, value = search_info.split(":")
