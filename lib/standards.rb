@@ -55,7 +55,7 @@ module Standards
                                      tags:     argv[2..-1].reject { |arg| arg == '--tag' },
                                      id:       1
         structure.standards << standard
-        File.write STANDARD_DATA_FILENAME, structure.to_json
+        Persistence.dump STANDARD_DATA_FILENAME, structure
         stdout.puts standard.to_json
       elsif argv.first == 'select'
         # filter based on argv ('tag:tag1')

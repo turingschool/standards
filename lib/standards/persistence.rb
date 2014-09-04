@@ -8,6 +8,10 @@ module Standards
       Structure.from_hash JSON.parse(raw_structure)
     end
 
+    def self.dump(filename, structure)
+      File.write filename, structure.to_json
+    end
+
     private
 
     def self.initialize_data_file(filename)
