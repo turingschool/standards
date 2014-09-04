@@ -1,5 +1,5 @@
 require 'json'
-require 'standards/load_structure'
+require 'standards/persistence'
 
 module Standards
   class Structure
@@ -48,7 +48,7 @@ module Standards
   module Binary
     STANDARD_DATA_FILENAME = "standards.json"
     def self.call(argv, stdin, stdout, stderr)
-      structure = LoadStructure.call STANDARD_DATA_FILENAME
+      structure = Persistence.load STANDARD_DATA_FILENAME
 
       if argv.first == 'add'
         standard      = Standard.new standard: argv[1],
