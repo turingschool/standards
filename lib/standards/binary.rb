@@ -20,6 +20,8 @@ module Standards
         filter             = ParseSelect.call args
         selected_standards = structure.select_standards &filter
         stdout.puts selected_standards.map(&:to_hash).to_json
+      elsif argv.first == 'generate'
+        stdout.puts GenerateBasicSite.call(structure)
       else
         raise "wat? #{argv.inspect}"
       end
