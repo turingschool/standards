@@ -27,9 +27,14 @@ __END__
 <html lang="en">
   <head>
     <title>Turing Standards</title>
+    <style>
+      .header {
+        width:            100%;
+        background-color: green;
+      }
+    </style>
   </head>
   <body>
-
     <div class="header">
       <div class="tags">
         <% all_tags.each { |tag| %><%= link_for tag %><% } %>
