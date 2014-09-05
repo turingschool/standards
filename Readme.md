@@ -51,9 +51,6 @@ Considerations going forward:
 
 ## TODO before Monday, we need:
 
-* library
-  * Extract into objects whose job is to perform these tasks
-  * Ensure no bs implementation (e.g. not all have id of 1 :)
 * Write standards for lessons for next week
 * Use the lib to generate a static site, so students have something they can see
 
