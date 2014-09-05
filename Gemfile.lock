@@ -62,5 +62,6 @@ DEPENDENCIES
   fakefs (~> 0.5)
   haiti (~> 0.2.0)
   poltergeist (~> 1.5)
+  rack (~> 1.5)
   rake (~> 10.3)
   rspec (~> 3.0)
