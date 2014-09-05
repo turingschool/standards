@@ -6,20 +6,20 @@ task load_lib: :fix_loadpath do
   require 'standards'
 end
 
-desc 'run unit tests'
-task :spec do
-  sh 'rspec'
+desc 'Runs all tests'
+task default: %w[test:spec test:cuke test:site]
+
+namespace :test do
+  desc 'run unit tests'
+  task(:spec) { sh 'rspec' }
+
+  desc 'run cucumber tests'
+  task(:cuke) { sh 'cucumber' }
+
+  desc 'test the generated webpage'
+  task(:site) { sh 'rspec --tag js' }
 end
 
-desc 'run cucumber tests'
-task :cuke do
-  sh 'cucumber'
-end
-
-desc 'test the generated webpage'
-task :test_web do
-  sh 'rspec --tag js'
-end
 
 desc 'preview the site (useful for seeing css/js)'
 task preview: :load_lib do
@@ -41,10 +41,8 @@ task preview: :load_lib do
 
   # notify user where to find the output, serve the app
   require 'rack'
-  puts "\e[30;42m Navigate to http://localhost:1235/ \e[0m"
+  puts "\e[32mhttp://localhost:1235/\e[0m"
+  puts "\e[31mControl-C to kill server \e[0m"
   puts
   Rack::Server.start app: app, Port: 1235, server: 'webrick'
 end
-
-desc 'Run specs and cukes'
-task default: [:spec, :cuke, :test_web]
