@@ -21,8 +21,8 @@ namespace :test do
 end
 
 
-desc 'preview the site (useful for seeing css/js)'
-task preview: :load_lib do
+desc 'serve the html with dummy data (useful for seeing css/js)'
+task serve: :load_lib do
   # dummy structure
   structure = Standards::Structure.new
   structure.add_standard standard: 'SWBAT explain and demonstrate the TDD workflow.',      tags: ['testing', 'tdd']
