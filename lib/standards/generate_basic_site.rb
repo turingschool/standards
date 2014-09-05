@@ -35,7 +35,7 @@ __END__
         color: #323232;
       }
 
-      h1 {
+      .standards h1 {
         margin-bottom: 0.2em;
         font-size: 32px;
         font-weight: 100;
@@ -66,14 +66,22 @@ __END__
       }
 
       .main-tags {
-        padding: 10px 0px;
+        padding:   10px 0px;
         font-size: 18px;
       }
 
       .logo {
         padding: 0 80px;
+        float:   left
       }
 
+      .header h1 {
+        float:       left;
+        font-size:   70px;
+        font-weight: 100;
+        color:       #FFF;
+        margin-top:  0px;
+      }
     </style>
     <script>
       filterFromFragment = function() {
@@ -124,6 +132,7 @@ __END__
   <body>
     <div class="header">
       <img src="https://s3.amazonaws.com/turing-assets/logo.png" class="logo"/>
+      <h1>Standards</h1>
     </div>
 
     <div class="container">
