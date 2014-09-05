@@ -1,6 +1,22 @@
 module Standards
-  module GenerateBasicSite
+  class GenerateBasicSite
     def self.call(structure)
+      new(structure).call
+    end
+
+    def initialize(structure)
+      self.structure = structure
+    end
+
+    def call
+      @rendered ||= render
+    end
+
+    private
+
+    attr_accessor :structure
+
+    def render
 <<TEMPLATE
 <!doctype html>
 <html lang="en">
@@ -9,9 +25,9 @@ module Standards
   </head>
   <body>
     <div class="standards">
-#{
+      #{
 structure.standards.map { |standard|
-  html = '      <div class="standard">'
+  html = '<div class="standard">'
   html << '<div class="id">'   << standard.id.to_s       << '</div>'
   html << '<div class="body">' << standard.standard.to_s << '</div>'
   html << '<div class="tags">'
