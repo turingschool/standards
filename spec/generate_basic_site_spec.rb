@@ -57,10 +57,20 @@ RSpec.describe 'GenerateBasicSite', js:true do
     it 'displays all tags along the top' do
       page.within '.header .tags' do
         expect(page).to have_css '.tag', count: 3
-        expect(page.text.split.sort).to eq %w[tag1 tag2 tag3]
+        expect(page.text.split(/(?<=\d)/).sort).to eq %w[tag1 tag2 tag3]
       end
     end
 
-    it 'filters the displayed standards by which tag was clicked'
+    it 'filters the displayed standards by which tag was clicked' do
+      page.within('.header') { page.click_on 'tag1' }
+      expect(page).to     have_css '.standard .id', text: 'SW a'
+      expect(page).to     have_css '.standard .id', text: 'SW c'
+      expect(page).to_not have_css '.standard .id', text: 'SW b'
+
+      page.within('.standard:nth-child(3)') { page.click_on 'tag3' }
+      expect(page).to     have_css '.standard .id', text: 'SW b'
+      expect(page).to     have_css '.standard .id', text: 'SW c'
+      expect(page).to_not have_css '.standard .id', text: 'SW a'
+    end
   end
 end

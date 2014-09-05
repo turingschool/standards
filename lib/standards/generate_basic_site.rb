@@ -14,6 +14,10 @@ module Standards
       all_tags  = standards.map { |s| s.tags }.flatten.uniq
       ERB.new(template, nil, "<>").result(binding)
     end
+
+    def self.link_for(tag)
+      %(<a class="tag" href="##{tag}">#{tag}</a>)
+    end
   end
 end
 
@@ -28,9 +32,7 @@ __END__
 
     <div class="header">
       <div class="tags">
-        <% all_tags.each do |tag| %>
-          <div class="tag"><%= tag %></div>
-        <% end %>
+        <% all_tags.each { |tag| %><%= link_for tag %><% } %>
       </div>
     </div>
 
@@ -40,7 +42,7 @@ __END__
           <div class="id"><%=   standard.id       %></div>
           <div class="body"><%= standard.standard %></div>
           <div class="tags">
-            <% standard.tags.each { |tag| %><div class="tag"><%= tag %></div><% } %>
+            <% standard.tags.each { |tag| %><%= link_for tag %><% } %>
           </div>
         </div>
       <% end %>
