@@ -39,7 +39,7 @@ RSpec.describe 'GenerateBasicSite', js:true do
     it 'displays the standard, tags, and id' do
       page.within '.standard:nth-child(1)' do |x|
         expect(page).to have_css '.id',               text: '1'
-        expect(page).to have_css '.body',             text: 'SW a'
+        expect(page).to have_css '.text',             text: 'SW a'
         expect(page).to have_css '.tag:nth-child(1)', text: 'tag1'
         expect(page).to have_css '.tag:nth-child(2)', text: 'tag2'
         expect(page).to have_css '.tags > .tag',      count: 2
@@ -63,14 +63,14 @@ RSpec.describe 'GenerateBasicSite', js:true do
 
     it 'filters the displayed standards by which tag was clicked' do
       page.within('.main-tags') { page.click_on 'tag1' }
-      expect(page).to     have_css '.standard .body', text: 'SW a'
-      expect(page).to     have_css '.standard .body', text: 'SW c'
-      expect(page).to_not have_css '.standard .body', text: 'SW b'
+      expect(page).to     have_css '.standard .text', text: 'SW a'
+      expect(page).to     have_css '.standard .text', text: 'SW c'
+      expect(page).to_not have_css '.standard .text', text: 'SW b'
 
       page.within('.standard:nth-child(3)') { page.click_on 'tag3' }
-      expect(page).to     have_css '.standard .body', text: 'SW b'
-      expect(page).to     have_css '.standard .body', text: 'SW c'
-      expect(page).to_not have_css '.standard .body', text: 'SW a'
+      expect(page).to     have_css '.standard .text', text: 'SW b'
+      expect(page).to     have_css '.standard .text', text: 'SW c'
+      expect(page).to_not have_css '.standard .text', text: 'SW a'
     end
   end
 end

@@ -68,7 +68,7 @@ __END__
         text-transform: uppercase;
       }
 
-      .standards {
+      .container {
         padding: 0px 100px;
       }
 
@@ -128,19 +128,21 @@ __END__
     <div class="header">
     </div>
 
-    <div class="main-tags tags">
-      <% all_tags.each { |tag| %><%= link_for tag %> <% } %>
-    </div>
+    <div class="container">
+      <div class="main-tags tags">
+        <% all_tags.each { |tag| %><%= link_for tag %> <% } %>
+      </div>
 
-    <div class="standards">
-      <% standards.map do |standard| %>
-        <div class="standard">
-          <div class="body"><h1><span class="id"><%= standard.id %></span>. <span class="body"><%= standard.standard %></span></h1></div>
-          <div class="tags">
-            Tags: <% standard.tags.each { |tag| %><%= link_for tag %> <% } %>
+      <div class="standards">
+        <% standards.map do |standard| %>
+          <div class="standard">
+            <h1><span class="id"><%= standard.id %></span>. <span class="text"><%= standard.standard %></span></h1>
+            <div class="tags">
+              Tags: <% standard.tags.each { |tag| %><%= link_for tag %> <% } %>
+            </div>
           </div>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     </div>
   </body>
 </html>
