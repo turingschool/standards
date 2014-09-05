@@ -28,26 +28,71 @@ __END__
   <head>
     <title>Turing Standards</title>
     <style>
-      .header {
-        width:            100%;
-        background-color: green;
+      body {
+        font-family: "aktiv-grotesk-std", sans-serif;
+        font-size: 14px;
+        font-weight: 300;
+        color: #323232;
       }
+
+      p {
+        display: block;
+      }
+
+      h3 {
+        margin: 39.99996px 0 10px;
+        font-size: 32px;
+        font-weight: 200;
+        letter-spacing: 0.01em;
+      }
+
+      h1 {
+        margin-bottom: 0.2em;
+        font-size: 32px;
+        font-weight: 100;
+        color: #05C2D1;
+      }
+
+      .header {
+        background:     #262626;
+        border-bottom:  solid 4px #05C2D1;
+        color:          #FFF;
+        font-size:      12px;
+        font-weight:    700;
+        min-height:     70px;
+        width:          110%;
+        padding:        30px;
+        position:       relative;
+          bottom:       10px;
+          right:        10px;
+        text-transform: uppercase;
+      }
+
+      .standards {
+        padding: 0px 100px;
+      }
+
+      .main-tags {
+        padding: 10px 0px;
+        font-size: 18px;
+      }
+
     </style>
   </head>
   <body>
     <div class="header">
-      <div class="tags">
-        <% all_tags.each { |tag| %><%= link_for tag %><% } %>
-      </div>
     </div>
 
     <div class="standards">
+      <div class="main-tags">
+        <% all_tags.each { |tag| %><%= link_for tag %> <% } %>
+      </div>
+
       <% standards.map do |standard| %>
         <div class="standard">
-          <div class="id"><%=   standard.id       %></div>
-          <div class="body"><%= standard.standard %></div>
+          <div class="body"><h1><%= standard.id %>. <%= standard.standard %></h1></div>
           <div class="tags">
-            <% standard.tags.each { |tag| %><%= link_for tag %><% } %>
+            Tags: <% standard.tags.each { |tag| %><%= link_for tag %> <% } %>
           </div>
         </div>
       <% end %>
