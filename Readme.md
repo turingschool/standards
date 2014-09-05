@@ -33,6 +33,21 @@ Concepts that are known and can be demonstrated by a student who has mastery.
   * Flag to override file
 * Write standards for lessons for next week
 
+## Examples
+
+```ruby
+require 'standards'
+
+structure = Standards::Persistence.load 'standards.json'
+structure.add_standard standard: 'SWBAT create and run a Minitest suite', tags: ['ruby', 'testing', 'minitest']
+# => #<Standards::Standard:0x007f9d4884be98 @id=1, @standard="SWBAT create and run a Minitest suite", @tags=["ruby", "testing", "minitest"]>
+
+structure.to_json
+# => "{\"standards\":[{\"id\":1,\"standard\":\"SWBAT create and run a Minitest suite\",\"tags\":[\"ruby\",\"testing\",\"minitest\"]}]}"
+
+Standards::Persistence.dump 'standards.json'
+```
+
 ## Considerations going forward:
 
 * Cross referencing (might need an id... might not need to cross-reference)
