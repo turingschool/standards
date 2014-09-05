@@ -1,8 +1,12 @@
+# Standards
+
+[Turing School](http://turing.io/)'s lib to work with standards.
+
+[View the standards online](http://standards.turing.io/).
+
 ## Definition of a standard
 
 Concepts that are known and can be demonstrated by a student who has mastery.
-
-[View existing standards](http://standards.turing.io/).
 
 ## Users / Use Cases (who gives a shit and why)
 
