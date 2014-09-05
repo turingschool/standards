@@ -8,6 +8,12 @@ Feature: CRUD for standards
   Background:
     Given I have not previously defined standards
 
+  Scenario: Help screen
+    When I run "standards help"
+    Then stderr is empty
+    And  the exit status is 0
+    And  stdout includes "Usage"
+
   Scenario: Add a Standard
     When I run "standards add 'SW know that find is a method used on collections.' ruby enumerable"
     Then stderr is empty
