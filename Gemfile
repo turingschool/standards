@@ -1,8 +1,12 @@
 source 'https://rubygems.org'
 
 
-gem 'rack',          '~> 1.5',  group: :development
-gem 'rake',          '~> 10.3', group: [:development, :test]
+gem 'rack',          '~> 1.5'
+gem 'puma',          '~> 2.9'
+
+group :development do
+  gem 'rake',        '~> 10.3'
+end
 
 group :test do
   gem 'cucumber',    '~> 1.3'
