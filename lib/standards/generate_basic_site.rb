@@ -10,6 +10,8 @@ module Standards
     end
 
     def self.call(structure)
+      standards = structure.standards
+      all_tags  = standards.map { |s| s.tags }.flatten.uniq
       ERB.new(template, nil, "<>").result(binding)
     end
   end
@@ -23,8 +25,17 @@ __END__
     <title>Turing Standards</title>
   </head>
   <body>
+
+    <div class="header">
+      <div class="tags">
+        <% all_tags.each do |tag| %>
+          <div class="tag"><%= tag %></div>
+        <% end %>
+      </div>
+    </div>
+
     <div class="standards">
-      <% structure.standards.map do |standard| %>
+      <% standards.map do |standard| %>
         <div class="standard">
           <div class="id"><%=   standard.id       %></div>
           <div class="body"><%= standard.standard %></div>
