@@ -8,7 +8,13 @@ module Standards
     <title>Google</title>
   </head>
   <body>
-    <p>omg wtf bbq</p>
+   <ul>
+#{
+structure.standards.map { |standard|
+  "<li>#{standard.id} | #{standard.standard} | #{standard.tags.join ', '}</li>"
+}.join("\n")
+}
+</ul>
   </body>
 </html>
 TEMPLATE
