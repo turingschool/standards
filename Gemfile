@@ -1,7 +1,11 @@
 source 'https://rubygems.org'
 
-group :development, :test do
-  gem 'rake',     '~> 10.3'
+
+gem 'rack',          '~> 1.5'
+gem 'puma',          '~> 2.9'
+
+group :development do
+  gem 'rake',        '~> 10.3'
 end
 
 group :test do
