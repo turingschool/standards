@@ -23,6 +23,12 @@ Then 'stdout is the JSON:' do |json|
   expect(actual).to eq expected
 end
 
+Then "stdout is the JSON '$json'" do |json|
+  expected = JSON.parse(json)
+  actual   = JSON.parse(@last_executed.stdout)
+  expect(actual).to eq expected
+end
+
 Then /^I have a standard "(.*?)", with tags (\[.*?\])?$/ do |expected_standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
     expected_tags     = eval(tagstring)
