@@ -1,13 +1,10 @@
-task :fix_loadpath do
-  $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
-end
-
-task load_lib: :fix_loadpath do
-  require 'standards'
-end
-
 desc 'Run all tests'
-task default: 'test:all'
+task default: :test
+
+
+# ----- Test Tasks -----
+desc 'Run all tests'
+task test: %w[test:spec test:cuke test:site]
 
 namespace :test do
   desc 'Run unit tests'
@@ -18,21 +15,10 @@ namespace :test do
 
   desc 'Test the generated webpage'
   task(:site) { sh 'rspec --tag js' }
-
-  desc 'Run all tests'
-  task all: %w[test:spec test:cuke test:site]
-end
-
-def self.serve(app)
-  # notify user where to find the output, serve the app
-  require 'rack'
-  puts "\e[32mhttp://localhost:1235/\e[0m"
-  puts "\e[31mControl-C to kill server \e[0m"
-  puts
-  Rack::Server.start app: app, Port: 1235, server: 'webrick'
 end
 
 
+# ----- Server Tasks ----
 desc 'Serve the app (real data)'
 task(:server) { sh 'rackup' }
 
@@ -55,6 +41,18 @@ namespace :server do
       [200, {'Content-Type' => 'text/html'}, [html]]
     end
 
-    serve app
+    # notify user where to find the output, serve the app
+    require 'rack'
+    puts "\e[32mhttp://localhost:1235/\e[0m"
+    puts "\e[31mControl-C to kill server \e[0m"
+    puts
+    Rack::Server.start app: app, Port: 1235, server: 'webrick'
   end
+end
+
+
+# ----- Helpers -----
+task :load_lib do
+  $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+  require 'standards'
 end
