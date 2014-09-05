@@ -128,14 +128,14 @@ __END__
     <div class="header">
     </div>
 
-    <div class="standards">
-      <div class="main-tags">
-        <% all_tags.each { |tag| %><%= link_for tag %> <% } %>
-      </div>
+    <div class="main-tags tags">
+      <% all_tags.each { |tag| %><%= link_for tag %> <% } %>
+    </div>
 
+    <div class="standards">
       <% standards.map do |standard| %>
         <div class="standard">
-          <div class="body"><h1><%= standard.id %>. <%= standard.standard %></h1></div>
+          <div class="body"><h1><span class="id"><%= standard.id %></span>. <span class="body"><%= standard.standard %></span></h1></div>
           <div class="tags">
             Tags: <% standard.tags.each { |tag| %><%= link_for tag %> <% } %>
           </div>

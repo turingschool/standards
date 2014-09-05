@@ -55,9 +55,9 @@ RSpec.describe 'GenerateBasicSite', js:true do
     end
 
     it 'displays all tags along the top' do
-      page.within '.header .tags' do
+      page.within '.main-tags' do
         expect(page).to have_css '.tag', count: 3
-        expect(page.text.split(/(?<=\d)/).sort).to eq %w[tag1 tag2 tag3]
+        expect(page.text.split(/(?<=\d)/).map(&:strip).sort).to eq %w[tag1 tag2 tag3]
       end
     end
 
