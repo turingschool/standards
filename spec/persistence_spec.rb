@@ -37,6 +37,18 @@ RSpec.describe 'Persistence' do
       expect(body).to_not include "content"
       expect(body).to include '"standards":'
     end
+
+    it 'raises an error when attempting to persist a structure with a standard that does not have an id' do
+      s = Structure.new
+      s.standards << Standard.new(standard: "a")
+      expect { dump filename, s }.to raise_error /\bid\b/
+    end
+
+    it 'raises an error when attempting to persist a structure with a standard that is empty' do
+      s = Structure.new
+      s.add_standard id: 1
+      expect { dump filename, s }.to raise_error /\bstandard\b/
+    end
   end
 
   describe 'loading' do
