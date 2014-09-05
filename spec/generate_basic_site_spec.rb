@@ -62,15 +62,15 @@ RSpec.describe 'GenerateBasicSite', js:true do
     end
 
     it 'filters the displayed standards by which tag was clicked' do
-      page.within('.header') { page.click_on 'tag1' }
-      expect(page).to     have_css '.standard .id', text: 'SW a'
-      expect(page).to     have_css '.standard .id', text: 'SW c'
-      expect(page).to_not have_css '.standard .id', text: 'SW b'
+      page.within('.main-tags') { page.click_on 'tag1' }
+      expect(page).to     have_css '.standard .body', text: 'SW a'
+      expect(page).to     have_css '.standard .body', text: 'SW c'
+      expect(page).to_not have_css '.standard .body', text: 'SW b'
 
       page.within('.standard:nth-child(3)') { page.click_on 'tag3' }
-      expect(page).to     have_css '.standard .id', text: 'SW b'
-      expect(page).to     have_css '.standard .id', text: 'SW c'
-      expect(page).to_not have_css '.standard .id', text: 'SW a'
+      expect(page).to     have_css '.standard .body', text: 'SW b'
+      expect(page).to     have_css '.standard .body', text: 'SW c'
+      expect(page).to_not have_css '.standard .body', text: 'SW a'
     end
   end
 end
