@@ -1,7 +1,7 @@
 require 'erb'
 
 module Standards
-  class GenerateBasicSite
+  module GenerateBasicSite
     def self.template
       @template ||= File.readlines(__FILE__)
                         .drop_while { |line| line != "__END__\n" }
@@ -10,20 +10,8 @@ module Standards
     end
 
     def self.call(structure)
-      new(structure).call
+      ERB.new(template, nil, "<>").result(binding)
     end
-
-    def initialize(structure)
-      self.structure = structure
-    end
-
-    def call
-      @rendered ||= ERB.new(self.class.template, nil, "<>").result(binding)
-    end
-
-    private
-
-    attr_accessor :structure
   end
 end
 
