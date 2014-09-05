@@ -35,12 +35,16 @@ RSpec.describe 'GenerateBasicSite', js:true do
     page.visit file_url
   end
 
-  it 'temp test to show its wired up right' do
-    expect(page).to have_content 'SW a'
-  end
-
   describe 'displaying a standard' do
-    it 'displays the standard, tags, and id'
+    it 'displays the standard, tags, and id' do
+      page.within '.standard:nth-child(1)' do |x|
+        expect(page).to have_css '.id',               text: '1'
+        expect(page).to have_css '.body',             text: 'SW a'
+        expect(page).to have_css '.tag:nth-child(1)', text: 'tag1'
+        expect(page).to have_css '.tag:nth-child(2)', text: 'tag2'
+        expect(page).to have_css '.tags > .tag',      count: 2
+      end
+    end
   end
 
   describe 'showing standards' do
