@@ -14,7 +14,6 @@ module Standards
         standard = structure.add_standard standard: standard,
                                           tags:     tags,
                                           id:       1
-
         Persistence.dump STANDARD_DATA_FILENAME, structure
         stdout.puts standard.to_json
       elsif argv.first == 'select'
