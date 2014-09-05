@@ -8,7 +8,7 @@ Feature: CRUD for standards
     Given I have not previously defined standards
 
   Scenario: Add a Standard
-    When I run "standards add 'SW know that find is a method used on collections.' --tag ruby --tag enumerable"
+    When I run "standards add 'SW know that find is a method used on collections.' ruby enumerable"
     Then stderr is empty
     Then the exit status is 0
     And  stdout is the JSON:
