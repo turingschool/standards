@@ -35,22 +35,15 @@ __END__
         color: #323232;
       }
 
-      p {
-        display: block;
-      }
-
-      h3 {
-        margin: 39.99996px 0 10px;
-        font-size: 32px;
-        font-weight: 200;
-        letter-spacing: 0.01em;
-      }
-
       h1 {
         margin-bottom: 0.2em;
         font-size: 32px;
         font-weight: 100;
         color: #05C2D1;
+      }
+
+      p {
+        display: block;
       }
 
       .header {
@@ -75,6 +68,10 @@ __END__
       .main-tags {
         padding: 10px 0px;
         font-size: 18px;
+      }
+
+      .logo {
+        padding: 0 80px;
       }
 
     </style>
@@ -126,6 +123,7 @@ __END__
   </head>
   <body>
     <div class="header">
+      <img src="https://s3.amazonaws.com/turing-assets/logo.png" class="logo"/>
     </div>
 
     <div class="container">
