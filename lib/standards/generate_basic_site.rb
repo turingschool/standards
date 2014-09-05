@@ -33,6 +33,51 @@ __END__
         background-color: green;
       }
     </style>
+    <script>
+      filterFromFragment = function() {
+        var tagName = window.location.hash.replace(/^#/, '');
+        filterStandardsByTag(tagName);
+      }
+
+      getAllStandards = function() {
+        return document.querySelectorAll('.standards > .standard');
+      };
+
+      filterStandardsByTag = function(tagName) {
+        if(!tagName)
+          return;
+        var standards = getAllStandards();
+        for(var standardsIndex=0; standardsIndex < standards.length; ++standardsIndex) {
+          var standard  = standards[standardsIndex];
+          var tags      = standard.querySelectorAll('.tag'); // maybe normalize them by querying their children to get attributes and setting it on standard itself?
+          var doHide    = true;
+          for(var tagIndex=0; tagIndex < tags.length; ++tagIndex) {
+            var tag = tags[tagIndex];
+            if(tag.textContent == tagName) {
+              doHide = false;
+              break;
+            };
+          };
+          if(doHide)
+            standard.style.visibility = 'hidden';
+          else
+            standard.style.visibility = 'visible';
+        };
+      };
+
+      window.onload = function() {
+        var tags = document.querySelectorAll('.tags > .tag');
+        for(var i=0; i<tags.length; ++i) {
+          (function(tag) {
+            tag.onclick = function(event) {
+              window.location.hash = tag.textContent;
+              filterFromFragment();
+              event.preventDefault();
+            };
+          })(tags[i]);
+        };
+      };
+    </script>
   </head>
   <body>
     <div class="header">
