@@ -126,6 +126,8 @@ __END__
             };
           })(tags[i]);
         };
+
+        filterFromFragment();
       };
     </script>
   </head>
