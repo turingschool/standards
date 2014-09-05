@@ -48,7 +48,12 @@ RSpec.describe 'GenerateBasicSite', js:true do
   end
 
   describe 'showing standards' do
-    it 'displays all the standards by default'
+    it 'displays all the standards by default' do
+      expect(page).to have_content 'SW a'
+      expect(page).to have_content 'SW b'
+      expect(page).to have_content 'SW c'
+    end
+
     it 'displays all tags along the top'
     it 'filters the displayed standards by which tag was clicked'
   end

@@ -29,9 +29,7 @@ __END__
           <div class="id"><%=   standard.id       %></div>
           <div class="body"><%= standard.standard %></div>
           <div class="tags">
-            <% standard.tags.each do |tag| %>
-             <div class="tag"><%= tag %></div>
-            <% end %>
+            <% standard.tags.each { |tag| %><div class="tag"><%= tag %></div><% } %>
           </div>
         </div>
       <% end %>
