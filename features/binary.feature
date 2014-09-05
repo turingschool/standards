@@ -45,5 +45,17 @@ Feature: CRUD for standards
     When I run "standards add 'some standard'"
     And  I run "standards generate"
     Then stderr is empty
-    Then the exit status is 0
+    And  the exit status is 0
     And  stdout includes "html"
+
+  Scenario: Nonexistant command
+    When I run "standards not-a-command"
+    Then stdout is empty
+    And  stderr includes "not-a-command"
+    And  the exit status is 1
+
+  Scenario: Some other error
+    When I run "standards select invalid-filter"
+    Then stdout is empty
+    And  stderr includes "invalid-filter"
+    And  the exit status is 1

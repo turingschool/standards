@@ -3,6 +3,9 @@ require 'standards/binary/parse_select'
 
 module Standards
   module Binary
+    SUCCESS_STATUS         = 0
+    ERROR_STATUS           = 1
+    UnknownCommand         = Class.new StandardsError
     STANDARD_DATA_FILENAME = "standards.json"
 
     def self.call(argv, stdin, stdout, stderr)
@@ -22,8 +25,13 @@ module Standards
       when 'generate'
         stdout.puts GenerateBasicSite.call(structure)
       else
-        raise "wat? #{argv.inspect}"
+        raise UnknownCommand, "Don't know the command #{command.inspect}"
       end
+      SUCCESS_STATUS
+    rescue Exception => e
+      stderr.puts e.class
+      stderr.puts e.message
+      ERROR_STATUS
     end
   end
 end
