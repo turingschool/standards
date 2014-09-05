@@ -36,7 +36,7 @@ RSpec.describe 'GenerateBasicSite', js:true do
   end
 
   it 'temp test to show its wired up right' do
-    expect(page).to have_content 'omg wtf bbq'
+    expect(page).to have_content 'SW a'
   end
 
   describe 'displaying a standard' do
