@@ -2,8 +2,6 @@ module Standards
   class Standard
     attr_accessor :id, :standard, :tags
 
-    # should persister blow up if you try to persist one that
-    # does not have an id or a standard?
     def initialize(attributes={})
       attributes    = attributes.dup
       self.id       = attributes.delete(:id)       || nil

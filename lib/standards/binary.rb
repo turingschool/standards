@@ -1,4 +1,5 @@
 require 'standards'
+require 'standards/binary/parse_select'
 
 module Standards
   module Binary
@@ -15,15 +16,8 @@ module Standards
         Persistence.dump STANDARD_DATA_FILENAME, structure
         stdout.puts standard.to_json
       elsif argv.first == 'select'
-        # filter based on argv ('tag:tag1')
-        search_info        = argv.last
-        search_term, value = search_info.split(":")
-
-        selected_standards = structure.standards.select do |standard|
-          standard.tags.include?(value)
-        end
-
-        # print it to stdout
+        filter             = ParseSelect.call argv.drop(1)
+        selected_standards = structure.select_standards &filter
         stdout.puts selected_standards.map(&:to_hash).to_json
       else
         raise "wat? #{argv.inspect}"

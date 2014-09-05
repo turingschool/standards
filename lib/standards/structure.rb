@@ -35,6 +35,10 @@ module Standards
       standards == other.standards
     end
 
+    def select_standards(&filter)
+      standards.select(&filter)
+    end
+
     private
 
     def next_standard_id

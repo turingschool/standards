@@ -84,4 +84,12 @@ RSpec.describe 'Structure' do
       expect(Structure.new [{id: 1}]).to_not eq Structure.new([{id: 2}])
     end
   end
+
+  describe 'select_standards' do
+    it 'returns an array of standards that are selected by the block' do
+      structure = Structure.new [Standard.new(tags: ['in']), Standard.new(tags: ['not-in'])]
+      standards = structure.select_standards { |standard| standard.tags == ['in'] }
+      expect(standards.map &:tags).to eq [['in']]
+    end
+  end
 end
