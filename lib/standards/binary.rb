@@ -12,7 +12,7 @@ module Standards
       case command
       when 'add'
         standard, *tags = args
-        standard = structure.add_standard standard: standard, tags: tags, id: 1
+        standard = structure.add_standard standard: standard, tags: tags
         Persistence.dump STANDARD_DATA_FILENAME, structure
         stdout.puts standard.to_json
       when 'select'
