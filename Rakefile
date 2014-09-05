@@ -6,23 +6,26 @@ task load_lib: :fix_loadpath do
   require 'standards'
 end
 
-desc 'Runs all tests'
-task default: %w[test:spec test:cuke test:site]
+desc 'Run all tests'
+task default: 'test:all'
 
 namespace :test do
-  desc 'run unit tests'
+  desc 'Run unit tests'
   task(:spec) { sh 'rspec' }
 
-  desc 'run cucumber tests'
+  desc 'Run cucumber tests'
   task(:cuke) { sh 'cucumber' }
 
-  desc 'test the generated webpage'
+  desc 'Test the generated webpage'
   task(:site) { sh 'rspec --tag js' }
+
+  desc 'Run all tests'
+  task all: %w[test:spec test:cuke test:site]
 end
 
 
-desc 'serve the html with dummy data (useful for seeing css/js)'
-task serve: :load_lib do
+desc 'Serve the html with dummy data (useful for seeing css/js)'
+task server: :load_lib do
   # dummy structure
   structure = Standards::Structure.new
   structure.add_standard standard: 'SWBAT explain and demonstrate the TDD workflow.',      tags: ['testing', 'tdd']
