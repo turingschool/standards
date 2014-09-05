@@ -104,9 +104,9 @@ __END__
             };
           };
           if(doHide)
-            standard.style.visibility = 'hidden';
+            standard.style.display = 'none';
           else
-            standard.style.visibility = 'visible';
+            standard.style.display = 'block';
         };
       };
 
