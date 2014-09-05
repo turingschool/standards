@@ -49,6 +49,12 @@ RSpec.describe 'Persistence' do
       s.add_standard id: 1
       expect { dump filename, s }.to raise_error /\bstandard\b/
     end
+
+    it 'creates the path to the file if the path DNE' do
+      dump '/a/b/c', structure
+      body = File.read '/a/b/c'
+      expect(body).to include '"standards":'
+    end
   end
 
   describe 'loading' do

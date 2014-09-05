@@ -14,6 +14,7 @@ module Standards
       elsif no_standard = structure.standards.find { |standard| standard.standard.empty? }
         raise "Every Standard needs a `standard` attribute, but #{no_standard.inspect} does not have one!"
       else
+        ensure_path File.dirname(filename)
         File.write filename, structure.to_json
       end
     end
@@ -36,6 +37,12 @@ module Standards
     def self.initialize_data_file(filename)
       return if File.exist? filename
       File.write filename, Structure.new([]).to_json
+    end
+
+    def self.ensure_path(path)
+      return if Dir.exist? path
+      ensure_path File.dirname path
+      Dir.mkdir path
     end
   end
 end
