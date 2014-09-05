@@ -51,6 +51,11 @@ Considerations going forward:
 
 ## TODO before Monday, we need:
 
+* Code
+  * Renders website that shows page
+  * Help screen
+  * Pull file from ENV
+  * Flag to override file
 * Write standards for lessons for next week
 * Use the lib to generate a static site, so students have something they can see
 
