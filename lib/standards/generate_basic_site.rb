@@ -1,5 +1,14 @@
+require 'erb'
+
 module Standards
   class GenerateBasicSite
+    def self.template
+      @template ||= File.readlines(__FILE__)
+                        .drop_while { |line| line != "__END__\n" }
+                        .drop(1)
+                        .join("")
+    end
+
     def self.call(structure)
       new(structure).call
     end
@@ -9,42 +18,35 @@ module Standards
     end
 
     def call
-      @rendered ||= page_html
+      @rendered ||= ERB.new(self.class.template, nil, "<>").result(binding)
     end
 
     private
 
     attr_accessor :structure
-
-    def page_html
-      <<-HTML
-        <!doctype html>
-        <html lang="en">
-          <head>
-            <title>Google</title>
-          </head>
-          <body>
-            #{standards_html}
-          </body>
-        </html>
-      HTML
-    end
-
-    def standards_html
-      html =  '<div class="standards">'
-      html << '<div class="standard">'
-      structure.standards.map { |standard|
-        html << '<div class="id">'   << standard.id.to_s       << '</div>'
-        html << '<div class="body">' << standard.standard.to_s << '</div>'
-        html << '<div class="tags">'
-        standard.tags.each do |tag|
-          html << %'<div class="tag">#{tag}</div>'
-        end
-        html << '</div>'
-        html << '</div>'
-      }.join("\n")
-      html << '</div>'
-      html << '</div>'
-    end
   end
 end
+
+
+__END__
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Turing Standards</title>
+  </head>
+  <body>
+    <div class="standards">
+      <% structure.standards.map do |standard| %>
+        <div class="standard">
+          <div class="id"><%=   standard.id       %></div>
+          <div class="body"><%= standard.standard %></div>
+          <div class="tags">
+            <% standard.tags.each do |tag| %>
+             <div class="tag"><%= tag %></div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </body>
+</html>
