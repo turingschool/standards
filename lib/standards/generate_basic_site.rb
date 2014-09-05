@@ -75,12 +75,17 @@ __END__
         float:   left
       }
 
+      .header {
+        clear: both;
+      }
+
       .header h1 {
-        float:       left;
-        font-size:   70px;
-        font-weight: 100;
-        color:       #FFF;
-        margin-top:  0px;
+        float:         left;
+        font-size:     58px;
+        font-weight:   100;
+        color:         #FFF;
+        margin-top:    9px;
+        margin-bottom: 0px;
       }
     </style>
     <script>
