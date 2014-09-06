@@ -4,6 +4,13 @@ Feature: Setting the standards file
   and what format it is, and so forth, we need to be able to provide that via
   an environment variable or a flag
 
+  NOTE TO SELF:
+    These tests are pretty annoying.
+    It's because the binary is doing the parsing
+    and we're testing that through here.
+    So if we keep working on it, probably pull a parser out
+    and then delete as many of these tests as we can
+
   Scenario: Standards file passed in --file
     Given there is no file "from-long-flag.json"
     When I run "standards --file from-long-flag.json add s1"

@@ -29,6 +29,8 @@ Concepts that are known and can be demonstrated by a student who has mastery.
 
 ## Examples
 
+The library:
+
 ```ruby
 require 'standards'
 
@@ -41,6 +43,10 @@ structure.to_json
 
 Standards::Persistence.dump 'standards.json', structure
 ```
+
+If you're going to use the binary,
+you probably want to set `STANDARDS_FILEPATH` in your `bash_profile`,
+otherwise you'll have to specify `-f path/to/standards.json` every time you use it.
 
 ## Considerations going forward:
 
