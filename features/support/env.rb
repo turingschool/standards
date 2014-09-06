@@ -10,12 +10,7 @@ end
 filename = Standards::Binary::STANDARD_DATA_FILENAME
 s        = Standards
 
-# step definitions
-Given 'I have not previously defined standards' do
-  Haiti::CommandLineHelpers.in_proving_grounds do
-    s::Persistence.delete(filename)
-  end
-end
+# Stuff that should maybe be in Haiti
 
 Then 'stdout is the JSON:' do |json|
   expected = JSON.parse(json)
@@ -46,6 +41,12 @@ Then /^I have a standard "(.*?)", with tags (\[.*?\])?$/ do |expected_standard, 
   expect(@current_standard).to be
 end
 
+# Standards
+Given 'I have not previously defined standards' do
+  Haiti::CommandLineHelpers.in_proving_grounds do
+    s::Persistence.delete(filename)
+  end
+end
 Given /^I have previously added "(.*)", with tags (\[.*?\])?$/ do |standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
     s::Persistence.dump filename,
