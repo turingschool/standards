@@ -1,4 +1,5 @@
 # configuration
+
 $LOAD_PATH.unshift '../../../lib'
 require 'standards/binary'
 require 'haiti'
@@ -7,9 +8,10 @@ Haiti.configure do |config|
   config.bin_dir             = File.expand_path '../../../bin',             __FILE__
 end
 
-filename = File.join Haiti.config.proving_grounds_dir, 'standards.json'
-ENV['STANDARDS_FILEPATH'] = filename
+standards_filepath = File.join Haiti.config.proving_grounds_dir, 'standards.json'
+ENV['STANDARDS_FILEPATH'] = standards_filepath
 s = Standards
+
 
 # Stuff that should maybe be in Haiti
 
@@ -34,7 +36,7 @@ end
 Then /^I have a standard "(.*?)", with tags (\[.*?\])?$/ do |expected_standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
     expected_tags     = eval(tagstring)
-    structure = s::Persistence.load(filename)
+    structure = s::Persistence.load(standards_filepath)
     @current_standard = structure.standards.find do |s|
       s.standard == expected_standard && s.tags == expected_tags
     end
@@ -42,15 +44,18 @@ Then /^I have a standard "(.*?)", with tags (\[.*?\])?$/ do |expected_standard, 
   expect(@current_standard).to be
 end
 
+
 # Standards
+
 Given 'I have not previously defined standards' do
   Haiti::CommandLineHelpers.in_proving_grounds do
-    s::Persistence.delete(filename)
+    s::Persistence.delete(standards_filepath)
   end
 end
+
 Given /^I have previously added "(.*)", with tags (\[.*?\])?$/ do |standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
-    s::Persistence.dump filename,
+    s::Persistence.dump standards_filepath,
                         s::Structure.new([
                           s::Standard.new(standard: standard,
                                           tags:     eval(tagstring),
