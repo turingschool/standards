@@ -3,22 +3,30 @@ require 'standards/binary/parse_select'
 
 module Standards
   module Binary
-    SUCCESS_STATUS         = 0
-    ERROR_STATUS           = 1
-    UnknownCommand         = Class.new StandardsError
-    STANDARD_DATA_FILENAME = "standards.json"
+    FILE_ENV_VARNAME           = 'STANDARDS_FILEPATH'
+    SUCCESS_STATUS             = 0
+    ERROR_STATUS               = 1
+    UnknownCommand             = Class.new StandardsError
+    StandardsFilepathIsMissing = Class.new StandardsError do
+      def initialize
+        super "You must provide the path to a standards file to operate on\n"\
+              "Either set the #{FILE_ENV_VARNAME} environment variable,\n"\
+              "or pass it as an argument with -f / --file"
+      end
+    end
+
 
     def self.call(argv, stdin, stdout, stderr)
       argv      = argv.dup
-      filename  = extract_filename(argv) || ENV['STANDARDS_FILEPATH']
-      structure = Persistence.load filename
+      filepath  = extract_filepath(argv) || ENV[FILE_ENV_VARNAME] || raise(StandardsFilepathIsMissing)
+      structure = Persistence.load filepath
       command, *args = argv
 
       case command
       when 'add'
         standard, *tags = args
         standard = structure.add_standard standard: standard, tags: tags
-        Persistence.dump filename, structure
+        Persistence.dump filepath, structure
         stdout.puts standard.to_json
       when 'select'
         filter = ParseSelect.call(args)
@@ -34,6 +42,8 @@ module Standards
       SUCCESS_STATUS
     rescue Exception => e
       stderr.puts e.class
+      stderr.puts '-' * e.class.to_s.size
+      stderr.puts
       stderr.puts e.message
       ERROR_STATUS
     end
@@ -43,6 +53,9 @@ module Standards
       Usage: standards COMMAND [args]
 
         https://github.com/turingschool/standards
+
+      Environment variables
+        #{FILE_ENV_VARNAME}                      # Location of standards file to read from and write to
 
       Global flags
         -f, --file FILEPATH                     # Location of standards file to read from and write to
@@ -55,11 +68,11 @@ module Standards
       HELP
     end
 
-    def self.extract_filename(argv)
+    def self.extract_filepath(argv)
       flag_index = argv.index('--file') || argv.index('-f')
       return nil unless flag_index
-      flag, filename = argv.slice!(flag_index, 2)
-      filename
+      flag, filepath = argv.slice!(flag_index, 2)
+      filepath
     end
   end
 end

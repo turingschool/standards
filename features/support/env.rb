@@ -9,9 +9,11 @@ Haiti.configure do |config|
 end
 
 standards_filepath = File.join Haiti.config.proving_grounds_dir, 'standards.json'
-ENV['STANDARDS_FILEPATH'] = standards_filepath
 s = Standards
 
+Before {
+  ENV['STANDARDS_FILEPATH'] = standards_filepath
+}
 
 # Stuff that should maybe be in Haiti
 
@@ -33,6 +35,13 @@ Given 'there is no file "$filename"' do |filename|
   end
 end
 
+Then 'I do not see the file "$filename"' do |filename|
+  Haiti::CommandLineHelpers.in_proving_grounds do
+    file_exists = Haiti::CommandLineHelpers.in_proving_grounds { File.exist? filename }
+    expect(file_exists).to eq false
+  end
+end
+
 Then /^I have a standard "(.*?)", with tags (\[.*?\])?$/ do |expected_standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
     expected_tags     = eval(tagstring)
@@ -42,6 +51,13 @@ Then /^I have a standard "(.*?)", with tags (\[.*?\])?$/ do |expected_standard, 
     end
   end
   expect(@current_standard).to be
+end
+
+Given 'the environment variable "$name" is not set' do |name|
+  # would be nice if we could hook into an after block to reset this
+  # rather than having to set our env vars before each feature
+  # idk if that's a thing or not, maybe research it later
+  ENV[name] = nil
 end
 
 
