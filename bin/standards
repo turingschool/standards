@@ -2,4 +2,4 @@
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'standards/binary'
-exit Standards::Binary.call(ARGV, $stdin, $stdout, $stderr)
+exit Standards::Binary.call(ENV, ARGV, $stdin, $stdout, $stderr)

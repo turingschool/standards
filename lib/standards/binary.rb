@@ -16,9 +16,9 @@ module Standards
     end
 
 
-    def self.call(argv, stdin, stdout, stderr)
+    def self.call(env, argv, stdin, stdout, stderr)
       argv      = argv.dup
-      filepath  = extract_filepath(argv) || ENV[FILE_ENV_VARNAME] || raise(StandardsFilepathIsMissing)
+      filepath  = extract_filepath(argv) || env[FILE_ENV_VARNAME] || raise(StandardsFilepathIsMissing)
       structure = Persistence.load filepath
       command, *args = argv
 
