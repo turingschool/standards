@@ -2,7 +2,7 @@
 
 [Turing School](http://turing.io/)'s lib to work with standards.
 
-[View the standards online](http://standards.turing.io/).
+[View the standards online](http://standards.turing.io/) (until that works, it's also [here](http://turingschool-standards.herokuapp.com/))
 
 ## Definition of a standard
 
@@ -20,18 +20,12 @@ Concepts that are known and can be demonstrated by a student who has mastery.
     * Add a Standard
     * Change standards
     * Delete standards
-    * Probably generate a static website from them
+    * Generate a website from them
+    * Integrate them into other apps
 * Students
-  * Can see standards being taught for a specific lesson
-  * Can see whether they know all the things they should (a *standard* :D to measure themselves against)
-  * Can know what to review for assessments, etc
-
-## TODO before Monday, we need:
-
-* Code
-  * Pull file from ENV
-  * Flag to override file
-* Write standards for lessons for next week
+  * See whether they know all the things they should (a *standard* :D to measure themselves against)
+  * Know where they are and where they're going (heavily requested by students during 1-on-1s)
+  * Know what to review for assessments, etc
 
 ## Examples
 
@@ -50,7 +44,8 @@ Standards::Persistence.dump 'standards.json', structure
 
 ## Considerations going forward:
 
-* Cross referencing (might need an id... might not need to cross-reference)
+* Validating tags (have to explicitly add a tag?)
+* Can they cross reference each other?
 * Edit a specific standard (I prob want an id)
 * Hierarchy of tags (ie render a static site, what goes at top?)
 * Versioning (store deltas? what does CouchDB do? <-- omg, student assignment!)
