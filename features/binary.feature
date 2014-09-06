@@ -37,22 +37,30 @@ Feature: Using the binary
     And  the exit status is 0
 
   Scenario: Standards file passed in --file
-    Given there is no file "custom-standards-file.json"
-    When I run "standards --file custom-standards-file.json add s1"
+    Given there is no file "from-long-flag.json"
+    When I run "standards --file from-long-flag.json add s1"
     Then stderr is empty
     And  the exit status is 0
-    And  I see the file "custom-standards-file.json"
+    And  I see the file "from-long-flag.json"
 
   Scenario: Standards file passed with -f
-    Given there is no file "custom-standards-file.json"
-    When I run "standards -f custom-standards-file.json add s1"
+    Given there is no file "from-short-flag.json"
+    When I run "standards -f from-short-flag.json add s1"
     Then stderr is empty
     And  the exit status is 0
-    And  I see the file "custom-standards-file.json"
+    And  I see the file "from-short-flag.json"
 
   Scenario: Standards file set by env var
+    Given there is no file "from-env.json"
+    Given the environment variable "STANDARDS_FILEPATH" is set to "from-env.json"
+    When  I run "standards add s1"
+    Then  stderr is empty
+    And   the exit status is 0
+    And   I see the file "from-env.json"
 
   Scenario: Standards file not set in env var or passed in flag
+
+  Scenario: Standards file prefers flag over env var
 
   Scenario: Generating a site
     Given I have not previously defined standards

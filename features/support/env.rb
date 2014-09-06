@@ -7,8 +7,9 @@ Haiti.configure do |config|
   config.bin_dir             = File.expand_path '../../../bin',             __FILE__
 end
 
-filename = Standards::Binary::STANDARD_DATA_FILENAME
-s        = Standards
+filename = File.join Haiti.config.proving_grounds_dir, 'standards.json'
+ENV['STANDARDS_FILEPATH'] = filename
+s = Standards
 
 # Stuff that should maybe be in Haiti
 

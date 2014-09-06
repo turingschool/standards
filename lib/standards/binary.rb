@@ -10,7 +10,7 @@ module Standards
 
     def self.call(argv, stdin, stdout, stderr)
       argv      = argv.dup
-      filename  = extract_filename(argv) || STANDARD_DATA_FILENAME
+      filename  = extract_filename(argv) || ENV['STANDARDS_FILEPATH']
       structure = Persistence.load filename
       command, *args = argv
 
@@ -45,7 +45,7 @@ module Standards
         https://github.com/turingschool/standards
 
       Global flags
-        -f, --file FILENAME                     # Location of standards file to read from and write to
+        -f, --file FILEPATH                     # Location of standards file to read from and write to
 
       Commands:
         add "SWBAT do something" [sometag, ...] # Add a new standard with given tags
