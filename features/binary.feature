@@ -1,9 +1,6 @@
-Feature: CRUD for standards
+Feature: Using the binary
 
-  I give a shit about student education,
-  so I want to make sure they're learning the right things,
-  so I'm going to add/view/organize/edit/delete standards
-  and generate webpages for them and such
+  Interacting with the standards file through the binary.
 
   Background:
     Given I have not previously defined standards
