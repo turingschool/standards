@@ -44,6 +44,7 @@ Standards::Persistence.dump 'standards.json', structure
 
 ## Considerations going forward:
 
+* Nesting of tags so we can drill down
 * Validating tags (have to explicitly add a tag?)
 * Can they cross reference each other?
 * Edit a specific standard (I prob want an id)
