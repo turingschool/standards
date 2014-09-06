@@ -45,7 +45,7 @@ structure.add_standard standard: 'SWBAT create and run a Minitest suite', tags: 
 structure.to_json
 # => "{\"standards\":[{\"id\":1,\"standard\":\"SWBAT create and run a Minitest suite\",\"tags\":[\"ruby\",\"testing\",\"minitest\"]}]}"
 
-Standards::Persistence.dump 'standards.json'
+Standards::Persistence.dump 'standards.json', structure
 ```
 
 ## Considerations going forward:
