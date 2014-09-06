@@ -9,14 +9,16 @@ module Standards
     STANDARD_DATA_FILENAME = "standards.json"
 
     def self.call(argv, stdin, stdout, stderr)
-      structure = Persistence.load STANDARD_DATA_FILENAME
+      argv      = argv.dup
+      filename  = extract_filename(argv) || STANDARD_DATA_FILENAME
+      structure = Persistence.load filename
       command, *args = argv
 
       case command
       when 'add'
         standard, *tags = args
         standard = structure.add_standard standard: standard, tags: tags
-        Persistence.dump STANDARD_DATA_FILENAME, structure
+        Persistence.dump filename, structure
         stdout.puts standard.to_json
       when 'select'
         filter = ParseSelect.call(args)
@@ -42,12 +44,22 @@ module Standards
 
         https://github.com/turingschool/standards
 
+      Global flags
+        -f, --file FILENAME                     # Location of standards file to read from and write to
+
       Commands:
         add "SWBAT do something" [sometag, ...] # Add a new standard with given tags
         select [tag:tagname, ...]               # Display the standards that match the filter
         webpage                                 # Prints HTML representation of data
         help                                    # This screen
       HELP
+    end
+
+    def self.extract_filename(argv)
+      flag_index = argv.index('--file') || argv.index('-f')
+      return nil unless flag_index
+      flag, filename = argv.slice!(flag_index, 2)
+      filename
     end
   end
 end

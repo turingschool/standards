@@ -36,6 +36,24 @@ Feature: Using the binary
     """
     And  the exit status is 0
 
+  Scenario: Standards file passed in --file
+    Given there is no file "custom-standards-file.json"
+    When I run "standards --file custom-standards-file.json add s1"
+    Then stderr is empty
+    And  the exit status is 0
+    And  I see the file "custom-standards-file.json"
+
+  Scenario: Standards file passed with -f
+    Given there is no file "custom-standards-file.json"
+    When I run "standards -f custom-standards-file.json add s1"
+    Then stderr is empty
+    And  the exit status is 0
+    And  I see the file "custom-standards-file.json"
+
+  Scenario: Standards file set by env var
+
+  Scenario: Standards file not set in env var or passed in flag
+
   Scenario: Generating a site
     Given I have not previously defined standards
     When I run "standards add 'some standard'"

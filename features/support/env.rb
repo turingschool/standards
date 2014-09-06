@@ -29,6 +29,12 @@ Then "stdout is the JSON '$json'" do |json|
   expect(actual).to eq expected
 end
 
+Given 'there is no file "$filename"' do |filename|
+  Haiti::CommandLineHelpers.in_proving_grounds do
+    File.delete filename if File.exist? filename
+  end
+end
+
 Then /^I have a standard "(.*?)", with tags (\[.*?\])?$/ do |expected_standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
     expected_tags     = eval(tagstring)
