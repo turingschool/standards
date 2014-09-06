@@ -56,13 +56,32 @@ __END__
         width:          110%;
         padding:        30px;
         position:       relative;
-          bottom:       10px;
-          right:        10px;
+        bottom:         10px;
+        right:          10px;
         text-transform: uppercase;
       }
 
-      .container {
-        padding: 0px 100px;
+      .footer {
+        background:     #262626;
+        border-top:     solid 2px #05C2D1;
+        color:          #05C2D;
+        width:          110%;
+        padding:        5px;
+        position:       fixed;
+        bottom:         0px;
+        left:           0px;
+        text-transform: uppercase;
+      }
+
+      .footer a {
+        color:     #05C2D1;
+        font-size: 10px;
+      }
+
+      .content {
+        padding:       0px 100px;
+        clear:         both;
+        margin-bottom: 50px
       }
 
       .main-tags {
@@ -73,10 +92,6 @@ __END__
       .logo {
         padding: 0 80px;
         float:   left
-      }
-
-      .header {
-        clear: both;
       }
 
       .header h1 {
@@ -142,7 +157,7 @@ __END__
       <h1>Standards</h1>
     </div>
 
-    <div class="container">
+    <div class="content">
       <div class="main-tags tags">
         <% all_tags.each { |tag| %><%= link_for tag %> <% } %>
       </div>
@@ -157,6 +172,10 @@ __END__
           </div>
         <% end %>
       </div>
+    </div>
+
+    <div class="footer">
+      <a href="https://github.com/turingschool/standards">Get the code</a>
     </div>
   </body>
 </html>
