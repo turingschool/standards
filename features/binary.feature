@@ -39,7 +39,6 @@ Feature: CRUD for standards
     """
     And  the exit status is 0
 
-    @wip
   Scenario: Generating a site
     Given I have not previously defined standards
     When I run "standards add 'some standard'"
