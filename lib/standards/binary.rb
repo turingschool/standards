@@ -2,7 +2,7 @@ require 'standards'
 require 'standards/binary/parse_select'
 
 module Standards
-  module Binary
+  class Binary
     FILE_ENV_VARNAME           = 'STANDARDS_FILEPATH'
     SUCCESS_STATUS             = 0
     ERROR_STATUS               = 1
@@ -17,9 +17,35 @@ module Standards
 
 
     def self.call(env, argv, stdin, stdout, stderr)
-      argv      = argv.dup
-      filepath  = extract_filepath(argv) || env[FILE_ENV_VARNAME] || raise(StandardsFilepathIsMissing)
-      structure = Persistence.load filepath
+      new(env, argv, stdin, stdout, stderr).call
+    end
+
+    attr_reader :env, :argv, :stdin, :stdout, :stderr
+
+    def initialize(env, argv, stdin, stdout, stderr)
+      @argv     = argv.dup
+      @stdin    = stdin
+      @stdout   = stdout
+      @stderr   = stderr
+      @filepath = extract_filepath(env, @argv)
+    end
+
+    def extract_filepath(env, argv)
+      flag_index = argv.index('--file') || argv.index('-f')
+      return env[FILE_ENV_VARNAME] unless flag_index
+      flag, filepath = argv.slice!(flag_index, 2)
+      filepath
+    end
+
+    def filepath
+      @filepath || raise(StandardsFilepathIsMissing)
+    end
+
+    def structure
+      @structure ||= Persistence.load filepath
+    end
+
+    def call
       command, *args = argv
 
       case command
@@ -35,7 +61,7 @@ module Standards
       when 'webpage'
         stdout.puts GenerateBasicSite.call(structure)
       when 'help'
-        stdout.puts help_screen
+        stdout.puts self.class.help_screen
       else
         raise UnknownCommand, "Don't know the command #{command.inspect}"
       end
@@ -66,13 +92,6 @@ module Standards
         webpage                                 # Prints HTML representation of data
         help                                    # This screen
       HELP
-    end
-
-    def self.extract_filepath(argv)
-      flag_index = argv.index('--file') || argv.index('-f')
-      return nil unless flag_index
-      flag, filepath = argv.slice!(flag_index, 2)
-      filepath
     end
   end
 end

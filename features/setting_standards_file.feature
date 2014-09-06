@@ -26,12 +26,6 @@ Feature: Setting the standards file
     And   the exit status is 0
     And   I see the file "from-env.json"
 
-  Scenario: Standards file not set in env var or passed in flag
-    Given the environment variable "STANDARDS_FILEPATH" is not set
-    When  I run "standards add s1"
-    Then  stderr includes "STANDARDS_FILEPATH"
-    And   the exit status is 1
-
   Scenario: Standards file prefers flag over env var
     Given the environment variable "STANDARDS_FILEPATH" is set to "from-env.json"
     And   there is no file "from-env.json"
@@ -40,3 +34,15 @@ Feature: Setting the standards file
     And   I see the file "from-flag.json"
     And   I do not see the file "from-env.json"
 
+  Scenario: Standards file not set in env var or passed in flag
+    Given the environment variable "STANDARDS_FILEPATH" is not set
+    When  I run "standards add s1"
+    Then  stderr includes "STANDARDS_FILEPATH"
+    And   the exit status is 1
+
+  Scenario: Help command does not need a standards file
+    Given the environment variable "STANDARDS_FILEPATH" is not set
+    When  I run "standards help"
+    Then  stderr is empty
+    And   the exit status is 0
+    And   stdout includes "Usage"
