@@ -22,7 +22,7 @@ module Standards
         filter = ParseSelect.call(args)
         selected_standards = structure.select_standards &filter
         stdout.puts selected_standards.map(&:to_hash).to_json
-      when 'generate'
+      when 'webpage'
         stdout.puts GenerateBasicSite.call(structure)
       when 'help'
         stdout.puts help_screen
@@ -45,7 +45,7 @@ module Standards
       Commands:
         add "SWBAT do something" [sometag, ...] # Add a new standard with given tags
         select [tag:tagname, ...]               # Display the standards that match the filter
-        generate                                # Prints HTML representation of data
+        webpage                                 # Prints HTML representation of data
         help                                    # This screen
       HELP
     end

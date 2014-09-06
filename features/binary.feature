@@ -26,7 +26,7 @@ Feature: CRUD for standards
     And  stdout is the JSON '{ "id": 2, "standard": "s2", "tags": [] }'
     And  I have a standard "s2", with tags []
 
-  Scenario: Successfully query the standards
+  Scenario: Querying the standards
     Given I have previously added "the standard", with tags ["tag1"]
     When I run "standards select tag:tag1"
     Then stderr is empty
@@ -39,13 +39,14 @@ Feature: CRUD for standards
     """
     And  the exit status is 0
 
+    @wip
   Scenario: Generating a site
     Given I have not previously defined standards
     When I run "standards add 'some standard'"
-    And  I run "standards generate"
+    And  I run "standards webpage"
     Then stderr is empty
     And  the exit status is 0
-    And  stdout includes "html"
+    And  stdout includes "<!doctype html>"
 
   Scenario: Nonexistant command
     When I run "standards not-a-command"
