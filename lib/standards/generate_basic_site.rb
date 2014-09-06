@@ -114,8 +114,7 @@ __END__
       };
 
       filterStandardsByTag = function(tagName) {
-        if(!tagName)
-          return;
+        var showAll = !tagName;
         var standards = getAllStandards();
         for(var standardsIndex=0; standardsIndex < standards.length; ++standardsIndex) {
           var standard  = standards[standardsIndex];
@@ -128,6 +127,8 @@ __END__
               break;
             };
           };
+          if(showAll)
+            doHide = false;
           if(doHide)
             standard.style.display = 'none';
           else
@@ -140,7 +141,7 @@ __END__
         for(var i=0; i<tags.length; ++i) {
           (function(tag) {
             tag.onclick = function(event) {
-              window.location.hash = tag.textContent;
+              window.location.hash = tag.getAttribute('href');
               filterFromFragment();
               event.preventDefault();
             };
@@ -159,6 +160,7 @@ __END__
 
     <div class="content">
       <div class="main-tags tags">
+        <a class="tag" href="#">clear</a> |
         <% all_tags.each { |tag| %><%= link_for tag %> <% } %>
       </div>
 
