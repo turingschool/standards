@@ -1,59 +1,103 @@
 # NOTE: ORGANIZATION IS AT THE BOTTOM, UNDER THE __END__
 
 # a tree structure to make it easier to parse the text file
-TabTree = Struct.new :value, :parent, :children do  # => Struct
+TabTree = Struct.new :value, :parent, :children do
   def initialize(value, parent, children=[])
-    super                                           # => nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil
+    super
   end
 
   def root?
-    !parent  # => false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, true, false, ...
+    !parent
   end
 
   def leaf?
-    children.empty?  # => false, false, false, false, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, false, true, true, false, true, true, true, false, true, true, true, true, true, false, true, true, true, true, true, true, false, true, true, true, true, true, true, false, true, true, true, false, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, false, true, false, true, false, true, false, false, true, true, false, true, true, false, false, true, true, true, true, true, true, true, true, false, false, false, true, false, false, false, true, true, true, true, false, true, true, true, true, true, true, false, false, true, true, true, false, ...
+    children.empty?
   end
 
   def add_child(value)
-    if value.start_with? "\t"                                                   # => false, true, false, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, true, true, false, true, true, true, true, false, true, true, true, true, false, true, true, true, true, false, true, true, true, true, false, true, true, true, true, false, true, true, true, false, true, true, true, true, false, true, true, true, true, false, true, true, true, false, true, true, true, true, false, true, true, true, true, false, true, true, true, true, false, true, true, true, false, true, true, true, true, false, true, true, true, true, false, true, true, true, true, false, true, true, true, true, false, true, true, true, true, false, true, tr...
-      child = children.last || raise("Check indentation for #{value.inspect}")  # => #<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[]>, #<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[#<struct TabTree value="Ruby", parent=#<struct TabTree:...>, children=[]>]>, #<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[#<struct TabTree:...>]>, children=[]>, #<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[#<struct TabTree value="Ruby", parent=#<struct TabTree:...>, children=[#<struct TabTree value="Basics", parent=#<struct TabTree:...>, children=[]>]>]>, #<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct ...
-      child.add_child value[1..-1]                                              # => [#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[...]>, children=[]>], [#<struct TabTree value="Basics", parent=#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[#<struct TabTree:...>]>, children=[...]>, children=[]>], [#<struct TabTree value="Basics", parent=#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[#<struct TabTree:...>]>, children=[...]>, children=[]>], [#<struct TabTree value="Run a Ruby program from the command line.", parent=#<struct TabTree value="Basics", parent=#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", paren...
+    if value.start_with? "\t"
+      child = children.last || raise("Check indentation for #{value.inspect}")
+      child.add_child value[1..-1]
     else
-      children << TabTree.new(value, self)                                      # => [#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[...]>, children=[]>], [#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[...]>, children=[]>], [#<struct TabTree value="Basics", parent=#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[#<struct TabTree:...>]>, children=[...]>, children=[]>], [#<struct TabTree value="Run a Ruby program from the command line.", parent=#<struct TabTree value="Basics", parent=#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[#<struct TabTree:...>]>, children=[#<struct TabTree:...>]>, c...
-    end                                                                         # => [#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[...]>, children=[]>], [#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[...]>, children=[]>], [#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[...]>, children=[]>], [#<struct TabTree value="Basics", parent=#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>]>, children=[#<struct TabTree:...>]>, children=[...]>, children=[]>], [#<struct TabTree value="Basics", parent=#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, pare...
+      children << TabTree.new(value, self)
+    end
   end
 
   def ancestry
-    return [] if root? || parent.root?  # => false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true, false, false, fa...
-    [parent, *parent.ancestry]          # => [#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>, #<struct TabTree value="Tools", parent=#<struct TabTree:...>, children=[#<struct TabTree value="Environment", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Git", parent=#<struct TabTree:...>, children=[#<struct TabTree value="Explain the purpose of git and Github.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Manipulate git configuration (user.name, user.email, alias.--, github.user, github.token) from both the command line and from .gitconfig file.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Initialize a new git repository.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Move files to staging area with `git add .`, `git add -A`, and `git add <filename/directory>`.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree valu...
+    return [] if root? || parent.root?
+    [parent, *parent.ancestry]
   end
-end                                     # => TabTree
+end
 
 # load lib
-root_dir = File.expand_path '..', __FILE__  # => "/Users/josh/code/jsl/standard"
-$LOAD_PATH.unshift "#{root_dir}/lib"        # => ["/Users/josh/code/jsl/standard/lib", "/Users/josh/.gem/ruby/2.1.2/gems/seeing_is_believing-2.1.4/lib", "/Users/josh/.rubies/ruby-2.1.2/lib/ruby/site_ruby/2.1.0", "/Users/josh/.rubies/ruby-2.1.2/lib/ruby/site_ruby/2.1.0/x86_64-darwin13.0", "/Users/josh/.rubies/ruby-2.1.2/lib/ruby/site_ruby", "/Users/josh/.rubies/ruby-2.1.2/lib/ruby/vendor_ruby/2.1.0", "/Users/josh/.rubies/ruby-2.1.2/lib/ruby/vendor_ruby/2.1.0/x86_64-darwin13.0", "/Users/josh/.rubies/ruby-2.1.2/lib/ruby/vendor_ruby", "/Users/josh/.rubies/ruby-2.1.2/lib/ruby/2.1.0", "/Users/josh/.rubies/ruby-2.1.2/lib/ruby/2.1.0/x86_64-darwin13.0"]
-require 'standards'                         # => true
+root_dir = File.expand_path '..', __FILE__
+$LOAD_PATH.unshift "#{root_dir}/lib"
+require 'standards'
 
 # translate indentation to tree structure
-root = TabTree.new nil, nil                           # => #<struct TabTree value=nil, parent=nil, children=[]>
-DATA.each_line                                        # => #<Enumerator: #<File:/Users/josh/code/jsl/standard/standards_organization.rb>:each_line>
-    .reject { |line| line == "\n" }                   # => ["Languages\n", "\tRuby\n", "\t\tBasics\n", "\t\t\tRun a Ruby program from the command line.\n", "\t\t\tAssign an object to a variable.\n", "\t\t\tCall a method on an object.\n", "\t\t\tDemonstrate that Ruby's primitives are actually objects.\n", "\t\t\tOpen an interactive prompt using Pry.\n", "\t\t\tLoad a file into Pry.\n", "\t\t\tDemonstrate that all methods return a value either implicitly or explicitly.\n", "\t\t\tDemonstrate that Ruby expressions are evaluated from right to left.\n", "\t\t\tAppropriately name variables in Ruby.\n", "\t\t\tExplain and demonstrate the difference between assignment (=) and equality (==).\n", "\t\t\tExplain the difference between nil, 0, [], and \"\".\n", "\t\t\tDefine truthy and falsy, and identify falsy values.\n", "\t\t\tStrings\n", "\t\t\t\tAccess a substring from a string using a range.\n", "\t\t\t\tInterpolate Ruby expressions into strings.\n", "\t\t\t\tDemonstrate the difference be...
-    .each_with_object(root)                           # => #<Enumerator: ["Languages\n", "\tRuby\n", "\t\tBasics\n", "\t\t\tRun a Ruby program from the command line.\n", "\t\t\tAssign an object to a variable.\n", "\t\t\tCall a method on an object.\n", "\t\t\tDemonstrate that Ruby's primitives are actually objects.\n", "\t\t\tOpen an interactive prompt using Pry.\n", "\t\t\tLoad a file into Pry.\n", "\t\t\tDemonstrate that all methods return a value either implicitly or explicitly.\n", "\t\t\tDemonstrate that Ruby expressions are evaluated from right to left.\n", "\t\t\tAppropriately name variables in Ruby.\n", "\t\t\tExplain and demonstrate the difference between assignment (=) and equality (==).\n", "\t\t\tExplain the difference between nil, 0, [], and \"\".\n", "\t\t\tDefine truthy and falsy, and identify falsy values.\n", "\t\t\tStrings\n", "\t\t\t\tAccess a substring from a string using a range.\n", "\t\t\t\tInterpolate Ruby expressions into strings.\n", "\t\t\t\tDemonstrate the...
-    .each { |line, root| root.add_child line.chomp }  # => #<struct TabTree value=nil, parent=nil, children=[#<struct TabTree value="Languages", parent=#<struct TabTree:...>, children=[#<struct TabTree value="Ruby", parent=#<struct TabTree:...>, children=[#<struct TabTree value="Basics", parent=#<struct TabTree:...>, children=[#<struct TabTree value="Run a Ruby program from the command line.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Assign an object to a variable.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Call a method on an object.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Demonstrate that Ruby's primitives are actually objects.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Open an interactive prompt using Pry.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Load a file into Pry.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Demon...
+root = TabTree.new nil, nil
+DATA.each_line
+    .reject { |line| line == "\n" }
+    .each_with_object(root)
+    .each { |line, root| root.add_child line.chomp }
 
 # translate tree structure to standards structure
 def add_standards(structure, tree)
-  if tree.leaf? && !tree.root?                                                     # => false, false, false, false, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, false, true, true, false, true, true, true, false, true, true, true, true, true, false, true, true, true, true, true, true, false, true, true, true, true, true, true, false, true, true, true, false, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, false, true, false, true, false, true, false, false, true, true, false, true, true, false, false, true, true, true, true, true, true, true, true, false, false, false, true, false, false, false, true, true, true, true, false, true, true, t...
-    structure.add_standard standard: tree.value, tags: tree.ancestry.map(&:value)  # => #<Standards::Standard:0x007fa52a040bb0 @id=1, @standard="Run a Ruby program from the command line.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa52a160338 @id=2, @standard="Assign an object to a variable.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa52a089b80 @id=3, @standard="Call a method on an object.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa5290e0300 @id=4, @standard="Demonstrate that Ruby's primitives are actually objects.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa529071db0 @id=5, @standard="Open an interactive prompt using Pry.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa52a0d1430 @id=6, @standard="Load a file into Pry.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa529835380 @id=7, @standard="Demonstrate that all methods return a v...
-  end                                                                              # => nil, nil, nil, nil, #<Standards::Standard:0x007fa52a040bb0 @id=1, @standard="Run a Ruby program from the command line.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa52a160338 @id=2, @standard="Assign an object to a variable.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa52a089b80 @id=3, @standard="Call a method on an object.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa5290e0300 @id=4, @standard="Demonstrate that Ruby's primitives are actually objects.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa529071db0 @id=5, @standard="Open an interactive prompt using Pry.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa52a0d1430 @id=6, @standard="Load a file into Pry.", @tags=["Basics", "Ruby", "Languages"]>, #<Standards::Standard:0x007fa529835380 @id=7, @standard="Demonstrate that al...
-  tree.children.each { |child| add_standards structure, child }                    # => [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [#<struct TabTree value="Access a substring from a string using a range.", parent=#<struct TabTree value="Strings", parent=#<struct TabTree value="Basics", parent=#<struct TabTree value="Ruby", parent=#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[#<struct TabTree:...>, #<struct TabTree value="Tools", parent=#<struct TabTree:...>, children=[#<struct TabTree value="Environment", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Git", parent=#<struct TabTree:...>, children=[#<struct TabTree value="Explain the purpose of git and Github.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Manipulate git configuration (user.name, user.email, alias.--, github.user, github.token) from both the command line and from .gitconfig file.", parent=#<struct TabTre...
+  if tree.leaf? && !tree.root?
+    structure.add_standard standard: tree.value, tags: tree.ancestry.map(&:value)
+  end
+  tree.children.each { |child| add_standards structure, child }
 end
-structure = Standards::Structure.new                                               # => #<Standards::Structure:0x007fa529118520 @standards=[]>
-add_standards structure, root                                                      # => [#<struct TabTree value="Languages", parent=#<struct TabTree value=nil, parent=nil, children=[...]>, children=[#<struct TabTree value="Ruby", parent=#<struct TabTree:...>, children=[#<struct TabTree value="Basics", parent=#<struct TabTree:...>, children=[#<struct TabTree value="Run a Ruby program from the command line.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Assign an object to a variable.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Call a method on an object.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Demonstrate that Ruby's primitives are actually objects.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Open an interactive prompt using Pry.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTree value="Load a file into Pry.", parent=#<struct TabTree:...>, children=[]>, #<struct TabTre...
+structure = Standards::Structure.new
+add_standards structure, root
 
-# overwrite standards.json with new standards
-Standards::Persistence.dump "#{root_dir}/standards.json", structure  # => 13680
+# overwrite standards.json with new standards                          # ~> NameError: undefined local variable or method `standards' for main:Object
+Standards::Persistence.dump "#{root_dir}/standards.json", structure
 
+# print out the hierarchy
+def print_hierarchy(tree)
+  return if tree.leaf?
+  puts "  " * tree.ancestry.size + tree.value unless tree.root?
+  tree.children.each { |child| print_hierarchy child }
+end
+print_hierarchy root
+
+
+
+# >> Languages
+# >>   Ruby
+# >>     Basics
+# >>       Strings
+# >>       Blocks
+# >>       Arrays
+# >>       Hashes
+# >>       Conditionals
+# >>       Classes
+# >>       Writing Methods
+# >>     Enumerable Methods
+# >>     Gems
+# >>   HTML/CSS
+# >> Tools
+# >>   Git
+# >>   HTTP, APIs, JSON
+# >>   DevOps
+# >>   Databases
+# >>     No SQL
+# >> Web Applications
+# >>   Security
+# >>   Uploads
+# >>   Frameworks
+# >>     Sinatra
+# >> Software Design
+# >>   Testing
+# >>     In design
+# >>     In practice
+# >>       Ruby
+# >>         Minitest
+# >>   OOP
+# >> Processes
+# >>   Agile
+# >>   Thinking & Learning
 __END__
 Languages
 	Ruby
