@@ -3,5 +3,6 @@ module Standards
 end
 
 require 'standards/filter'
+require 'standards/timeline'
 require 'standards/persistence'
 require 'standards/generate_basic_site'
