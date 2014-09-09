@@ -1,7 +1,10 @@
 require 'spec_helper'
 
+# To change:
+#   persistence uses timeline events
+
 module Standards
-  class Timeline
+  module Timeline
     class Event
       attr_accessor :scope, :type, :id, :time, :data
 
@@ -12,22 +15,12 @@ module Standards
       end
     end
 
-    attr_accessor :structure, :events
-    def initialize(structure, events)
-      @structure = structure
-      @events    = events
-      apply_events(structure, events)
+    def self.apply_events(structure, events)
+      events.each { |event| apply_event structure, event }
+      structure
     end
 
-    private
-
-    def apply_events(structure, events)
-      events.each do |event|
-        apply_event structure, event
-      end
-    end
-
-    def apply_event(structure, event)
+    def self.apply_event(structure, event)
       case event.scope
       when :standard
         case event.type
@@ -48,8 +41,8 @@ describe 'Standards::Timeline' do
   Standard  = Standards::Standard
   Structure = Standards::Structure
 
-  def timeline(*events)
-    Standards::Timeline.new(Structure.new([]), events)
+  def build(*events)
+    Standards::Timeline.apply_events(Structure.new([]), events)
   end
 
   def event(attributes)
@@ -61,18 +54,18 @@ describe 'Standards::Timeline' do
 
   describe 'loading' do
     it 'builds up the structure from the events' do
-      tl = timeline event(scope: :standard,
-                          type:  :add,
-                          id:    1,
-                          time:  Time.now,
-                          data:  {standard: 'a', tags: ['b', 'c']}),
-                    event(scope: :standard,
-                          type:  :add,
-                          id:    2,
-                          time:  Time.now,
-                          data:  {standard: 'A', tags: ['B', 'C']})
+      structure = build event(scope: :standard,
+                              type:  :add,
+                              id:    1,
+                              time:  Time.now,
+                              data:  {standard: 'a', tags: ['b', 'c']}),
+                        event(scope: :standard,
+                              type:  :add,
+                              id:    2,
+                              time:  Time.now,
+                              data:  {standard: 'A', tags: ['B', 'C']})
 
-      expect(tl.structure).to eq Structure.new([
+      expect(structure).to eq Structure.new([
         Standard.new(id: 1, standard: 'a', tags: ['b', 'c']),
         Standard.new(id: 2, standard: 'A', tags: ['B', 'C']),
       ])
@@ -82,29 +75,29 @@ describe 'Standards::Timeline' do
       context 'when scope is :standard' do
         context 'unknown type' do
           it 'blows up' do
-            expect { timeline event(scope: :standard, type: :wat) }.to raise_error /type/
+            expect { build event(scope: :standard, type: :wat) }.to raise_error /type/
           end
         end
 
         context ':add type' do
           it 'adds the standard to the list of standards' do
-            tl = timeline event scope: :standard,
-                                type:  :add,
-                                id:    1,
-                                time:  Time.now,
-                                data:  {standard: 'a', tags: ['b', 'c']}
-            expect(tl.structure).to eq Structure.new([
+            structure = build event scope: :standard,
+                                    type:  :add,
+                                    id:    1,
+                                    time:  Time.now,
+                                    data:  {standard: 'a', tags: ['b', 'c']}
+            expect(structure).to eq Structure.new([
               Standard.new(id: 1, standard: 'a', tags: ['b', 'c'])
             ])
           end
 
           it 'sets all the provided attributes' do
-            tl = timeline event scope: :standard,
-                                type:  :add,
-                                id:    1,
-                                time:  Time.now,
-                                data:  {tags: ['b', 'c']}
-            standard = tl.structure.standards.first
+            structure = build event scope: :standard,
+                                    type:  :add,
+                                    id:    1,
+                                    time:  Time.now,
+                                    data:  {tags: ['b', 'c']}
+            standard = structure.standards.first
             expect(standard.tags).to eq ['b', 'c']
             expect(standard.standard).to eq Standard.new.standard
           end
@@ -113,7 +106,7 @@ describe 'Standards::Timeline' do
 
       context 'when scope is not known' do
         it 'blows up' do
-          expect { timeline event(scope: :wat) }.to raise_error /scope/
+          expect { build event(scope: :wat) }.to raise_error /scope/
         end
       end
     end
