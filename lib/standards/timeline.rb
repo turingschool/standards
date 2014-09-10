@@ -1,12 +1,31 @@
+require 'time'
+
 module Standards
   module Timeline
     class Event
+      def self.from_json(json)
+        data = Hash[
+          json.fetch(:data).map { |k, v| [k.intern, v] }
+        ]
+
+        new scope: json.fetch(:scope).intern,
+            type:  json.fetch(:type).intern,
+            id:    json.fetch(:id).to_i,
+            time:  Time.parse(json.fetch(:time)),
+            data:  data
+      end
+
+      # TODO: rename time -> timestamp
       attr_accessor :scope, :type, :id, :time, :data
 
       def initialize(attributes)
         attributes.each do |attribute, value|
           __send__ "#{attribute}=", value
         end
+      end
+
+      def as_json
+        {scope: scope, type: type, id: id, time: time, data: data}
       end
     end
 
@@ -25,7 +44,7 @@ module Standards
           raise "Unknown type #{event.type.inspect} for for scope #{event.scope.inspect}"
         end
       else
-        raise "Unknown scope #{scope.inspect}"
+        raise "Unknown scope #{event.scope.inspect}"
       end
     end
   end

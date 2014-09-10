@@ -17,6 +17,7 @@ module Standards
     def to_hash
       {id: id, standard: standard, tags: tags}
     end
+    alias as_json to_hash
 
     def ==(other)
       return false unless Standard === other

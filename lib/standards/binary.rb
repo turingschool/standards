@@ -54,24 +54,30 @@ module Standards
       when 'add'
         standard, *tags = args
         standard = structure.add_standard standard: standard, tags: tags
-        Persistence.dump filepath, structure
+        event = Timeline::Event.new(scope: :standard,
+                                    type:  :add,
+                                    id:    standard.id,
+                                    time:  Time.now,
+                                    data:  standard.to_hash.reject { |k, v| k == :id })
+        timeline << event
+        Persistence.dump filepath, timeline
         stdout.puts standard.to_json
       when 'select'
         filter = ParseSelect.call(args)
         selected_standards = structure.select_standards &filter
-        stdout.puts selected_standards.map(&:to_hash).to_json
+        stdout.puts selected_standards.map(&:as_json).to_json
       when 'webpage'
         stdout.puts GenerateBasicSite.call(structure)
       else
         raise UnknownCommand, "Don't know the command #{command.inspect}"
       end
       SUCCESS_STATUS
-    rescue Exception => e
-      stderr.puts e.class
-      stderr.puts '-' * e.class.to_s.size
-      stderr.puts
-      stderr.puts e.message
-      ERROR_STATUS
+    # rescue Exception => e
+    #   stderr.puts e.class
+    #   stderr.puts '-' * e.class.to_s.size
+    #   stderr.puts
+    #   stderr.puts e.message
+    #   ERROR_STATUS
     end
 
     private
@@ -82,8 +88,16 @@ module Standards
       @filepath || raise(StandardsFilepathIsMissing)
     end
 
+    def timeline
+      @timeline ||= (load; @timeline)
+    end
+
     def structure
-      @structure ||= Persistence.load filepath
+      @structure ||= (load; @structure)
+    end
+
+    def load
+      @timeline, @structure = Persistence.load filepath
     end
 
     def extract_filepath(env, argv)

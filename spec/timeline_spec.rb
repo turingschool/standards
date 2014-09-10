@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-# To change:
-#   persistence uses timeline events
+# go back to a more oo structure in a bit here
 
 describe 'Standards::Timeline' do
   Standard  = Standards::Standard

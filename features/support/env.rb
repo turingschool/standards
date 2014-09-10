@@ -44,8 +44,8 @@ end
 
 Then /^I have a standard "(.*?)", with tags (\[.*?\])?$/ do |expected_standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
-    expected_tags     = eval(tagstring)
-    structure = s::Persistence.load(standards_filepath)
+    expected_tags       = eval(tagstring)
+    timeline, structure = s::Persistence.load(standards_filepath)
     @current_standard = structure.standards.find do |s|
       s.standard == expected_standard && s.tags == expected_tags
     end
@@ -72,10 +72,13 @@ end
 Given /^I have previously added "(.*)", with tags (\[.*?\])?$/ do |standard, tagstring|
   Haiti::CommandLineHelpers.in_proving_grounds do
     s::Persistence.dump standards_filepath,
-                        s::Structure.new([
-                          s::Standard.new(standard: standard,
-                                          tags:     eval(tagstring),
-                                          id:       1)
-                          ])
+                        [ s::Timeline::Event.new(
+                            scope: :standard,
+                            type:  :add,
+                            id:    1,
+                            time:  Time.now,
+                            data: {standard: standard, tags: eval(tagstring)}
+                          ),
+                        ]
   end
 end

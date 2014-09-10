@@ -5,18 +5,18 @@ module Standards
   module Persistence
     def self.load(filename)
       initialize_data_file filename
-      structure_from_json File.read filename
+      body     = File.read filename
+      timeline = JSON::Ext::Parser.new(body, symbolize_names: true)
+                                  .parse
+                                  .map &Timeline::Event.method(:from_json)
+      structure = Structure.new
+      Timeline.apply_events structure, timeline
+      return timeline, structure
     end
 
-    def self.dump(filename, structure)
-      if no_id = structure.standards.find { |standard| !standard.id }
-        raise "Every Standard needs an `id` attribute, but #{no_id.inspect} does not have one!"
-      elsif no_standard = structure.standards.find { |standard| standard.standard.empty? }
-        raise "Every Standard needs a `standard` attribute, but #{no_standard.inspect} does not have one!"
-      else
-        ensure_path File.dirname(filename)
-        File.write filename, structure.to_json
-      end
+    def self.dump(filename, timeline)
+      ensure_path File.dirname(filename)
+      File.write filename, timeline.map(&:as_json).to_json
     end
 
     def self.delete(filename)
@@ -25,18 +25,9 @@ module Standards
 
     private
 
-    def self.structure_from_json(structure_json)
-      Structure.new \
-        JSON::Ext::Parser.new(structure_json, symbolize_names: true)
-                         .parse
-                         .fetch(:standards)
-                         .map &Standard.method(:new)
-    end
-
-
     def self.initialize_data_file(filename)
       return if File.exist? filename
-      File.write filename, Structure.new([]).to_json
+      dump filename, []
     end
 
     def self.ensure_path(path)
