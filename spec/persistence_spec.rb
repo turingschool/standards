@@ -9,11 +9,6 @@ RSpec.describe 'Persistence' do
 
   include FakeFS::SpecHelpers
 
-  # TODO: This actually puts these constants on Object, so once we have it passing, get rid of this
-  Persistence = Standards::Persistence
-  Structure   = Standards::Structure
-  Standard    = Standards::Standard
-
   def timeline_event(attribute_overrides={})
     attributes = {scope: :standard,
                   type:  :add,
@@ -30,11 +25,11 @@ RSpec.describe 'Persistence' do
   let(:filename) { "mystructure" }
 
   def dump(filename, timeline)
-    Persistence.dump filename, timeline
+    Standards::Persistence.dump filename, timeline
   end
 
   def load(filename)
-    Persistence.load filename
+    Standards::Persistence.load filename
   end
 
   describe 'psersisting' do
@@ -81,7 +76,7 @@ RSpec.describe 'Persistence' do
 
   describe 'deleting' do
     def delete(filename)
-      Persistence.delete filename
+      Standards::Persistence.delete filename
     end
 
     it 'deletes the file if it exists' do
