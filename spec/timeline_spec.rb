@@ -69,6 +69,54 @@ describe 'Standards::Timeline' do
         end
       end
 
+      context 'when scope is :hierarchy' do
+        before { pending }
+        def self.next_id
+          @current_id ||= 1 # let the root have id 1
+          @next_id += 1
+        end
+
+        def event(overridden_attributes)
+          id              = self.class.next_id
+          data            = {name: "zomg", tags: ['a', 'b'], parent_id: 1} # parent_id of 1 implies its under root
+          overridden_data = overridden_attributes.delete(:data) || {}
+          attributes      = { scope: :hierarchy,
+                              type:  :add,
+                              id:    id,
+                              time:  Time.now,
+                              data:  data.merge(overridden_data) }
+          super attributes.merge overridden_attributes
+        end
+
+        context 'unknown type' do
+          it 'blows up' do
+            expect { build event(scope: :hierarchy, type: :wat) }.to raise_error /type/
+          end
+        end
+
+        context 'add type' do
+          it 'sets all the provided attributes' do
+            structure = build event type: :add, data: {name: 'mah namez', tags: ['x', 'y']}
+            hierarchy = structure.hierarchy.subhierarchies.first
+            expect(hierarchy.name).to eq 'mah namez'
+            expect(hierarchy.tags).to eq ['x','y']
+          end
+
+          it 'adds the hierarchy to appropriate place within the hierarchies' do
+            event1    = event type: :add, data: {name: 'a'}
+            event11   = event type: :add, data: {name: 'b', parent_id: event1.id}
+            event2    = event type: :add, data: {name: 'c'}
+            structure = build event1, event2, event11
+
+            names = structure.hierarchy.depth_first.map { |hierarchy, ancestry, &recurse|
+              [hierarchy.name, recurse.call]
+            }
+            expect(names).to eq [['a', ['b']],
+                                 ['c', []]]
+          end
+        end
+      end
+
       context 'when scope is not known' do
         it 'blows up' do
           expect { build event(scope: :wat) }.to raise_error /scope/
