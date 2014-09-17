@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe 'hierarchy' do
   def h(name, tags=[])
-    Standards::Hierarchy.new name, tags
+    Standards::Hierarchy.new name: name, tags: tags
   end
 
   it 'must have a name' do
@@ -39,7 +39,7 @@ RSpec.describe 'hierarchy' do
   end
 
   describe 'depth_first' do
-    let(:root) { h("root")    }
+    let(:root) { h("root") }
     let(:h1)   {  h("1")   }
     let(:h11)  {   h("11") }
     let(:h12)  {   h("12") }

@@ -2,11 +2,11 @@ module Standards
   class Hierarchy
     attr_reader :name, :tags, :subhierarchies
 
-    def initialize(name, tags=[])
+    def initialize(attributes)
+      @name           = attributes.fetch :name
+      @tags           = attributes.fetch :tags
+      @subhierarchies = attributes.fetch :subhierarchies, []
       raise ArgumentError, "Must have a name" unless name
-      @name           = name
-      @tags           = tags
-      @subhierarchies = []
     end
 
     def size
