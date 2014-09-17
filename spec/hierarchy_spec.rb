@@ -5,12 +5,12 @@ RSpec.describe 'hierarchy' do
     Standards::Hierarchy.new name, tags
   end
 
-  it 'is a root if it has no name' do
-    expect(h(nil)).to be_root
+  it 'must have a name' do
+    expect { h nil }.to raise_error ArgumentError, /name/
   end
 
   it 'allows nesting of hierarchies' do
-    root  = h nil
+    root  = h 'root'
     child = h("example")
     expect(root.size).to eq 0
     root.add(child)
@@ -39,7 +39,7 @@ RSpec.describe 'hierarchy' do
   end
 
   describe 'depth_first' do
-    let(:root) { h(nil)    }
+    let(:root) { h("root")    }
     let(:h1)   {  h("1")   }
     let(:h11)  {   h("11") }
     let(:h12)  {   h("12") }

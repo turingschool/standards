@@ -3,13 +3,10 @@ module Standards
     attr_reader :name, :tags, :subhierarchies
 
     def initialize(name, tags=[])
+      raise ArgumentError, "Must have a name" unless name
       @name           = name
       @tags           = tags
       @subhierarchies = []
-    end
-
-    def root?
-      !name
     end
 
     def size
