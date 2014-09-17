@@ -42,17 +42,25 @@ DATA.each_line
     .each { |line, root| root.add_child line.chomp }
 
 # translate tree structure to standards structure
-def add_standards(structure, tree)
+def add_standards(structure, timeline, tree)
   if tree.leaf? && !tree.root?
-    structure.add_standard standard: tree.value, tags: tree.ancestry.map(&:value)
+    standard = structure.add_standard standard: tree.value, tags: tree.ancestry.map(&:value)
+    event = Standards::Timeline::Event.new \
+      scope: :standard,
+      type:  :add,
+      id:    standard.id,
+      time:  Time.now,
+      data:  standard.to_hash.reject { |k, v| k == :id }
+    timeline << event
   end
-  tree.children.each { |child| add_standards structure, child }
+  tree.children.each { |child| add_standards structure, timeline, child }
 end
 structure = Standards::Structure.new
-add_standards structure, root
+timeline  = []
+add_standards structure, timeline, root
 
-# overwrite standards.json with new standards                          # ~> NameError: undefined local variable or method `standards' for main:Object
-Standards::Persistence.dump "#{root_dir}/standards.json", structure
+# overwrite standards.json with new standards
+Standards::Persistence.dump "#{root_dir}/standards.json", timeline
 
 # print out the hierarchy
 def print_hierarchy(tree)
