@@ -74,14 +74,13 @@ RSpec.describe 'hierarchy' do
     let(:h2)   {  h("2")   }
     let(:h21)  {   h("21") }
     let(:h22)  {   h("22") }
-
     before do
       root.add(h1).add(h2)
       h1.add(h11).add(h12)
       h2.add(h21).add(h22)
     end
 
-    it 'is a depth first traversal, providing the category/ancestry/recurser' do
+    it 'is a depth first traversal, providing the hierarchy/ancestry/recurser' do
       seen = []
       root.depth_first do |hierarchy, ancestry, &recurse|
         seen << [hierarchy, ancestry]
@@ -96,7 +95,9 @@ RSpec.describe 'hierarchy' do
         [h21,  [h2,root]],
         [h22,  [h2,root]],
       ]
+    end
 
+    it 'uses the recurser to invoke the next level of iteration' do
       seen = []
       root.depth_first do |hierarchy, ancestry, &recurse|
         seen << [hierarchy, ancestry]
