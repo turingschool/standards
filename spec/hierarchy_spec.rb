@@ -2,19 +2,16 @@ require 'spec_helper'
 
 module Standards
   class Hierarchy
-    attr_reader :name, :subhierarchies
+    attr_reader :name, :tags, :subhierarchies
 
-    def initialize(name)
+    def initialize(name, tags=[])
       @name           = name
+      @tags           = tags
       @subhierarchies = []
     end
 
     def root?
       !name
-    end
-
-    def name
-      @name
     end
 
     def size
@@ -28,6 +25,10 @@ module Standards
 
     def depth_first(&block)
       _depth_first([], block)
+    end
+
+    def standards_filter
+      Standards::Filter.new(tags: tags)
     end
 
     def inspect
@@ -47,8 +48,8 @@ module Standards
 end
 
 RSpec.describe 'hierarchy' do
-  def h(name)
-    Standards::Hierarchy.new name
+  def h(name, tags=[])
+    Standards::Hierarchy.new name, tags
   end
 
   it 'is a root if it has no name' do
@@ -64,7 +65,25 @@ RSpec.describe 'hierarchy' do
     expect(root.subhierarchies.first).to eq child
   end
 
-  it 'maps categories to a set of tags that define which standards apply'
+  describe 'associating standards to a hierarchy' do
+    # It's possible that we'll eventually want to use specific ids instead of tags
+    # but since we don't have it in place yet, we don't really know, so just roll with this for now
+    it 'maps hierarchies to a set of tags' do
+      expect(h('no tags').tags).to eq []
+      expect(h('no tags', []).tags).to eq []
+      expect(h('has tags', ['a', 'b']).tags).to eq ['a', 'b']
+    end
+
+    it 'when it has no tags, it has a universally matching standards_filter' do
+      allow_everything = Standards::Filter.new({})
+      expect(h('no tags').standards_filter).to eq allow_everything
+    end
+
+    it 'when it has tags, it has a standards_filter that will select its tags' do
+      must_be_tagged_with_a_and_b = Standards::Filter.new({tags: ['a', 'b']})
+      expect(h('has tags', ['a', 'b']).standards_filter).to eq must_be_tagged_with_a_and_b
+    end
+  end
 
   describe 'depth_first' do
     let(:root) { h(nil)    }
