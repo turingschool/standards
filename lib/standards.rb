@@ -4,5 +4,6 @@ end
 
 require 'standards/filter'
 require 'standards/timeline'
+require 'standards/hierarchy'
 require 'standards/persistence'
 require 'standards/generate_basic_site'
