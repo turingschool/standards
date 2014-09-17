@@ -9,6 +9,24 @@ RSpec.describe 'Structure' do
     Standards::Standard.new(*attrs)
   end
 
+  context 'hierarchy' do
+    it 'has a hierarchy tree, with a null-object root, with a default id of 1'
+    # accepts attributes or instances of Hierarchy <-- might not want this
+    context 'adding a hierarchy' do
+      it 'returns the hierarchy'
+      specify 'when there is a parent id, adds it as the last child of the node with its parent id'
+      specify 'when there is not a parent id, adds it as a child of root and sets the parent id'
+      specify 'when the parent id DNE, it blows up'
+      context 'when an id is provided' do
+        it 'does not set the id'
+        it 'blows up if there is overlap between ids'
+      end
+      context 'when an id is not provided' do
+        it 'sets the id to be one more than the max of its standards ids'
+      end
+    end
+  end
+
   it 'has a collection of standards which default to an empty array' do
     structure = self.structure()
     expect(structure.standards).to eq []
@@ -86,10 +104,12 @@ RSpec.describe 'Structure' do
       expect(self.structure []).to_not eq Array.new
     end
 
-    it 'is equal when the array of standards is equal' do
+    it 'is equal when the array of standards and hierarchies is equal' do
       expect(self.structure []       ).to     eq self.structure([])
       expect(self.structure [{id: 1}]).to     eq self.structure([{id: 1}])
       expect(self.structure [{id: 1}]).to_not eq self.structure([{id: 2}])
+      pending 'add hierarchies here'
+      raise
     end
   end
 
