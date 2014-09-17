@@ -2,76 +2,80 @@ require 'spec_helper'
 require 'fakefs/spec_helpers'
 
 RSpec.describe 'Persistence' do
+  def self.next_id
+    @current_id ||= 0
+    @current_id += 1
+  end
+
   include FakeFS::SpecHelpers
 
+  # TODO: This actually puts these constants on Object, so once we have it passing, get rid of this
   Persistence = Standards::Persistence
   Structure   = Standards::Structure
   Standard    = Standards::Standard
 
-  let :structure do
-    Structure.new [
-      Standard.new(id:       123,
-                   standard: 'my standard',
-                   tags:     ['tag1', 'tag2'])
-    ]
+  def timeline_event(attribute_overrides={})
+    attributes = {scope: :standard,
+                  type:  :add,
+                  id:    self.class.next_id,
+                  time:  Time.now,
+                  data:  Standards::Standard.new.to_hash}
+    attributes.merge! attribute_overrides
+    Standards::Timeline::Event.new(attributes)
   end
+
+  before { @timeline, @structure = Standards::Persistence.build [timeline_event.as_json, timeline_event.as_json] }
+  attr_reader :timeline, :structure
 
   let(:filename) { "mystructure" }
 
-  def dump(filename, structure)
-    Persistence.dump filename, structure
+  def dump(filename, timeline)
+    Persistence.dump filename, timeline
+  end
+
+  def load(filename)
+    Persistence.load filename
+  end
+
+  describe 'psersisting' do
+    it 'can re-load what it dumps and build the structure and timeline from it' do
+      dump(filename, timeline)
+      loaded_timeline, loaded_structure = load(filename)
+      expect(loaded_timeline).to  eq timeline
+      expect(loaded_structure).to eq structure
+    end
   end
 
   describe 'dumping' do
     it 'dumps the structure to the file in JSON format' do
-      dump(filename, structure)
-      actual_raw_structure = JSON.load(File.read filename)
-      expected_raw_structure = JSON.load '{"standards": [{"id":123, "standard":"my standard", "tags":["tag1", "tag2"]}]}'
-      expect(actual_raw_structure).to eq expected_raw_structure
+      dump(filename, timeline)
+      expect(JSON.load(File.read filename)).to be_a_kind_of Array
     end
 
     it 'overwrites the existing contents of the file' do
       File.write(filename, "content")
-      dump filename, structure
+      dump filename, timeline
       body = File.read filename
       expect(body).to_not include "content"
-      expect(body).to include '"standards":'
+      expect(body).to include '"id":'
     end
 
-    it 'raises an error when attempting to persist a structure with a standard that does not have an id' do
-      s = Structure.new
-      s.standards << Standard.new(standard: "a")
-      expect { dump filename, s }.to raise_error /\bid\b/
-    end
-
-    it 'raises an error when attempting to persist a structure with a standard that is empty' do
-      s = Structure.new
-      s.add_standard id: 1
-      expect { dump filename, s }.to raise_error /\bstandard\b/
+    xit 'raises an error when attempting to persist a structure with a standard that does not have an id', t:true do
+      expect { dump filename, [timeline_event(id: nil)] }.to raise_error /\bid\b/
     end
 
     it 'creates the path to the file if the path DNE' do
-      dump '/a/b/c', structure
+      dump '/a/b/c', timeline
       body = File.read '/a/b/c'
-      expect(body).to include '"standards":'
+      expect(body).to include '"id":'
     end
   end
 
   describe 'loading' do
-    def load(filename)
-      Persistence.load filename
-    end
-
-    it 'loads the JSON structure from the file and returns a Structure object' do
-      dump(filename, structure)
-      new_structure = load(filename)
-      expect(new_structure.to_hash).to eq({standards: [{id: 123, standard: "my standard", tags: ["tag1", "tag2"]}]})
-      expect(new_structure).to_not equal structure
-    end
-
     it 'returns an empty Structure object when the file DNE' do
       expect(File.exist? filename).to eq false
-      expect(load(filename).to_hash).to eq({standards: []})
+      timeline, structure = load(filename)
+      expect(structure).to eq Standards::Structure.new
     end
   end
 

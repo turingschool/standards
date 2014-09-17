@@ -5,10 +5,12 @@ module Standards
   module Persistence
     def self.load(filename)
       initialize_data_file filename
-      body     = File.read filename
-      timeline = JSON::Ext::Parser.new(body, symbolize_names: true)
-                                  .parse
-                                  .map &Timeline::Event.method(:from_json)
+      body = File.read filename
+      build JSON::Ext::Parser.new(body, symbolize_names: true).parse
+    end
+
+    def self.build(timeline_hash)
+      timeline = timeline_hash.map &Timeline::Event.method(:from_json)
       structure = Structure.new
       Timeline.apply_events structure, timeline
       return timeline, structure

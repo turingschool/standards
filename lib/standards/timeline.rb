@@ -25,7 +25,12 @@ module Standards
       end
 
       def as_json
-        {scope: scope, type: type, id: id, time: time, data: data}
+        {scope: scope, type: type, id: id, time: time.to_s, data: data}
+      end
+
+      def ==(other)
+        return false unless self.class === other
+        as_json == other.as_json
       end
     end
 
