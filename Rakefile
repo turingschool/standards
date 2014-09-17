@@ -16,6 +16,9 @@ namespace :test do
   desc 'Test the generated webpage'
   task(:site) { sh 'rspec --tag js' }
 end
+task spec: 'test:spec' # undocumented shorthand
+task cuke: 'test:cuke' # undocumented shorthand
+task site: 'test:site' # undocumented shorthand
 
 
 # ----- Server Tasks ----
