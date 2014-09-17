@@ -4,7 +4,7 @@ module Standards
 
     def initialize(attributes)
       @name           = attributes.fetch :name
-      @tags           = attributes.fetch :tags
+      @tags           = attributes.fetch :tags, []
       @subhierarchies = attributes.fetch :subhierarchies, []
       raise ArgumentError, "Must have a name" unless name
     end

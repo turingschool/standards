@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 RSpec.describe 'hierarchy' do
-  def h(name, tags=[])
-    Standards::Hierarchy.new name: name, tags: tags
+  def h(name, other_attributes={})
+    other_attributes[:name] = name
+    Standards::Hierarchy.new other_attributes
   end
 
   it 'must have a name' do
@@ -22,9 +23,12 @@ RSpec.describe 'hierarchy' do
     # It's possible that we'll eventually want to use specific ids instead of tags
     # but since we don't have it in place yet, we don't really know, so just roll with this for now
     it 'maps hierarchies to a set of tags' do
+      expect(h('no tags',  tags: []).tags).to eq []
+      expect(h('has tags', tags: ['a', 'b']).tags).to eq ['a', 'b']
+    end
+
+    it 'its tags default to empty when they are not passed' do
       expect(h('no tags').tags).to eq []
-      expect(h('no tags', []).tags).to eq []
-      expect(h('has tags', ['a', 'b']).tags).to eq ['a', 'b']
     end
 
     it 'when it has no tags, it has a universally matching standards_filter' do
@@ -33,8 +37,8 @@ RSpec.describe 'hierarchy' do
     end
 
     it 'when it has tags, it has a standards_filter that will select its tags' do
-      must_be_tagged_with_a_and_b = Standards::Filter.new({tags: ['a', 'b']})
-      expect(h('has tags', ['a', 'b']).standards_filter).to eq must_be_tagged_with_a_and_b
+      must_be_tagged_with_a_and_b = Standards::Filter.new tags: ['a', 'b']
+      expect(h('has tags', tags: ['a', 'b']).standards_filter).to eq must_be_tagged_with_a_and_b
     end
   end
 
