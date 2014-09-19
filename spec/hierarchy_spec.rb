@@ -1,23 +1,87 @@
 require 'spec_helper'
 
 RSpec.describe 'hierarchy' do
-  def h(name, other_attributes={})
-    other_attributes[:name] = name
-    Standards::Hierarchy.new other_attributes
+  def self.next_id
+    @current_id ||= 0
+    @current_id += 1
   end
 
-  it 'must have a name' do
-    expect { h nil }.to raise_error ArgumentError, /name/
+  def h(name, attributes={})
+    attributes[:parent_id] ||= 1
+    attributes[:id]        ||= self.class.next_id
+    attributes[:name]        = name
+    Standards::Hierarchy.new attributes
   end
 
-  it 'allows nesting of hierarchies' do
-    root  = h 'root'
-    child = h("example")
-    expect(root.size).to eq 0
-    root.add(child)
-    expect(root.size).to eq 1
-    expect(root.subhierarchies.first).to eq child
+  describe 'attributes' do
+    it 'has an id, parent_id, name, tags, and subhierarchies' do
+      child = h 'child'
+      hierarchy = Standards::Hierarchy.new(id: 100, parent_id: 200, name: 'somename', tags: %w[x y z], subhierarchies: [child])
+      expect(hierarchy.id            ).to eq 100
+      expect(hierarchy.parent_id     ).to eq 200
+      expect(hierarchy.name          ).to eq 'somename'
+      expect(hierarchy.tags          ).to eq %w[x y z]
+      expect(hierarchy.subhierarchies).to eq [child]
+    end
+
+    it 'must explicitly pass a name, id, and parent_id' do
+      Standards::Hierarchy.new id: 1, parent_id: 1, name: ''
+      expect { Standards::Hierarchy.new        parent_id: 1, name: '' }.to raise_error ArgumentError, /\bid\b/
+      expect { Standards::Hierarchy.new id: 1,               name: '' }.to raise_error ArgumentError, /\bparent_id\b/
+      expect { Standards::Hierarchy.new id: 1, parent_id: 1           }.to raise_error ArgumentError, /\bname\b/
+    end
   end
+
+
+  describe 'adding a child' do
+    before {
+      @root  = h 'root'
+      expect(@root.id).to be_a_kind_of Fixnum # just making sure we don't arbitrarily pass
+      @child = h("example")
+      @root.add(@child)
+    }
+
+    it 'updates the child\'s parent id' do
+      expect(@child.parent_id).to eq @root.id
+    end
+
+    it 'adds the child to the list of subhierarchies' do
+      expect(@root.subhierarchies.first).to eq @child
+    end
+  end
+
+
+  describe 'inspect' do
+    it 'is a single line when there are no children' do
+      root = h 'root'
+      expect(root.inspect).to eq '#<Standards::Hierarchy "root">'
+    end
+
+    it 'prettily displays the nesting of the children' do
+      root = h("root")
+      h1   =  h("1")
+      h11  =   h("11")
+      h111 =    h("111")
+      h2   =  h("2")
+      h21  =   h("21")
+      h22  =   h("22")
+      root.add(h1).add(h2)
+      h1.add(h11)
+      h11.add(h111)
+      h2.add(h21).add(h22)
+      expect(root.inspect).to eq "#<Standards::Hierarchy\n"\
+                                 "  \"root\"\n"\
+                                 "    \"1\"\n"\
+                                 "      \"11\"\n"\
+                                 "        \"111\"\n"\
+                                 "    \"2\"\n"\
+                                 "      \"21\"\n"\
+                                 "      \"22\"\n"\
+                                 ">"
+
+    end
+  end
+
 
   describe 'associating standards to a hierarchy' do
     # It's possible that we'll eventually want to use specific ids instead of tags
@@ -41,6 +105,7 @@ RSpec.describe 'hierarchy' do
       expect(h('has tags', tags: ['a', 'b']).standards_filter).to eq must_be_tagged_with_a_and_b
     end
   end
+
 
   describe 'depth_first' do
     let(:root) { h("root") }
