@@ -30,7 +30,11 @@ module Standards
     end
 
     def standards_filter
-      Standards::Filter.new(tags: tags)
+      if tags.any?
+        Standards::Filter.new(tags: tags)
+      else
+        Standards::Filter::FindNone
+      end
     end
 
     def inspect
@@ -39,6 +43,12 @@ module Standards
       else
         inspected = "#<Standards::Hierarchy #{name.inspect}>"
       end
+    end
+
+    # TODO: rename to something that makes it more clear that this is for persistence with the timeline
+    # e.g. to_event_data
+    def to_hash
+      {name: name, tags: tags, id: id, parent_id: parent_id}
     end
 
     protected

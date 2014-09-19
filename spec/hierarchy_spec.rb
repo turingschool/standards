@@ -33,6 +33,16 @@ RSpec.describe 'hierarchy' do
   end
 
 
+  # TODO: rename to something that makes it more clear that this is for persistence with the timeline
+  # e.g. to_event_data
+  describe 'to_hash' do
+    it 'returns the attributes, but not thie subhierarchies' do
+      child = h 'child'
+      hierarchy = Standards::Hierarchy.new(id: 100, parent_id: 200, name: 'somename', tags: %w[x y z], subhierarchies: [child])
+      expect(hierarchy.to_hash).to eq name: 'somename', tags: %w[x y z], id: 100, parent_id: 200
+    end
+  end
+
   describe 'adding a child' do
     before {
       @root  = h 'root'
@@ -95,9 +105,8 @@ RSpec.describe 'hierarchy' do
       expect(h('no tags').tags).to eq []
     end
 
-    it 'when it has no tags, it has a universally matching standards_filter' do
-      allow_everything = Standards::Filter.new({})
-      expect(h('no tags').standards_filter).to eq allow_everything
+    it 'when it has no tags, it matches nothing' do
+      expect(h('no tags').standards_filter).to eq Standards::Filter::FindNone
     end
 
     it 'when it has tags, it has a standards_filter that will select its tags' do
