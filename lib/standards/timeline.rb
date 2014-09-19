@@ -48,6 +48,18 @@ module Standards
         else
           raise "Unknown type #{event.type.inspect} for for scope #{event.scope.inspect}"
         end
+      when :hierarchy
+        case event.type
+        when :add
+          structure.add_hierarchy \
+            Hierarchy.new(id:        event.id,
+                          name:      event.data[:name],
+                          tags:      event.data[:tags],
+                          parent_id: event.data[:parent_id],
+                         )
+        else
+          raise "Unknown type #{event.type.inspect} for scope #{event.scope.inspect}"
+        end
       else
         raise "Unknown scope #{event.scope.inspect}"
       end

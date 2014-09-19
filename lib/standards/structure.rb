@@ -2,10 +2,12 @@ require 'standards/standard'
 
 module Standards
   class Structure
-    attr_reader :standards
+    attr_reader :standards, :hierarchy
+
     def initialize(standards=[])
       @standards = []
       standards.each { |standard| add_standard standard }
+      @hierarchy = Hierarchy.new id: 1, parent_id: nil, name: 'root'
     end
 
     def to_json
@@ -16,6 +18,7 @@ module Standards
       {standards: standards.map(&:to_hash)}
     end
 
+    # TODO: Do I really want to accept attributes instead of standards?
     def add_standard(standard_attributes)
       new_standard = standard_attributes
       new_standard = Standard.new(standard_attributes) unless Standard === standard_attributes
@@ -28,6 +31,13 @@ module Standards
 
       standards << new_standard
       new_standard
+    end
+
+    def add_hierarchy(to_add)
+      parent = hierarchy.find { |h| h.id == to_add.parent_id }
+      # TODO: Blow up if there is no parent?
+      parent.add(to_add)
+      to_add
     end
 
     def ==(other)

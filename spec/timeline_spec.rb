@@ -70,10 +70,9 @@ describe 'Standards::Timeline' do
       end
 
       context 'when scope is :hierarchy' do
-        before { pending }
         def self.next_id
-          @current_id ||= 1 # let the root have id 1
-          @next_id += 1
+          @hierarchy_id ||= 1 # let the root have id 1
+          @hierarchy_id += 1
         end
 
         def event(overridden_attributes)
@@ -103,16 +102,24 @@ describe 'Standards::Timeline' do
           end
 
           it 'adds the hierarchy to appropriate place within the hierarchies' do
-            event1    = event type: :add, data: {name: 'a'}
-            event11   = event type: :add, data: {name: 'b', parent_id: event1.id}
-            event2    = event type: :add, data: {name: 'c'}
-            structure = build event1, event2, event11
+            structure = build(
+              (event1  = event type: :add, data: {name: 'a'}),
+              (event11 = event type: :add, data: {name: 'b', parent_id: event1.id}),
+              (event2  = event type: :add, data: {name: 'c'}),
+              (event12 = event type: :add, data: {name: 'd', parent_id: event1.id}),
+            )
+            root = structure.hierarchy
 
-            names = structure.hierarchy.depth_first.map { |hierarchy, ancestry, &recurse|
-              [hierarchy.name, recurse.call]
+            seen = []
+            structure.hierarchy.depth_first { |hierarchy, ancestry, &recurse|
+              seen << [hierarchy.name, ancestry.map(&:name)]
+              recurse.call
             }
-            expect(names).to eq [['a', ['b']],
-                                 ['c', []]]
+            expect(seen).to eq [['root', []],
+                                ['a',    ['root']],
+                                ['b',    ['a', 'root']],
+                                ['d',    ['a', 'root']],
+                                ['c',    ['root']]]
           end
         end
       end
