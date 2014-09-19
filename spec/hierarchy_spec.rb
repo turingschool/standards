@@ -160,4 +160,58 @@ RSpec.describe 'hierarchy' do
       ]
     end
   end
+
+
+  describe 'equality' do
+    let(:id)        { 123        }
+    let(:name)      { 'name'     }
+    let(:parent_id) { 456        }
+    let(:tags)      { ['a', 'b'] }
+    let(:h1)        { Standards::Hierarchy.new name: name, id: id, tags: tags, parent_id: parent_id }
+    let(:h2)        { Standards::Hierarchy.new name: name, id: id, tags: tags, parent_id: parent_id }
+
+    def make_child
+      Standards::Hierarchy.new id: 999, parent_id: nil, name: 'child'
+    end
+
+    before do
+      h1.add make_child
+      h2.add make_child
+      expect(h1).to eq h2
+    end
+
+    it 'mmust be a hierarchy' do
+      expect(h1).to_not eq 1
+      expect(h1).to_not eq BasicObject.new
+      expect(h1).to_not eq nil
+    end
+
+    it 'must have the same id' do
+      h1.id += 1
+      expect(h1).to_not eq h2
+    end
+
+    it 'must have the same name' do
+      h1.name = h1.name.reverse
+      expect(h1).to_not eq h2
+    end
+
+    it 'does not need the same parent id' do
+      h1.parent_id = h1.parent_id.next
+      expect(h1).to eq h2
+    end
+
+    it 'must have the same tags, but in any order' do
+      h1.tags = h1.tags.reverse
+      expect(h1).to eq h2
+
+      h1.tags = [h1.tags.first]
+      expect(h1).to_not eq h2
+    end
+
+    it 'must have the same subhierarchies, in the same order' do
+      h1.subhierarchies.pop
+      expect(h1).to_not eq h2
+    end
+  end
 end

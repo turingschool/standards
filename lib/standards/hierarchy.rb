@@ -1,7 +1,6 @@
 module Standards
   class Hierarchy
-    attr_reader :name, :tags, :subhierarchies, :id
-    attr_accessor :parent_id
+    attr_accessor :parent_id, :name, :tags, :subhierarchies, :id
 
     def initialize(attributes)
       @id             = attributes.fetch(:id)        { raise ArgumentError, 'Hierarchies must have an id' }
@@ -26,6 +25,14 @@ module Standards
         return found if found
       end
       nil
+    end
+
+    def ==(other)
+      self.class       === other                &&
+        id             ==  other.id             &&
+        name           ==  other.name           &&
+        tags.sort      ==  other.tags.sort      &&
+        subhierarchies ==  other.subhierarchies
     end
 
     # TODO: to_enum on this does not work right
