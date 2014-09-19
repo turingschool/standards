@@ -4,10 +4,13 @@ module Standards
   class Structure
     attr_reader :standards, :hierarchy
 
+    # TODO: Should we disallow this sort of initialization with pre-populated data?
+    # TODO: reanme @hierarchy to @root_hierarchy, but still expose root when method `hierarchy` is called
     def initialize(standards=[])
       @standards = []
       standards.each { |standard| add_standard standard }
       @hierarchy = Hierarchy.new id: 1, parent_id: nil, name: 'root'
+      @hierarchy_size = 1
     end
 
     def to_json
@@ -33,11 +36,33 @@ module Standards
       new_standard
     end
 
-    def add_hierarchy(to_add)
+
+    # TODO: Disliking that it will accept a Hierarchy and also a hash
+    def add_hierarchy(hierarchy_attributes)
+      @hierarchy_size += 1
+
+      if Hierarchy === hierarchy_attributes
+        to_add = hierarchy_attributes
+      else
+        hierarchy_attributes[:id]        ||= @hierarchy_size
+        hierarchy_attributes[:parent_id] ||= hierarchy.id
+        to_add = Hierarchy.new hierarchy_attributes
+      end
+
       parent = hierarchy.find { |h| h.id == to_add.parent_id }
       # TODO: Blow up if there is no parent?
       parent.add(to_add)
       to_add
+    end
+
+    def each_hierarchy(&block)
+      @hierarchy.depth_first do |current, ancestry, &recurser|
+        if current == @hierarchy
+          recurser.call
+        else
+          block.call(current, ancestry, &recurser)
+        end
+      end
     end
 
     def ==(other)

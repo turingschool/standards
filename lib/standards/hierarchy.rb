@@ -21,7 +21,11 @@ module Standards
 
     def find(&block)
       return self if block.call self
-      subhierarchies.find { |h| h.find &block }
+      subhierarchies.each do |h|
+        found = h.find(&block)
+        return found if found
+      end
+      nil
     end
 
     # TODO: to_enum on this does not work right

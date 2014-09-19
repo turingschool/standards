@@ -32,19 +32,89 @@ RSpec.describe 'Structure' do
   end
 
   context 'managing the hierarchy' do
-    it 'has a hierarchy tree, with a null-object root, with a default id of 1'
+    it 'has a hierarchy tree, with a null-object root, with a default id of 1' do
+      expect(self.structure.hierarchy.name     ).to eq 'root'
+      expect(self.structure.hierarchy.id       ).to   eq 1
+      expect(self.structure.hierarchy.parent_id).to   eq nil
+    end
+
     # accepts attributes or instances of Hierarchy <-- might not want this
     context 'adding a hierarchy' do
-      it 'returns the hierarchy'
-      specify 'when there is a parent id, adds it as the last child of the node with its parent id'
-      specify 'when there is not a parent id, adds it as a child of root and sets the parent id'
-      specify 'when the parent id DNE, it blows up'
-      context 'when an id is provided' do
-        it 'does not set the id'
-        it 'blows up if there is overlap between ids'
+      it 'returns the hierarchy' do
+        s = self.structure
+        returned = s.add_hierarchy name: 'somename'
+        expect(returned.name).to eq 'somename'
       end
+
+      specify 'when there is a parent id, adds it as the last child of the node with its parent id' do
+        s = self.structure
+        h1 = s.add_hierarchy name: 'h1', parent_id: 1
+        h2 = s.add_hierarchy name: 'h2', parent_id: h1.id
+        h3 = s.add_hierarchy name: 'h3', parent_id: h2.id
+        h4 = s.add_hierarchy name: 'h4', parent_id: h1.id
+
+        expect(s.hierarchy.subhierarchies).to eq [h1]
+        expect(h1.subhierarchies).to eq [h2, h4]
+        expect(h2.subhierarchies).to eq [h3]
+        expect(h3.subhierarchies).to eq []
+        expect(h4.subhierarchies).to eq []
+      end
+
+      specify 'when there is not a parent id, adds it as a child of root' do
+        s = self.structure
+        child = s.add_hierarchy name: 'child'
+        expect(child.parent_id).to eq s.hierarchy.id
+        expect(s.hierarchy.subhierarchies).to eq [child]
+      end
+
+      # hierarchy_enum      = structure.add_hierarchy name: 'Enumerable'
+      # hierarchy_enum_each = structure.add_hierarchy name: 'Each', parent_id: hierarchy_enum.id, tags: ['enumerable', 'each']
+
+      it 'can take a hierarchy or hierarchy attributes' do
+        s      = self.structure
+        child1 = s.add_hierarchy name: 'child1'
+        child2 = s.add_hierarchy Standards::Hierarchy.new(name: 'child2', id: 3, parent_id: 1)
+        expect(s.hierarchy.subhierarchies).to eq [child1, child2]
+      end
+
+      # TODO not sure I actually want to do this, kinda preferring the idea that you can only add a hierarchy w/o an id
+      context 'when an id is provided' do
+        it 'does not set the id' do
+          s = self.structure
+          child1 = s.add_hierarchy name: 'child', id: 123
+          expect(child1.id).to eq 123
+        end
+
+        it 'blows up if there is overlap between ids' do
+          pending 'I might get rid of the ability to have an initial id'
+          raise
+        end
+      end
+
       context 'when an id is not provided' do
-        it 'sets the id to be one more than the max of its standards ids'
+        it 'sets the id to be one more than the max of its standards ids' do
+          s = self.structure
+          child1 = s.add_hierarchy name: 'child', id: 123
+          expect(child1.id).to eq 123
+        end
+      end
+    end
+
+    context 'iterating over hierarchies' do
+      it 'yields each one, except the root' do
+        s = self.structure
+        s.each_hierarchy { raise "Should not have iterated" }
+
+        seen = []
+        h1   = s.add_hierarchy name: 'h1'
+        h11  = s.add_hierarchy name: 'h11',  parent_id: h1.id
+        h111 = s.add_hierarchy name: 'h111', parent_id: h11.id
+        h2   = s.add_hierarchy name: 'h2'
+        s.each_hierarchy { |h, a, &r| seen << [h.name, a.map(&:name)]; r.call }
+        expect(seen).to eq [['h1',   ['root']],
+                            ['h11',  ['h1', 'root']],
+                            ['h111', ['h11', 'h1', 'root']],
+                            ['h2',   ['root']]]
       end
     end
   end
