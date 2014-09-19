@@ -1,5 +1,18 @@
 module Standards
   class Filter
+    module FindNone
+      extend self
+
+      def allow?(*)
+        false
+      end
+
+      def to_proc
+        method(:allow?).to_proc
+      end
+    end
+
+
     def initialize(options)
       self.tag_filters = options.fetch :tags, []
     end

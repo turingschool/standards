@@ -72,4 +72,34 @@ RSpec.describe 'Filter' do
       expect(filter_for tags: []).to eq filter_for({})
     end
   end
+
+  describe 'FindNone' do
+    let(:find_none) { Standards::Filter::FindNone }
+
+    it 'allows nothing' do
+      expect(find_none.allow?                          ).to eq false
+      expect(find_none.allow? 1                        ).to eq false
+      expect(find_none.allow? Standard.new             ).to eq false
+      expect(find_none.allow? Standard.new(tags: ['a'])).to eq false
+    end
+
+    it 'returns its allow method when invoking to_proc' do
+      expect(find_none.to_proc.call                          ).to eq false
+      expect(find_none.to_proc.call 1                        ).to eq false
+      expect(find_none.to_proc.call Standard.new             ).to eq false
+      expect(find_none.to_proc.call Standard.new(tags: ['a'])).to eq false
+    end
+
+    it 'inspects to its name' do
+      expect(find_none.inspect).to eq 'Standards::Filter::FindNone'
+    end
+
+    it 'is only equal to itself' do
+      expect(find_none).to eq find_none
+      expect(find_none).to_not eq Object.new
+      expect(find_none).to_not eq 1
+      expect(find_none).to_not eq Standard.new
+      expect(find_none).to_not eq Standard.new(tags: ['a'])
+    end
+  end
 end
