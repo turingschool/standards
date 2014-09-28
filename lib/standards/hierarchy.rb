@@ -11,8 +11,7 @@ module Standards
       raise ArgumentError, "Must have a name" unless name
     end
 
-    # TODO: rename to add_subhierarchy
-    def add(child)
+    def add_subhierarchy(child)
       child.parent_id = id
       subhierarchies << child
       self

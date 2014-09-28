@@ -48,7 +48,7 @@ RSpec.describe 'hierarchy' do
       @root  = h 'root'
       expect(@root.id).to be_a_kind_of Fixnum # just making sure we don't arbitrarily pass
       @child = h("example")
-      @root.add(@child)
+      @root.add_subhierarchy(@child)
     }
 
     it 'updates the child\'s parent id' do
@@ -75,10 +75,10 @@ RSpec.describe 'hierarchy' do
       h2   =  h("2")
       h21  =   h("21")
       h22  =   h("22")
-      root.add(h1).add(h2)
-      h1.add(h11)
-      h11.add(h111)
-      h2.add(h21).add(h22)
+      root.add_subhierarchy(h1).add_subhierarchy(h2)
+      h1.add_subhierarchy(h11)
+      h11.add_subhierarchy(h111)
+      h2.add_subhierarchy(h21).add_subhierarchy(h22)
       expect(root.inspect).to eq "#<Standards::Hierarchy\n"\
                                  "  \"root\"\n"\
                                  "    \"1\"\n"\
@@ -125,9 +125,9 @@ RSpec.describe 'hierarchy' do
     let(:h21)  {   h("21") }
     let(:h22)  {   h("22") }
     before do
-      root.add(h1).add(h2)
-      h1.add(h11).add(h12)
-      h2.add(h21).add(h22)
+      root.add_subhierarchy(h1).add_subhierarchy(h2)
+      h1.add_subhierarchy(h11).add_subhierarchy(h12)
+      h2.add_subhierarchy(h21).add_subhierarchy(h22)
     end
 
     it 'is a depth first traversal, providing the hierarchy/ancestry/recurser' do
@@ -175,8 +175,8 @@ RSpec.describe 'hierarchy' do
     end
 
     before do
-      h1.add make_child
-      h2.add make_child
+      h1.add_subhierarchy make_child
+      h2.add_subhierarchy make_child
       expect(h1).to eq h2
     end
 

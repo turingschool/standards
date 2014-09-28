@@ -50,7 +50,7 @@ module Standards
 
       root_hierarchy
         .find { |h| h.id == to_add.parent_id }
-        .add(to_add)
+        .add_subhierarchy(to_add)
       to_add
     end
 
