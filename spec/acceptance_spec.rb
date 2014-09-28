@@ -86,9 +86,8 @@ module Standards
       [standard_enum_each1, standard_enum_each2, standard_enum_find1, standard_enum_find2, standard_ary_each1, standard_ary_each2].each do |standard|
         event = Timeline::Event.new(scope: :standard,
                                     type:  :add,
-                                    id:    standard.id,
                                     time:  Time.now,
-                                    data:  standard.to_hash.reject { |k, v| k == :id }) # TODO: do we really need to reject the id?
+                                    data:  standard.to_hash)
         timeline << event
       end
 
@@ -97,9 +96,8 @@ module Standards
       [hierarchy_enum, hierarchy_enum_each, hierarchy_enum_find, hierarchy_ary, hierarchy_ary_each].each do |hierarchy|
         event = Timeline::Event.new(scope: :hierarchy,
                                     type:  :add,
-                                    id:    hierarchy.id,
                                     time:  Time.now,
-                                    data:  hierarchy.to_hash) # TODO: do we really need to reject the id?
+                                    data:  hierarchy.to_hash)
         timeline << event
       end
 

@@ -56,9 +56,8 @@ module Standards
         standard = structure.add_standard standard: standard, tags: tags
         event = Timeline::Event.new(scope: :standard,
                                     type:  :add,
-                                    id:    standard.id,
                                     time:  Time.now,
-                                    data:  standard.to_hash.reject { |k, v| k == :id })
+                                    data:  standard.to_hash)
         timeline << event
         Persistence.dump filepath, timeline
         stdout.puts standard.to_json

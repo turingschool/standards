@@ -48,9 +48,8 @@ def add_standards(structure, timeline, tree)
     event = Standards::Timeline::Event.new \
       scope: :standard,
       type:  :add,
-      id:    standard.id,
       time:  Time.now,
-      data:  standard.to_hash.reject { |k, v| k == :id }
+      data:  standard
     timeline << event
   end
   tree.children.each { |child| add_standards structure, timeline, child }

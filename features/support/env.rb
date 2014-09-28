@@ -75,9 +75,8 @@ Given /^I have previously added "(.*)", with tags (\[.*?\])?$/ do |standard, tag
                         [ s::Timeline::Event.new(
                             scope: :standard,
                             type:  :add,
-                            id:    1,
                             time:  Time.now,
-                            data: {standard: standard, tags: eval(tagstring)}
+                            data: {standard: standard, tags: eval(tagstring), id: 1}
                           ),
                         ]
   end

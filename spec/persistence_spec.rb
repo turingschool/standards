@@ -12,7 +12,6 @@ RSpec.describe 'Persistence' do
   def timeline_event(attribute_overrides={})
     attributes = {scope: :standard,
                   type:  :add,
-                  id:    self.class.next_id,
                   time:  Time.now,
                   data:  Standards::Standard.new.to_hash}
     attributes.merge! attribute_overrides
@@ -53,10 +52,6 @@ RSpec.describe 'Persistence' do
       body = File.read filename
       expect(body).to_not include "content"
       expect(body).to include '"id":'
-    end
-
-    xit 'raises an error when attempting to persist a structure with a standard that does not have an id', t:true do
-      expect { dump filename, [timeline_event(id: nil)] }.to raise_error /\bid\b/
     end
 
     it 'creates the path to the file if the path DNE' do

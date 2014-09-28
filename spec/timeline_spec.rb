@@ -21,14 +21,12 @@ describe 'Standards::Timeline' do
     it 'builds up the structure from the events' do
       structure = build event(scope: :standard,
                               type:  :add,
-                              id:    1,
                               time:  Time.now,
-                              data:  {standard: 'a', tags: ['b', 'c']}),
+                              data:  {standard: 'a', id: 1, tags: ['b', 'c']}),
                         event(scope: :standard,
                               type:  :add,
-                              id:    2,
                               time:  Time.now,
-                              data:  {standard: 'A', tags: ['B', 'C']})
+                              data:  {standard: 'A', id: 2, tags: ['B', 'C']})
 
       expect(structure).to eq Structure.new([
         Standard.new(id: 1, standard: 'a', tags: ['b', 'c']),
@@ -48,23 +46,11 @@ describe 'Standards::Timeline' do
           it 'adds the standard to the list of standards' do
             structure = build event scope: :standard,
                                     type:  :add,
-                                    id:    1,
                                     time:  Time.now,
-                                    data:  {standard: 'a', tags: ['b', 'c']}
+                                    data:  {standard: 'a', id: 1, tags: ['b', 'c']}
             expect(structure).to eq Structure.new([
               Standard.new(id: 1, standard: 'a', tags: ['b', 'c'])
             ])
-          end
-
-          it 'sets all the provided attributes' do
-            structure = build event scope: :standard,
-                                    type:  :add,
-                                    id:    1,
-                                    time:  Time.now,
-                                    data:  {tags: ['b', 'c']}
-            standard = structure.standards.first
-            expect(standard.tags).to eq ['b', 'c']
-            expect(standard.standard).to eq Standard.new.standard
           end
         end
       end
@@ -77,11 +63,10 @@ describe 'Standards::Timeline' do
 
         def event(overridden_attributes)
           id              = self.class.next_id
-          data            = {name: "zomg", tags: ['a', 'b'], parent_id: 1} # parent_id of 1 implies its under root
+          data            = {name: "zomg", id: id, tags: ['a', 'b'], parent_id: 1} # parent_id of 1 implies its under root
           overridden_data = overridden_attributes.delete(:data) || {}
           attributes      = { scope: :hierarchy,
                               type:  :add,
-                              id:    id,
                               time:  Time.now,
                               data:  data.merge(overridden_data) }
           super attributes.merge overridden_attributes
@@ -104,9 +89,9 @@ describe 'Standards::Timeline' do
           it 'adds the hierarchy to appropriate place within the hierarchies' do
             structure = build(
               (event1  = event type: :add, data: {name: 'a'}),
-              (event11 = event type: :add, data: {name: 'b', parent_id: event1.id}),
+              (event11 = event type: :add, data: {name: 'b', parent_id: event1.data[:id]}),
               (event2  = event type: :add, data: {name: 'c'}),
-              (event12 = event type: :add, data: {name: 'd', parent_id: event1.id}),
+              (event12 = event type: :add, data: {name: 'd', parent_id: event1.data[:id]}),
             )
             root = structure.root_hierarchy
 

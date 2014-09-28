@@ -10,13 +10,12 @@ module Standards
 
         new scope: json.fetch(:scope).intern,
             type:  json.fetch(:type).intern,
-            id:    json.fetch(:id).to_i,
             time:  Time.parse(json.fetch(:time)),
             data:  data
       end
 
       # TODO: rename time -> timestamp
-      attr_accessor :scope, :type, :id, :time, :data
+      attr_accessor :scope, :type, :time, :data
 
       def initialize(attributes)
         attributes.each do |attribute, value|
@@ -25,7 +24,7 @@ module Standards
       end
 
       def as_json
-        {scope: scope, type: type, id: id, time: time.to_s, data: data}
+        {scope: scope, type: type, time: time.to_s, data: data}
       end
 
       def ==(other)
@@ -51,12 +50,7 @@ module Standards
       when :hierarchy
         case event.type
         when :add
-          structure.add_hierarchy \
-            Hierarchy.new(id:        event.id,
-                          name:      event.data[:name],
-                          tags:      event.data[:tags],
-                          parent_id: event.data[:parent_id],
-                         )
+          structure.add_hierarchy Hierarchy.new(event.data)
         else
           raise "Unknown type #{event.type.inspect} for scope #{event.scope.inspect}"
         end
