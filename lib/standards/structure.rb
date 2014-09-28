@@ -2,14 +2,13 @@ require 'standards/standard'
 
 module Standards
   class Structure
-    attr_reader :standards, :hierarchy
+    attr_reader :standards, :root_hierarchy
 
-    # TODO: Should we disallow this sort of initialization with pre-populated data?
-    # TODO: reanme @hierarchy to @root_hierarchy, but still expose root when method `hierarchy` is called
+    # Should we disallow this sort of initialization with pre-populated data?
     def initialize(standards=[])
       @standards = []
       standards.each { |standard| add_standard standard }
-      @hierarchy = Hierarchy.new id: 1, parent_id: nil, name: 'root'
+      @root_hierarchy = Hierarchy.new id: 1, parent_id: nil, name: 'root'
       @hierarchy_size = 1
     end
 
@@ -21,7 +20,7 @@ module Standards
       {standards: standards.map(&:to_hash)}
     end
 
-    # TODO: Do I really want to accept attributes instead of standards?
+    # Do I really want to accept attributes instead of standards?
     def add_standard(standard_attributes)
       new_standard = standard_attributes
       new_standard = Standard.new(standard_attributes) unless Standard === standard_attributes
@@ -37,7 +36,7 @@ module Standards
     end
 
 
-    # TODO: Disliking that it will accept a Hierarchy and also a hash
+    # Disliking that it will accept a Hierarchy and also a hash
     def add_hierarchy(hierarchy_attributes)
       @hierarchy_size += 1
 
@@ -45,19 +44,19 @@ module Standards
         to_add = hierarchy_attributes
       else
         hierarchy_attributes[:id]        ||= @hierarchy_size
-        hierarchy_attributes[:parent_id] ||= hierarchy.id
+        hierarchy_attributes[:parent_id] ||= root_hierarchy.id
         to_add = Hierarchy.new hierarchy_attributes
       end
 
-      parent = hierarchy.find { |h| h.id == to_add.parent_id }
-      # TODO: Blow up if there is no parent?
-      parent.add(to_add)
+      root_hierarchy
+        .find { |h| h.id == to_add.parent_id }
+        .add(to_add)
       to_add
     end
 
     def each_hierarchy(&block)
-      @hierarchy.depth_first do |current, ancestry, &recurser|
-        if current == @hierarchy
+      root_hierarchy.depth_first do |current, ancestry, &recurser|
+        if current == root_hierarchy
           recurser.call
         else
           block.call(current, ancestry, &recurser)

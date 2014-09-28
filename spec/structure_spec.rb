@@ -33,9 +33,9 @@ RSpec.describe 'Structure' do
 
   context 'managing the hierarchy' do
     it 'has a hierarchy tree, with a null-object root, with a default id of 1' do
-      expect(self.structure.hierarchy.name     ).to eq 'root'
-      expect(self.structure.hierarchy.id       ).to   eq 1
-      expect(self.structure.hierarchy.parent_id).to   eq nil
+      expect(self.structure.root_hierarchy.name     ).to eq 'root'
+      expect(self.structure.root_hierarchy.id       ).to   eq 1
+      expect(self.structure.root_hierarchy.parent_id).to   eq nil
     end
 
     # accepts attributes or instances of Hierarchy <-- might not want this
@@ -53,7 +53,7 @@ RSpec.describe 'Structure' do
         h3 = s.add_hierarchy name: 'h3', parent_id: h2.id
         h4 = s.add_hierarchy name: 'h4', parent_id: h1.id
 
-        expect(s.hierarchy.subhierarchies).to eq [h1]
+        expect(s.root_hierarchy.subhierarchies).to eq [h1]
         expect(h1.subhierarchies).to eq [h2, h4]
         expect(h2.subhierarchies).to eq [h3]
         expect(h3.subhierarchies).to eq []
@@ -63,8 +63,8 @@ RSpec.describe 'Structure' do
       specify 'when there is not a parent id, adds it as a child of root' do
         s = self.structure
         child = s.add_hierarchy name: 'child'
-        expect(child.parent_id).to eq s.hierarchy.id
-        expect(s.hierarchy.subhierarchies).to eq [child]
+        expect(child.parent_id).to eq s.root_hierarchy.id
+        expect(s.root_hierarchy.subhierarchies).to eq [child]
       end
 
       # hierarchy_enum      = structure.add_hierarchy name: 'Enumerable'
@@ -74,7 +74,7 @@ RSpec.describe 'Structure' do
         s      = self.structure
         child1 = s.add_hierarchy name: 'child1'
         child2 = s.add_hierarchy Standards::Hierarchy.new(name: 'child2', id: 3, parent_id: 1)
-        expect(s.hierarchy.subhierarchies).to eq [child1, child2]
+        expect(s.root_hierarchy.subhierarchies).to eq [child1, child2]
       end
 
       # TODO not sure I actually want to do this, kinda preferring the idea that you can only add a hierarchy w/o an id

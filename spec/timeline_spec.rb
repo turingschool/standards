@@ -96,7 +96,7 @@ describe 'Standards::Timeline' do
         context 'add type' do
           it 'sets all the provided attributes' do
             structure = build event type: :add, data: {name: 'mah namez', tags: ['x', 'y']}
-            hierarchy = structure.hierarchy.subhierarchies.first
+            hierarchy = structure.root_hierarchy.subhierarchies.first
             expect(hierarchy.name).to eq 'mah namez'
             expect(hierarchy.tags).to eq ['x','y']
           end
@@ -108,10 +108,10 @@ describe 'Standards::Timeline' do
               (event2  = event type: :add, data: {name: 'c'}),
               (event12 = event type: :add, data: {name: 'd', parent_id: event1.id}),
             )
-            root = structure.hierarchy
+            root = structure.root_hierarchy
 
             seen = []
-            structure.hierarchy.depth_first { |hierarchy, ancestry, &recurse|
+            structure.root_hierarchy.depth_first { |hierarchy, ancestry, &recurse|
               seen << [hierarchy.name, ancestry.map(&:name)]
               recurse.call
             }
