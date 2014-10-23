@@ -106,9 +106,14 @@ print_hierarchy root
 # >>   Agile
 # >>   Thinking & Learning
 __END__
+####### ADD STANDARDS FOR JOSH'S OBJECT MODEL LESSON
+
+
 Languages
 	Ruby
 		Basics
+			Setup
+				Understand Ruby's load path and ways of requiring files (REVISE)
 			Run a Ruby program from the command line.
 			Assign an object to a variable.
 			Call a method on an object.
@@ -154,18 +159,39 @@ Languages
 				Access and/or change attributes using attr_accessor, attr_writer, and attr_reader.
 				Explain what attr_accessor, attr_writer, and attr_reader are shorthand for.
 				Create an instance of a class and assign attributes to that instance.
-			Writing Methods
+			Methods
 				Define an instance method using correct syntax.
 				Define a class method using correct syntax.
 				Define methods that accept arguments.
+				Overwrite inherited methods. 
+				Explain purpose of predicate and destructive methods. 
+				Explain purpose of and difference between command and query methods.
+
 		Enumerable Methods
-			Iterate through a collection of objects using #each.
-			Iterate through a collection and return a new array using #map or #collect.
-			Shuffle the order of elements in an array using #shuffle.
+			Explain that enumerable methods traverse and search through collections
+			Know that #each is the base for enumerable methods and iterate through a collection of objects using #each.
+			Use #map/#collect to iterate through a collection and return a mutated array.
+			Use #reduce/#inject to return a single value from the objects of a collection.
+			Use #sort_by to sort objects by specified criteria.
+			Use #select to return an array of objects that meet a specified criteria.
+			Shuffle the order of elementts in an array using #shuffle.
 			Sort an array numerically or alphabetically using #sort.
-			Sort an array by a characteristic using #sort_by.
+			Use #detect/#find to return the first object that meets a specified criteria.
+			Use #min and #max to return the object with a minimum or maximum value.
+			Use #reject to return an array where objects that meet a specified criteria are discarded.
+			Use #find/#detect to return the first element that meets a specified criteria.
+			Use #count to return the number of objects that meet a specified criteria.
+			Use #zip to produce a 2D array.
+			Use #group_by to return a hash of grouped objects.
 		Gems
 			Install a gem.
+		Libraries
+			CSV
+				Read from and write to CSV files.
+			JSON
+				Read from and write to JSON files.
+			XML
+				Read from and write to XML files.
 	HTML/CSS
 		Write HTML forms using type, name, and value attributes.
 		Build a basic HTML page using common tags.
@@ -243,18 +269,24 @@ Web Applications
 Software Design
 	Testing
 		In design
-			Explain and demonstrate TDD workflow.
+			Explain and demonstrate TDD workflow (red-green-refactor, etc.)
 		In practice
 			Ruby
 				Minitest
-					Create and run a Minitest suite.
+					Design, implement, and run a Minitest suite.
 					Write assertions in Minitest (assert, assert_equal, assert_respond_to, assert_instance_of).
-					Read, interpret, and fix error messages.
+					Read, interpret, and fix error messages, such as LoadError, NameError, ArgumentError, NoMethodError, and SyntaxError.
 					Read, interpret, and fix failure messages.
+					Use mocks to fake out method calls during testing.
 	OOP
 		Design Patterns
 		MVC
 		Separation of Responsibilties
+			Create objects that interact with each other.
+			Understand what is meant by "responsibility".
+			Characterize the responsibilities encompassed within a class.
+			Extract responsibilities from one class into separate classes.
+			Break a conceptual program into components each with a responsibility.
 		SOLID
 	Service-Oriented Architecture
 	Performance
@@ -270,3 +302,6 @@ Processes
 		Be comfortable being uncomfortable.
 		Make mistakes without feeling incompetent.
 	Professional Competencies
+
+Computer Science
+	Demonstrate how algorithms are used to solve problems. 
