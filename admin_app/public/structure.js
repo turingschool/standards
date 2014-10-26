@@ -1,4 +1,6 @@
 "use strict";
+// TODO:
+// rename background -> view
 
 // ==========  Hierarchy  ==========
 var Hierarchy = function(d3hierarchy, d3view, d3subhierarchies, subhierarchies) {
@@ -27,6 +29,14 @@ Hierarchy.buildTree = function(d3RootHierarchy, jsonStructure) {
 Hierarchy.prototype.withSelected = function(value) {
   this.d3hierarchy.classed('selected', value)
   return this
+}
+
+Hierarchy.prototype.toggleChildVisibility = function() {
+  var childrenVisible = this.d3subhierarchies.style('display') != 'none'
+  if(childrenVisible)
+    this.d3subhierarchies.style('display', 'none')
+  else
+    this.d3subhierarchies.style('display', null)
 }
 
 
@@ -71,28 +81,49 @@ Zipper.prototype.firstChild = function() {
 }
 
 
+// ==========  UserInterface  ==========
+var UserInterface = function(rootHierarchy) {
+  this.zipper = Zipper.fromRoot(rootHierarchy)
+}
+UserInterface.prototype.moveZipperTo = function(relative) {
+  this.zipper.current.withSelected(false)
+  this.zipper = this.zipper[relative]()
+  this.zipper.current.withSelected(true)
+}
+UserInterface.prototype.moveToParent = function() {
+  this.moveZipperTo('parent')
+}
+UserInterface.prototype.moveToNextSibling = function() {
+  this.moveZipperTo('nextSibling')
+}
+UserInterface.prototype.moveToPrevSibling = function() {
+  this.moveZipperTo('prevSibling')
+}
+UserInterface.prototype.moveToFirstChild  = function() {
+  this.moveZipperTo('firstChild')
+}
+UserInterface.prototype.toggleChildVisibility = function() {
+  this.zipper.current.toggleChildVisibility()
+}
+
+
 // ==========  Script  ==========
 // would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
 document.addEventListener('DOMContentLoaded', function(){
   d3.json("/structure.json", function(structure) {
     var d3structure   = d3.select('body').append('div').classed('structure', true)
     var rootHierarchy = Hierarchy.buildTree(d3structure, structure).withSelected(true)
-    var zipper = Zipper.fromRoot(rootHierarchy)
-
-    var moveZipperTo = function(relative) {
-      zipper.current.withSelected(false)
-      zipper = zipper[relative]()
-      zipper.current.withSelected(true)
-    }
+    var ui            = new UserInterface(rootHierarchy)
 
     // loosely based off of https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.code
     window.addEventListener("keydown", function (event) {
       if (event.defaultPrevented) { return } // do nothing if already consumed
       var asciiValue = String.fromCharCode(event.keyCode)
-      if      (asciiValue == 'H' || event.keyIdentifier == 'Left' ) moveZipperTo('parent')
-      else if (asciiValue == 'J' || event.keyIdentifier == 'Down' ) moveZipperTo('nextSibling')
-      else if (asciiValue == 'K' || event.keyIdentifier == 'Up'   ) moveZipperTo('prevSibling')
-      else if (asciiValue == 'L' || event.keyIdentifier == 'Right') moveZipperTo('firstChild')
+      if      (asciiValue == 'H' || event.keyIdentifier == 'Left' ) ui.moveToParent()
+      else if (asciiValue == 'J' || event.keyIdentifier == 'Down' ) ui.moveToNextSibling()
+      else if (asciiValue == 'K' || event.keyIdentifier == 'Up'   ) ui.moveToPrevSibling()
+      else if (asciiValue == 'L' || event.keyIdentifier == 'Right') ui.moveToFirstChild()
+      else if (asciiValue == 'O' || event.keyIdentifier == 'Enter') ui.toggleChildVisibility()
       else return // irrelevant to us
       event.preventDefault();
     });
