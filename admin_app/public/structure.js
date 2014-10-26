@@ -1,38 +1,42 @@
 "use strict";
 
 // ==========  Hierarchy  ==========
-var Hierarchy = function(d3hierarchy, d3view, d3subhierarchies, subhierarchies) {
-  this.d3hierarchy      = d3hierarchy
-  this.d3view           = d3view
-  this.d3subhierarchies = d3subhierarchies
-  this.subhierarchies   = subhierarchies
+var Hierarchy = function(domHierarchy, domView, domSubhierarchies, subhierarchies) {
+  this.domHierarchy      = domHierarchy
+  this.domView           = domView
+  this.domSubhierarchies = domSubhierarchies
+  this.subhierarchies    = subhierarchies
 }
-Hierarchy.buildTree = function(d3RootHierarchy, jsonStructure) {
-  d3RootHierarchy.classed('root', true)
+Hierarchy.buildTree = function(domRootHierarchy, jsonStructure) {
   var buildRecursive = function(container, jsonHierarchy) {
-    var d3hierarchy      = container.append('div').classed('hierarchy', true)
-    var d3view           = d3hierarchy.append('div').classed('view', true).text(jsonHierarchy.name); // implies we are storing this data in the DOM... idk if that's good or bad
-    var d3subhierarchies = d3hierarchy.append('div').classed('subhierarchies', true)
+    var domHierarchy      = jQuery('<div class="hierarchy"></div>')
+    var domView           = jQuery('<div class="view"></div>').text(jsonHierarchy.name); // implies we are storing this data in the DOM... idk if that's good or bad
+    var domSubhierarchies = jQuery('<div class="subhierarchies"></div>')
+
+    container.append(domHierarchy)
+    domHierarchy.append(domView)
+    domHierarchy.append(domSubhierarchies)
+
     var subhierarchies   = []
     for(var i=0; i < jsonHierarchy.subhierarchies.length; ++i) {
-      var child = buildRecursive(d3subhierarchies, jsonHierarchy.subhierarchies[i])
+      var child = buildRecursive(domSubhierarchies, jsonHierarchy.subhierarchies[i])
       subhierarchies.push(child)
     }
-    return new Hierarchy(d3hierarchy, d3view, d3subhierarchies, subhierarchies)
+    return new Hierarchy(domHierarchy, domView, domSubhierarchies, subhierarchies)
   }
-  return buildRecursive(d3RootHierarchy, jsonStructure.hierarchy)
+  domRootHierarchy.addClass('root')
+  return buildRecursive(domRootHierarchy, jsonStructure.hierarchy)
 }
-Hierarchy.prototype.withCursor = function(value) {
-  this.d3hierarchy.classed('cursor', value)
+Hierarchy.prototype.withCursor = function(isCursor) {
+  if(isCursor) this.domHierarchy.addClass('cursor')
+  else         this.domHierarchy.removeClass('cursor')
 }
 Hierarchy.prototype.toggleChildVisibility = function() {
-  if(this.childrenVisible())
-    this.d3subhierarchies.style('display', 'none')
-  else
-    this.d3subhierarchies.style('display', null)
+  if(this.childrenVisible()) this.domSubhierarchies.css('display', 'none')
+  else                       this.domSubhierarchies.css('display', 'block')
 }
 Hierarchy.prototype.childrenVisible = function() {
-  return this.d3subhierarchies.style('display') != 'none'
+  return this.domSubhierarchies.css('display') != 'none'
 }
 Hierarchy.prototype.parentOf = function(descendant) {
   for(var i=0; i < this.subhierarchies.length; ++i)
@@ -58,39 +62,17 @@ Hierarchy.prototype.removeChild = function(child) {
 Hierarchy.prototype.addChild = function(child) {
   this.subhierarchies = this.subhierarchies.concat([child])
 }
-
-// http://dillieodigital.wordpress.com/2013/01/16/quick-tip-how-to-draw-a-star-with-svg-and-javascript/
-var addStar = function(d3svg) {
-  var arms        = 5
-  var innerRadius = 5
-  var outerRadius = 10
-  var centerX     = 15
-  var centerY     = 15
-  var points      = ""
-  var angle = Math.PI / arms
-  for(var i = 0; i < 2 * arms; i++) {
-     var radius = (i & 1) == 0 ? outerRadius : innerRadius
-     var currX = centerX + Math.cos(i*angle+Math.PI/2-angle) * radius
-     var currY = centerY + Math.sin(i*angle+Math.PI/2-angle) * radius
-     points += " " + currX + "," + currY
-  }
-  d3svg.append('polygon')
-       .attr('fill', 'yellow')
-       .attr('stroke', 'black')
-       .attr('stroke-width', '1.8')
-       .attr('points', points)
-}
 Hierarchy.prototype.markSelected = function() {
   if(this.selectionIcon) {
-    this.selectionIcon.classed('selectionIcon', true).style('display', null)
+    this.selectionIcon.css('display', 'block')
   } else {
-    this.selectionIcon = this.d3view.append('svg').classed('selectionIcon', true)
-    addStar(this.selectionIcon)
+    this.selectionIcon = jQuery('<svg class="selectionIcon"><polygon fill="yellow" stroke="black" stroke-width="1.8" points=" 20.877852522924734,23.090169943749473 15,20 9.12214747707527,23.090169943749473 10.244717418524232,16.545084971874736 5.489434837048464,11.909830056250527 12.061073738537633,10.954915028125264 14.999999999999998,5 17.938926261462363,10.954915028125262 24.510565162951536,11.909830056250524 19.755282581475768,16.545084971874736"></polygon></svg>')
+    this.domView.append(this.selectionIcon)
   }
 }
 Hierarchy.prototype.markUnselected = function() {
   if(this.selectionIcon)
-    this.selectionIcon.classed('selectionIcon', false).style('display', 'none')
+    this.selectionIcon.css('display', 'none')
 }
 
 
@@ -200,20 +182,17 @@ UserInterface.prototype.moveSelectedToCurrent = function() {
 }
 
 // declaring out here so I can access from console
-var d3structure   = null
+var domStructure   = null
 var rootHierarchy = null
 var ui            = null
 
 // ==========  Script  ==========
 // would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
-// really, I don't think that d3 is giving me anything useful beyond drawing the star and pulling the json
-// might be able to switch to jquery (only thing currently using it is the Hierarchy)
-// which looks like it can actually animate DOM elements (D3 seems to only be able to animate svg)
-// http://api.jquery.com/animate/
 document.addEventListener('DOMContentLoaded', function(){
-  d3.json("/structure.json", function(structure) {
-    d3structure   = d3.select('body .structure')
-    rootHierarchy = Hierarchy.buildTree(d3structure, structure)
+
+  jQuery.getJSON('/structure.json', function(structure) {
+    domStructure  = jQuery('body .structure')
+    rootHierarchy = Hierarchy.buildTree(domStructure, structure)
     ui            = new UserInterface(rootHierarchy)
 
     // loosely based off of https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.code
@@ -230,6 +209,5 @@ document.addEventListener('DOMContentLoaded', function(){
       else return // irrelevant to us
       event.preventDefault()
     });
-
   })
 });
