@@ -24,30 +24,7 @@
       }
     </style>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script type="text/javascript">
-      "use strict";
-
-      document.addEventListener('DOMContentLoaded', function(){
-        var structure = <%= @structure.to_json %>;
-
-        var d3Container = d3.select('body').append('div').classed('structure', true)
-
-        var addHierarchy = function(container, dataHierarchy, isRoot) {
-          var d3Hierarchy = container.append('div').classed('hierarchy', true)
-          if(isRoot) d3Hierarchy.classed('root', true)
-          d3Hierarchy.append('div').classed('background', true).text(dataHierarchy.name);
-          var d3Subhierarchies = d3Hierarchy.append('div').classed('subhierarchies', true)
-          for(var i=0; i < dataHierarchy.subhierarchies.length; ++i) {
-            d3Subhierarchies.call(function(fuck) {
-              addHierarchy(fuck, dataHierarchy.subhierarchies[i], false)
-            })
-          }
-        }
-
-        addHierarchy(d3Container, structure.hierarchy, true)
-        var selected = d3Container.select('.root')
-        selected.classed('selected', true)
-      });
+    <script src="/structure.js" charset="utf-8"></script>
     </script>
   </head>
   <body>
