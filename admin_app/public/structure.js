@@ -7,7 +7,6 @@ var Hierarchy = function(d3hierarchy, d3view, d3subhierarchies, subhierarchies) 
   this.d3subhierarchies = d3subhierarchies
   this.subhierarchies   = subhierarchies
 }
-
 Hierarchy.buildTree = function(d3RootHierarchy, jsonStructure) {
   d3RootHierarchy.classed('root', true)
   var buildRecursive = function(container, jsonHierarchy) {
@@ -23,17 +22,43 @@ Hierarchy.buildTree = function(d3RootHierarchy, jsonStructure) {
   }
   return buildRecursive(d3RootHierarchy, jsonStructure.hierarchy)
 }
-
 Hierarchy.prototype.withCursor = function(value) {
   this.d3hierarchy.classed('cursor', value)
 }
-
 Hierarchy.prototype.toggleChildVisibility = function() {
-  var childrenVisible = this.d3subhierarchies.style('display') != 'none'
-  if(childrenVisible)
+  if(this.childrenVisible())
     this.d3subhierarchies.style('display', 'none')
   else
     this.d3subhierarchies.style('display', null)
+}
+Hierarchy.prototype.childrenVisible = function() {
+  return this.d3subhierarchies.style('display') != 'none'
+}
+
+// http://dillieodigital.wordpress.com/2013/01/16/quick-tip-how-to-draw-a-star-with-svg-and-javascript/
+var addStar = function(d3svg) {
+  var arms        = 5
+  var innerRadius = 5
+  var outerRadius = 10
+  var centerX     = 15
+  var centerY     = 15
+  var points      = ""
+  var angle = Math.PI / arms
+  for(var i = 0; i < 2 * arms; i++) {
+     var radius = (i & 1) == 0 ? outerRadius : innerRadius
+     var currX = centerX + Math.cos(i*angle+Math.PI/2-angle) * radius
+     var currY = centerY + Math.sin(i*angle+Math.PI/2-angle) * radius
+     points += " " + currX + "," + currY
+  }
+  d3svg.append('polygon')
+       .attr('fill', 'yellow')
+       .attr('stroke', 'black')
+       .attr('stroke-width', '1.8')
+       .attr('points', points)
+}
+Hierarchy.prototype.markSelected = function() {
+  this.selectionIcon = this.d3view.append('svg').classed('selectionIcon', true)
+  addStar(this.selectionIcon)
 }
 
 
@@ -44,11 +69,9 @@ var Zipper = function(current, parentZipper, prevSiblings, nextSiblings) {
   this.prevSiblings = prevSiblings
   this.nextSiblings = nextSiblings
 }
-
 Zipper.fromRoot = function(rootHierarchy) {
   return new Zipper(rootHierarchy, null, [], [])
 }
-
 Zipper.prototype.prevSibling = function() {
   if(!this.prevSiblings[0]) return this
   var prevLen         = this.prevSiblings.length
@@ -57,7 +80,6 @@ Zipper.prototype.prevSibling = function() {
   var newNextSiblings = this.nextSiblings.concat([this.current])
   return new Zipper(newCurrent, this.parentZipper, newPrevSiblings, newNextSiblings)
 }
-
 Zipper.prototype.nextSibling = function() {
   if(!this.nextSiblings[0]) return this
   var nextLen         = this.nextSiblings.length
@@ -66,11 +88,9 @@ Zipper.prototype.nextSibling = function() {
   var newPrevSiblings = this.prevSiblings.concat([this.current])
   return new Zipper(newCurrent, this.parentZipper, newPrevSiblings, newNextSiblings)
 }
-
 Zipper.prototype.parent = function() {
   return this.parentZipper || this
 }
-
 Zipper.prototype.firstChild = function() {
   var subhierarchies = this.current.subhierarchies
   if(!subhierarchies[0]) return this
@@ -81,6 +101,7 @@ Zipper.prototype.firstChild = function() {
 // ==========  UserInterface  ==========
 var UserInterface = function(rootHierarchy) {
   this.zipper = Zipper.fromRoot(rootHierarchy)
+  this.selected = []
   this.setCursor(true)
 }
 UserInterface.prototype.setCursor = function(bool) {
@@ -106,6 +127,10 @@ UserInterface.prototype.moveToFirstChild  = function() {
 UserInterface.prototype.toggleChildVisibility = function() {
   this.zipper.current.toggleChildVisibility()
 }
+UserInterface.prototype.selectCurrent = function() {
+  this.selected << this.zipper.current
+  this.zipper.current.markSelected()
+}
 
 
 // ==========  Script  ==========
@@ -125,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function(){
       else if (asciiValue == 'K' || event.keyIdentifier == 'Up'   ) ui.moveToPrevSibling()
       else if (asciiValue == 'L' || event.keyIdentifier == 'Right') ui.moveToFirstChild()
       else if (asciiValue == 'O' || event.keyIdentifier == 'Enter') ui.toggleChildVisibility()
+      else if (asciiValue == 'X'                                  ) ui.selectCurrent()
       else return // irrelevant to us
       event.preventDefault();
     });

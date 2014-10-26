@@ -8,10 +8,13 @@
       .hierarchy {
         position:          relative;
       }
+      .hierarchy .subhierarchies {
+        padding-left:      2em;
+      }
       .hierarchy.cursor > .view {
         background-color:  #383;
       }
-      .hierarchy .view {
+      .hierarchy > .view {
         background-color:  #8d5;
         margin:            1em;
         padding:           0.5em;
@@ -20,8 +23,10 @@
         height:            1.25em;
         overflow:          visible;
       }
-      .hierarchy .subhierarchies {
-        padding-left:      2em;
+      .hierarchy .selectionIcon {
+        position:          absolute;
+        left:              0em;
+        top:               -1em;
       }
     </style>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
