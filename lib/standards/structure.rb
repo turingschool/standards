@@ -17,7 +17,17 @@ module Standards
     end
 
     def to_hash
-      {standards: standards.map(&:to_hash)}
+      hierarchy_to_json = lambda do |h|
+        { name:           h.name,
+          tags:           h.tags,
+          id:             h.id,
+          parent_id:      h.parent_id,
+          subhierarchies: h.subhierarchies.map(&hierarchy_to_json),
+        }
+      end
+      { standards: standards.map(&:to_hash),
+        hierarchy: hierarchy_to_json.call(root_hierarchy),
+      }
     end
 
     # Do I really want to accept attributes instead of standards?

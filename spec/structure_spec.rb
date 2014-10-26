@@ -11,7 +11,8 @@ RSpec.describe 'Structure' do
 
   it 'represents itself as a hash' do # TODO: delete?
     structure = self.structure [{id: 12}]
-    expect(structure.to_hash).to eq(standards: [ {id: 12, standard: '', tags: []} ])
+    expect(structure.to_hash).to eq standards: [ {id: 12, standard: '', tags: []} ],
+                                    hierarchy: {name: "root", :tags=>[], id: 1, parent_id: nil, subhierarchies: []}
   end
 
   describe 'equality' do
