@@ -73,76 +73,30 @@ Zipper.prototype.firstChild = function() {
 }
 
 
-// ==========  Navigator (get rid of this soon, it does nothing over an around filter after the event)  ==========
-var Navigator = function(d3Root) {
-  this.zipper = new Zipper(d3Root, null, [], []) // change to Zipper.fromRoot(d3Root)
-}
-
-Navigator.prototype.toPrevSibling = function() {
-  this.zipper.current.unmarkSelected()
-  this.zipper = this.zipper.prevSibling()
-  this.zipper.current.markSelected()
-}
-
-Navigator.prototype.toNextSibling = function() {
-  this.zipper.current.unmarkSelected()
-  this.zipper = this.zipper.nextSibling()
-  this.zipper.current.markSelected()
-}
-
-Navigator.prototype.toParent = function() {
-  this.zipper.current.unmarkSelected()
-  this.zipper = this.zipper.parent()
-  this.zipper.current.markSelected()
-}
-
-Navigator.prototype.toFirstChild = function() {
-  this.zipper.current.unmarkSelected()
-  this.zipper = this.zipper.firstChild()
-  this.zipper.current.markSelected()
-}
-
-
-// depends on d3.js, you need this before it in the file:
-// <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+// ==========  Script  ==========
 document.addEventListener('DOMContentLoaded', function(){
-  // ==========  Script  ==========
   d3.json("/structure.json", function(structure) {
     var d3structure   = d3.select('body').append('div').classed('structure', true)
     var rootHierarchy = Hierarchy.d3build(d3structure, structure)
     rootHierarchy.markSelected()
-    var navigator = new Navigator(rootHierarchy)
+    var zipper = new Zipper(rootHierarchy, null, [], []) // change to Zipper.fromRoot(d3Root)
 
+    var moveZipperTo = function(relative) {
+      zipper.current.unmarkSelected()
+      zipper = zipper[relative]()
+      zipper.current.markSelected()
+    }
 
     // would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
-    // based off of https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.code
+    // loosely based off of https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.code
     window.addEventListener("keydown", function (event) {
-      if (event.defaultPrevented) { return } // Should do nothing if the key event was already consumed.
-
-      // chars always come in as upercase ascii code b/c there are separate values
-      // to identify things like whether shift has been pressed
-      // you can get a list with `$ man ascii` or something like:
-      // $ ruby -e '%w[h j k l o].map { |c| p [c, c.ord] }'
-      switch (event.keyCode) {
-        case 72: // h
-          navigator.toParent()
-          break
-        case 74: // j
-          navigator.toNextSibling()
-          break
-        case 75: // k
-          navigator.toPrevSibling()
-          break
-        case 76: // l
-          navigator.toFirstChild()
-          break
-        case 79: // 0
-          break
-        default:
-          return // Quit when this doesn't handle the key event.
-      }
-
-      // Consume the event for suppressing "double action".
+      if (event.defaultPrevented) { return } // do nothing if already consumed
+      var asciiValue = String.fromCharCode(event.keyCode)
+      if      (asciiValue == 'H' || event.keyIdentifier == 'Left' ) moveZipperTo('parent')
+      else if (asciiValue == 'J' || event.keyIdentifier == 'Down' ) moveZipperTo('nextSibling')
+      else if (asciiValue == 'K' || event.keyIdentifier == 'Up'   ) moveZipperTo('prevSibling')
+      else if (asciiValue == 'L' || event.keyIdentifier == 'Right') moveZipperTo('firstChild')
+      else return // irrelevant to us
       event.preventDefault();
     });
 
