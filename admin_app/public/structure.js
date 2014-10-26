@@ -34,6 +34,30 @@ Hierarchy.prototype.toggleChildVisibility = function() {
 Hierarchy.prototype.childrenVisible = function() {
   return this.d3subhierarchies.style('display') != 'none'
 }
+Hierarchy.prototype.parentOf = function(descendant) {
+  for(var i=0; i < this.subhierarchies.length; ++i)
+    if(this.subhierarchies[i] == descendant)
+      return this;
+  for(var i=0; i < this.subhierarchies.length; ++i) {
+    var parent = this.subhierarchies[i].parentOf(descendant)
+    if(parent)
+      return parent
+  }
+  return null
+}
+Hierarchy.prototype.removeChild = function(child) {
+  for(var i=0; i < this.subhierarchies.length; ++i) {
+    if(this.subhierarchies[i] == child) {
+      this.subhierarchies = this.subhierarchies
+                                .slice(0, i)
+                                .concat(this.subhierarchies(i+1,this.subhierarchies.length))
+      return
+    }
+  }
+}
+Hierarchy.prototype.addChild = function(child) {
+  this.subhierarchies = this.subhierarchies.concat([child])
+}
 
 // http://dillieodigital.wordpress.com/2013/01/16/quick-tip-how-to-draw-a-star-with-svg-and-javascript/
 var addStar = function(d3svg) {
@@ -108,8 +132,9 @@ Zipper.prototype.firstChild = function() {
 
 // ==========  UserInterface  ==========
 var UserInterface = function(rootHierarchy) {
-  this.zipper = Zipper.fromRoot(rootHierarchy)
-  this.selected = []
+  this.rootHierarchy = rootHierarchy
+  this.zipper        = Zipper.fromRoot(rootHierarchy)
+  this.allSelected   = []
   this.setCursor(true)
 }
 UserInterface.prototype.setCursor = function(bool) {
@@ -136,20 +161,21 @@ UserInterface.prototype.toggleChildVisibility = function() {
   this.zipper.current.toggleChildVisibility()
 }
 UserInterface.prototype.selectCurrent = function() {
-  this.selected.push(this.zipper.current)
+  // if(this.zipper.root)
+  this.allSelected.push(this.zipper.current)
   this.zipper.current.markSelected()
 }
 UserInterface.prototype.unselectCurrent = function() {
-  for(var i = 0; i < this.selected.length; ++i)
-    if(this.selected[i] == this.zipper.current) {
-      this.selected.splice(i, 1)
+  for(var i = 0; i < this.allSelected.length; ++i)
+    if(this.allSelected[i] == this.zipper.current) {
+      this.allSelected.splice(i, 1)
       --i
     }
   this.zipper.current.markUnselected()
 }
 UserInterface.prototype.isSelected = function() {
-  for(var i = 0; i < this.selected.length; ++i) {
-    if(this.selected[i] == this.zipper.current)
+  for(var i = 0; i < this.allSelected.length; ++i) {
+    if(this.allSelected[i] == this.zipper.current)
       return true
   }
   return false
@@ -160,31 +186,35 @@ UserInterface.prototype.toggleSelected = function() {
   else
     this.selectCurrent()
 }
-// this doesn't actually do anything yet,
-// I was experimenting with performing the transition by changing the
-// background colour, but it works shittily. I think that transitions
-// only really work on SVG, but I can't find anywhere on the web
-// where this is stated
 UserInterface.prototype.moveSelectedToCurrent = function() {
-  for(var i = 0; i < this.selected.length; ++i) {
-    this.selected[i].markUnselected()
-    this.selected[i]
-        .d3hierarchy
-        .transition()
-        .duration(5000)
-        .style('background-color', 'black')
+  var newParent = this.zipper.current
+  for(var i = 0; i < this.allSelected.length; ++i) {
+    var selected = this.allSelected[i]
+    selected.markUnselected()
+    rootHierarchy.parentOf(selected).removeChild(this.current)
+    newParent.addChild(selected)
+    // Presumably this updates the data correctly (but who knows, given that I have no tests and can't really see these js objects)
+    // but we still need to update the DOM
   }
-  this.selected = []
+  this.allSelected = []
 }
 
+// declaring out here so I can access from console
+var d3structure   = null
+var rootHierarchy = null
+var ui            = null
 
 // ==========  Script  ==========
 // would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
+// really, I don't think that d3 is giving me anything useful beyond drawing the star and pulling the json
+// might be able to switch to jquery (only thing currently using it is the Hierarchy)
+// which looks like it can actually animate DOM elements (D3 seems to only be able to animate svg)
+// http://api.jquery.com/animate/
 document.addEventListener('DOMContentLoaded', function(){
   d3.json("/structure.json", function(structure) {
-    var d3structure   = d3.select('body .structure')
-    var rootHierarchy = Hierarchy.buildTree(d3structure, structure)
-    var ui            = new UserInterface(rootHierarchy)
+    d3structure   = d3.select('body .structure')
+    rootHierarchy = Hierarchy.buildTree(d3structure, structure)
+    ui            = new UserInterface(rootHierarchy)
 
     // loosely based off of https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.code
     window.addEventListener("keydown", function (event) {
