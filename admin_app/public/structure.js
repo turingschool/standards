@@ -24,9 +24,8 @@ Hierarchy.buildTree = function(d3RootHierarchy, jsonStructure) {
   return buildRecursive(d3RootHierarchy, jsonStructure.hierarchy)
 }
 
-Hierarchy.prototype.withSelected = function(value) {
-  this.d3hierarchy.classed('selected', value)
-  return this
+Hierarchy.prototype.withCursor = function(value) {
+  this.d3hierarchy.classed('cursor', value)
 }
 
 Hierarchy.prototype.toggleChildVisibility = function() {
@@ -82,11 +81,15 @@ Zipper.prototype.firstChild = function() {
 // ==========  UserInterface  ==========
 var UserInterface = function(rootHierarchy) {
   this.zipper = Zipper.fromRoot(rootHierarchy)
+  this.setCursor(true)
+}
+UserInterface.prototype.setCursor = function(bool) {
+  this.zipper.current.withCursor(bool)
 }
 UserInterface.prototype.moveZipperTo = function(relative) {
-  this.zipper.current.withSelected(false)
+  this.setCursor(false)
   this.zipper = this.zipper[relative]()
-  this.zipper.current.withSelected(true)
+  this.setCursor(true)
 }
 UserInterface.prototype.moveToParent = function() {
   this.moveZipperTo('parent')
@@ -110,7 +113,7 @@ UserInterface.prototype.toggleChildVisibility = function() {
 document.addEventListener('DOMContentLoaded', function(){
   d3.json("/structure.json", function(structure) {
     var d3structure   = d3.select('body').append('div').classed('structure', true)
-    var rootHierarchy = Hierarchy.buildTree(d3structure, structure).withSelected(true)
+    var rootHierarchy = Hierarchy.buildTree(d3structure, structure)
     var ui            = new UserInterface(rootHierarchy)
 
     // loosely based off of https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.code
