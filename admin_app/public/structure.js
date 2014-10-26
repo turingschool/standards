@@ -8,24 +8,25 @@ var Hierarchy = function(d3hierarchy, d3view, d3subhierarchies, subhierarchies) 
   this.subhierarchies   = subhierarchies
 }
 
-Hierarchy.d3build = function(d3RootHierarchy, jsonStructure) {
+Hierarchy.buildTree = function(d3RootHierarchy, jsonStructure) {
   d3RootHierarchy.classed('root', true)
-  var d3buildRecursive = function(container, jsonHierarchy) {
+  var buildRecursive = function(container, jsonHierarchy) {
     var d3Hierarchy      = container.append('div').classed('hierarchy', true)
     var d3View           = d3Hierarchy.append('div').classed('background', true).text(jsonHierarchy.name); // implies we are storing this data in the DOM... idk if that's good or bad
     var d3subhierarchies = d3Hierarchy.append('div').classed('subhierarchies', true)
     var subhierarchies   = []
     for(var i=0; i < jsonHierarchy.subhierarchies.length; ++i) {
-      var child = d3buildRecursive(d3subhierarchies, jsonHierarchy.subhierarchies[i])
+      var child = buildRecursive(d3subhierarchies, jsonHierarchy.subhierarchies[i])
       subhierarchies.push(child)
     }
     return new Hierarchy(d3Hierarchy, d3View, d3subhierarchies, subhierarchies)
   }
-  return d3buildRecursive(d3RootHierarchy, jsonStructure.hierarchy)
+  return buildRecursive(d3RootHierarchy, jsonStructure.hierarchy)
 }
 
-Hierarchy.prototype.setSelected = function(value) {
+Hierarchy.prototype.withSelected = function(value) {
   this.d3hierarchy.classed('selected', value)
+  return this
 }
 
 
@@ -71,20 +72,19 @@ Zipper.prototype.firstChild = function() {
 
 
 // ==========  Script  ==========
+// would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
 document.addEventListener('DOMContentLoaded', function(){
   d3.json("/structure.json", function(structure) {
     var d3structure   = d3.select('body').append('div').classed('structure', true)
-    var rootHierarchy = Hierarchy.d3build(d3structure, structure)
-    rootHierarchy.setSelected(true)
+    var rootHierarchy = Hierarchy.buildTree(d3structure, structure).withSelected(true)
     var zipper = Zipper.fromRoot(rootHierarchy)
 
     var moveZipperTo = function(relative) {
-      zipper.current.setSelected(false)
+      zipper.current.withSelected(false)
       zipper = zipper[relative]()
-      zipper.current.setSelected(true)
+      zipper.current.withSelected(true)
     }
 
-    // would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
     // loosely based off of https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.code
     window.addEventListener("keydown", function (event) {
       if (event.defaultPrevented) { return } // do nothing if already consumed
