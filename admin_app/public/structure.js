@@ -24,15 +24,8 @@ Hierarchy.d3build = function(d3RootHierarchy, jsonStructure) {
   return d3buildRecursive(d3RootHierarchy, jsonStructure.hierarchy)
 }
 
-Hierarchy.prototype.subhierarchies = function() {
-}
-
-Hierarchy.prototype.markSelected = function() {
-  this.d3hierarchy.classed('selected', true)
-}
-
-Hierarchy.prototype.unmarkSelected = function() {
-  this.d3hierarchy.classed('selected', false)
+Hierarchy.prototype.setSelected = function(value) {
+  this.d3hierarchy.classed('selected', value)
 }
 
 
@@ -42,6 +35,10 @@ var Zipper = function(current, parentZipper, prevSiblings, nextSiblings) {
   this.parentZipper = parentZipper
   this.prevSiblings = prevSiblings
   this.nextSiblings = nextSiblings
+}
+
+Zipper.fromRoot = function(rootHierarchy) {
+  return new Zipper(rootHierarchy, null, [], [])
 }
 
 Zipper.prototype.prevSibling = function() {
@@ -78,13 +75,13 @@ document.addEventListener('DOMContentLoaded', function(){
   d3.json("/structure.json", function(structure) {
     var d3structure   = d3.select('body').append('div').classed('structure', true)
     var rootHierarchy = Hierarchy.d3build(d3structure, structure)
-    rootHierarchy.markSelected()
-    var zipper = new Zipper(rootHierarchy, null, [], []) // change to Zipper.fromRoot(d3Root)
+    rootHierarchy.setSelected(true)
+    var zipper = Zipper.fromRoot(rootHierarchy)
 
     var moveZipperTo = function(relative) {
-      zipper.current.unmarkSelected()
+      zipper.current.setSelected(false)
       zipper = zipper[relative]()
-      zipper.current.markSelected()
+      zipper.current.setSelected(true)
     }
 
     // would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
