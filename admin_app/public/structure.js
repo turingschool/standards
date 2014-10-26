@@ -1,6 +1,4 @@
 "use strict";
-// TODO:
-// rename background -> view
 
 // ==========  Hierarchy  ==========
 var Hierarchy = function(d3hierarchy, d3view, d3subhierarchies, subhierarchies) {
@@ -14,7 +12,7 @@ Hierarchy.buildTree = function(d3RootHierarchy, jsonStructure) {
   d3RootHierarchy.classed('root', true)
   var buildRecursive = function(container, jsonHierarchy) {
     var d3Hierarchy      = container.append('div').classed('hierarchy', true)
-    var d3View           = d3Hierarchy.append('div').classed('background', true).text(jsonHierarchy.name); // implies we are storing this data in the DOM... idk if that's good or bad
+    var d3View           = d3Hierarchy.append('div').classed('view', true).text(jsonHierarchy.name); // implies we are storing this data in the DOM... idk if that's good or bad
     var d3subhierarchies = d3Hierarchy.append('div').classed('subhierarchies', true)
     var subhierarchies   = []
     for(var i=0; i < jsonHierarchy.subhierarchies.length; ++i) {
