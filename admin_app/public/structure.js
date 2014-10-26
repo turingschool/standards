@@ -76,90 +76,95 @@ Hierarchy.prototype.moveChildTo = function(child, newParent) {
   // http://jsfiddle.net/5936t/36/
   child.domHierarchy.appendTo(newParent.domSubhierarchies)
 }
+Hierarchy.prototype.printTree = function() {
+  // to see the data structure
+  var _printTree = function(hierarchy, depth) {
+    var spacing = ''
+    for(var i=0; i < depth; ++i) spacing += '  '
+    console.log(spacing + hierarchy.domView.text())
+    for(var i=0; i < hierarchy.subhierarchies.length; ++i)
+      _printTree(hierarchy.subhierarchies[i], depth+1)
+  }
+  _printTree(this, 0)
+}
 
-
-// ==========  Zipper  ==========
-var Zipper = function(current, parentZipper, prevSiblings, nextSiblings) {
-  this.current      = current // a Hierarchy
-  this.parentZipper = parentZipper
-  this.prevSiblings = prevSiblings
-  this.nextSiblings = nextSiblings
+var Tarzan = function(rootHierarchy, current) {
+  this.rootHierarchy = rootHierarchy
+  this.current       = current
 }
-Zipper.fromRoot = function(rootHierarchy) {
-  return new Zipper(rootHierarchy, null, [], [])
+Tarzan.prototype.parent = function() {
+  var _parent = function(tree, current) {
+    for(var i=0; i < tree.subhierarchies.length; ++i)
+      if(tree.subhierarchies[i] == current)
+        return tree;
+    for(var i=0; i < tree.subhierarchies.length; ++i) {
+      var parent = _parent(tree.subhierarchies[i], current)
+      if(parent)
+        return parent
+    }
+    return null
+  }
+  return _parent(rootHierarchy, this.current)
 }
-Zipper.prototype.prevSibling = function() {
-  if(!this.prevSiblings[0]) return this
-  var prevLen         = this.prevSiblings.length
-  var newCurrent      = this.prevSiblings[prevLen-1]
-  var newPrevSiblings = this.prevSiblings.slice(0, prevLen-1)
-  var newNextSiblings = this.nextSiblings.concat([this.current])
-  return new Zipper(newCurrent, this.parentZipper, newPrevSiblings, newNextSiblings)
+Tarzan.prototype.indexOfChild = function(parent, child) {
+  for(var i = 0; i < parent.subhierarchies.length; ++i)
+    if(parent.subhierarchies[i] == child)
+      return i;
+  return -1;
 }
-Zipper.prototype.nextSibling = function() {
-  if(!this.nextSiblings[0]) return this
-  var nextLen         = this.nextSiblings.length
-  var newCurrent      = this.nextSiblings[nextLen-1]
-  var newNextSiblings = this.nextSiblings.slice(0, nextLen-1)
-  var newPrevSiblings = this.prevSiblings.concat([this.current])
-  return new Zipper(newCurrent, this.parentZipper, newPrevSiblings, newNextSiblings)
+Tarzan.prototype.nextSibling = function() {
+  var parent = this.parent()
+  var index  = this.indexOfChild(parent, this.current)
+  return parent.subhierarchies[index+1] // if it is last child, returns undefined
 }
-Zipper.prototype.parent = function() {
-  return this.parentZipper || this
+Tarzan.prototype.prevSibling = function() {
+  var parent = this.parent()
+  var index  = this.indexOfChild(parent, this.current)
+  return parent.subhierarchies[index-1] // if it is last child, returns undefined
 }
-Zipper.prototype.firstChild = function() {
-  var subhierarchies = this.current.subhierarchies
-  if(!subhierarchies[0]) return this
-  return new Zipper(subhierarchies[0], this, [], subhierarchies.slice(1, subhierarchies.length))
+Tarzan.prototype.firstChild = function() {
+  return this.current.subhierarchies[0]
 }
 
 
 // ==========  UserInterface  ==========
 var UserInterface = function(rootHierarchy) {
   this.rootHierarchy = rootHierarchy
-  this.zipper        = Zipper.fromRoot(rootHierarchy)
+  this.current       = rootHierarchy
   this.allSelected   = []
-  this.setCursor(true)
+  this.current.withCursor(true) // TODO should probably hide root and start at first child
 }
-UserInterface.prototype.setCursor = function(bool) {
-  this.zipper.current.withCursor(bool)
-}
-UserInterface.prototype.moveZipperTo = function(relative) {
-  this.setCursor(false)
-  this.zipper = this.zipper[relative]()
-  this.setCursor(true)
-}
-UserInterface.prototype.moveToParent = function() {
-  this.moveZipperTo('parent')
-}
-UserInterface.prototype.moveToNextSibling = function() {
-  this.moveZipperTo('nextSibling')
-}
-UserInterface.prototype.moveToPrevSibling = function() {
-  this.moveZipperTo('prevSibling')
-}
-UserInterface.prototype.moveToFirstChild  = function() {
-  this.moveZipperTo('firstChild')
+UserInterface.prototype.moveToParent      = function() { this.moveTo('parent') }
+UserInterface.prototype.moveToNextSibling = function() { this.moveTo('nextSibling') }
+UserInterface.prototype.moveToPrevSibling = function() { this.moveTo('prevSibling') }
+UserInterface.prototype.moveToFirstChild  = function() { this.moveTo('firstChild') }
+UserInterface.prototype.moveTo = function(relative) {
+  var newCurrent = new Tarzan(this.rootHierarchy, this.current)[relative]()
+  if(newCurrent) {
+    this.current.withCursor(false)
+    this.current = newCurrent
+    this.current.withCursor(true)
+  }
 }
 UserInterface.prototype.toggleChildVisibility = function() {
-  this.zipper.current.toggleChildVisibility()
+  this.current.toggleChildVisibility()
 }
 UserInterface.prototype.selectCurrent = function() {
   // if(this.zipper.root)
-  this.allSelected.push(this.zipper.current)
-  this.zipper.current.markSelected()
+  this.allSelected.push(this.current)
+  this.current.markSelected()
 }
 UserInterface.prototype.unselectCurrent = function() {
   for(var i = 0; i < this.allSelected.length; ++i)
-    if(this.allSelected[i] == this.zipper.current) {
+    if(this.allSelected[i] == this.current) {
       this.allSelected.splice(i, 1)
       --i
     }
-  this.zipper.current.markUnselected()
+  this.current.markUnselected()
 }
 UserInterface.prototype.isSelected = function() {
   for(var i = 0; i < this.allSelected.length; ++i) {
-    if(this.allSelected[i] == this.zipper.current)
+    if(this.allSelected[i] == this.current)
       return true
   }
   return false
@@ -171,13 +176,16 @@ UserInterface.prototype.toggleSelected = function() {
     this.selectCurrent()
 }
 UserInterface.prototype.moveSelectedToCurrent = function() {
-  var newParent = this.zipper.current
+  var newParent = this.current
   for(var i = 0; i < this.allSelected.length; ++i) {
     var selected = this.allSelected[i]
     selected.markUnselected()
     rootHierarchy.parentOf(selected).moveChildTo(selected, newParent)
   }
   this.allSelected = []
+}
+UserInterface.prototype.printCurrent = function() {
+  this.current.printTree()
 }
 
 // ==========  Script  ==========
@@ -204,6 +212,7 @@ document.addEventListener('DOMContentLoaded', function(){
       else if (asciiValue == 'O' || event.keyIdentifier == 'Enter') ui.toggleChildVisibility()
       else if (asciiValue == 'S'                                  ) ui.toggleSelected()
       else if (asciiValue == 'M'                                  ) ui.moveSelectedToCurrent()
+      else if (asciiValue == 'P'                                  ) ui.printCurrent()
       else return // irrelevant to us
       event.preventDefault()
     });
