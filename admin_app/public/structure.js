@@ -10,15 +10,15 @@ var Hierarchy = function(d3hierarchy, d3view, d3subhierarchies, subhierarchies) 
 Hierarchy.buildTree = function(d3RootHierarchy, jsonStructure) {
   d3RootHierarchy.classed('root', true)
   var buildRecursive = function(container, jsonHierarchy) {
-    var d3Hierarchy      = container.append('div').classed('hierarchy', true)
-    var d3View           = d3Hierarchy.append('div').classed('view', true).text(jsonHierarchy.name); // implies we are storing this data in the DOM... idk if that's good or bad
-    var d3subhierarchies = d3Hierarchy.append('div').classed('subhierarchies', true)
+    var d3hierarchy      = container.append('div').classed('hierarchy', true)
+    var d3view           = d3hierarchy.append('div').classed('view', true).text(jsonHierarchy.name); // implies we are storing this data in the DOM... idk if that's good or bad
+    var d3subhierarchies = d3hierarchy.append('div').classed('subhierarchies', true)
     var subhierarchies   = []
     for(var i=0; i < jsonHierarchy.subhierarchies.length; ++i) {
       var child = buildRecursive(d3subhierarchies, jsonHierarchy.subhierarchies[i])
       subhierarchies.push(child)
     }
-    return new Hierarchy(d3Hierarchy, d3View, d3subhierarchies, subhierarchies)
+    return new Hierarchy(d3hierarchy, d3view, d3subhierarchies, subhierarchies)
   }
   return buildRecursive(d3RootHierarchy, jsonStructure.hierarchy)
 }
@@ -160,6 +160,22 @@ UserInterface.prototype.toggleSelected = function() {
   else
     this.selectCurrent()
 }
+// this doesn't actually do anything yet,
+// I was experimenting with performing the transition by changing the
+// background colour, but it works shittily. I think that transitions
+// only really work on SVG, but I can't find anywhere on the web
+// where this is stated
+UserInterface.prototype.moveSelectedToCurrent = function() {
+  for(var i = 0; i < this.selected.length; ++i) {
+    this.selected[i].markUnselected()
+    this.selected[i]
+        .d3hierarchy
+        .transition()
+        .duration(5000)
+        .style('background-color', 'black')
+  }
+  this.selected = []
+}
 
 
 // ==========  Script  ==========
@@ -180,8 +196,9 @@ document.addEventListener('DOMContentLoaded', function(){
       else if (asciiValue == 'L' || event.keyIdentifier == 'Right') ui.moveToFirstChild()
       else if (asciiValue == 'O' || event.keyIdentifier == 'Enter') ui.toggleChildVisibility()
       else if (asciiValue == 'X'                                  ) ui.toggleSelected()
+      else if (asciiValue == 'M'                                  ) ui.moveSelectedToCurrent()
       else return // irrelevant to us
-      event.preventDefault();
+      event.preventDefault()
     });
 
   })
