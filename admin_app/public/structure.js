@@ -8,12 +8,12 @@ var Hierarchy = function(domHierarchy, domView, domSubhierarchies, subhierarchie
   this.subhierarchies    = subhierarchies
 }
 Hierarchy.buildTree = function(domRootHierarchy, jsonStructure) {
-  var buildRecursive = function(container, jsonHierarchy) {
+  var buildRecursive = function(domContainer, jsonHierarchy) {
     var domHierarchy      = jQuery('<div class="hierarchy"></div>')
     var domView           = jQuery('<div class="view"></div>').text(jsonHierarchy.name); // implies we are storing this data in the DOM... idk if that's good or bad
     var domSubhierarchies = jQuery('<div class="subhierarchies"></div>')
 
-    container.append(domHierarchy)
+    domContainer.append(domHierarchy)
     domHierarchy.append(domView)
     domHierarchy.append(domSubhierarchies)
 
@@ -49,19 +49,6 @@ Hierarchy.prototype.parentOf = function(descendant) {
   }
   return null
 }
-Hierarchy.prototype.removeChild = function(child) {
-  for(var i=0; i < this.subhierarchies.length; ++i) {
-    if(this.subhierarchies[i] == child) {
-      this.subhierarchies = this.subhierarchies
-                                .slice(0, i)
-                                .concat(this.subhierarchies(i+1,this.subhierarchies.length))
-      return
-    }
-  }
-}
-Hierarchy.prototype.addChild = function(child) {
-  this.subhierarchies = this.subhierarchies.concat([child])
-}
 Hierarchy.prototype.markSelected = function() {
   if(this.selectionIcon) {
     this.selectionIcon.css('display', 'block')
@@ -73,6 +60,21 @@ Hierarchy.prototype.markSelected = function() {
 Hierarchy.prototype.markUnselected = function() {
   if(this.selectionIcon)
     this.selectionIcon.css('display', 'none')
+}
+Hierarchy.prototype.moveChildTo = function(child, newParent) {
+  // remove child hierarchy
+  for(var i=0; i < this.subhierarchies.length; ++i)
+    if(this.subhierarchies[i] == child) {
+      this.subhierarchies = this.subhierarchies
+                                .slice(0, i)
+                                .concat(this.subhierarchies.slice(i+1, this.subhierarchies.length))
+    }
+  // add child hierarchy to other parent
+  newParent.subhierarchies = newParent.subhierarchies.concat([child])
+
+  // ugh, cannot fucking figure out how to animate this thing with d3 or jQuery :(
+  // http://jsfiddle.net/5936t/36/
+  child.domHierarchy.appendTo(newParent.domSubhierarchies)
 }
 
 
@@ -173,23 +175,19 @@ UserInterface.prototype.moveSelectedToCurrent = function() {
   for(var i = 0; i < this.allSelected.length; ++i) {
     var selected = this.allSelected[i]
     selected.markUnselected()
-    rootHierarchy.parentOf(selected).removeChild(this.current)
-    newParent.addChild(selected)
-    // Presumably this updates the data correctly (but who knows, given that I have no tests and can't really see these js objects)
-    // but we still need to update the DOM
+    rootHierarchy.parentOf(selected).moveChildTo(selected, newParent)
   }
   this.allSelected = []
 }
+
+// ==========  Script  ==========
+// would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
 
 // declaring out here so I can access from console
 var domStructure   = null
 var rootHierarchy = null
 var ui            = null
-
-// ==========  Script  ==========
-// would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
 document.addEventListener('DOMContentLoaded', function(){
-
   jQuery.getJSON('/structure.json', function(structure) {
     domStructure  = jQuery('body .structure')
     rootHierarchy = Hierarchy.buildTree(domStructure, structure)
@@ -204,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function(){
       else if (asciiValue == 'K' || event.keyIdentifier == 'Up'   ) ui.moveToPrevSibling()
       else if (asciiValue == 'L' || event.keyIdentifier == 'Right') ui.moveToFirstChild()
       else if (asciiValue == 'O' || event.keyIdentifier == 'Enter') ui.toggleChildVisibility()
-      else if (asciiValue == 'X'                                  ) ui.toggleSelected()
+      else if (asciiValue == 'S'                                  ) ui.toggleSelected()
       else if (asciiValue == 'M'                                  ) ui.moveSelectedToCurrent()
       else return // irrelevant to us
       event.preventDefault()
