@@ -137,7 +137,7 @@ UserInterface.prototype.selectCurrent = function() {
 // would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
 document.addEventListener('DOMContentLoaded', function(){
   d3.json("/structure.json", function(structure) {
-    var d3structure   = d3.select('body').append('div').classed('structure', true)
+    var d3structure   = d3.select('body .structure')
     var rootHierarchy = Hierarchy.buildTree(d3structure, structure)
     var ui            = new UserInterface(rootHierarchy)
 
