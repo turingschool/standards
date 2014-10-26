@@ -1,38 +1,39 @@
 "use strict";
 
+// ==========  Hierarchy  ==========
+var Hierarchy = function(d3hierarchy, d3view, d3subhierarchies, subhierarchies) {
+  this.d3hierarchy      = d3hierarchy
+  this.d3view           = d3view
+  this.d3subhierarchies = d3subhierarchies
+  this.subhierarchies   = subhierarchies
+}
+
+Hierarchy.d3build = function(d3RootHierarchy, jsonStructure) {
+  d3RootHierarchy.classed('root', true)
+  var d3buildRecursive = function(container, jsonHierarchy) {
+    var d3Hierarchy      = container.append('div').classed('hierarchy', true)
+    var d3View           = d3Hierarchy.append('div').classed('background', true).text(jsonHierarchy.name);
+    var d3subhierarchies = d3Hierarchy.append('div').classed('subhierarchies', true)
+    var subhierarchies   = []
+    for(var i=0; i < jsonHierarchy.subhierarchies.length; ++i) {
+      var child = d3buildRecursive(d3subhierarchies, jsonHierarchy.subhierarchies[i])
+      subhierarchies.push(child)
+    }
+    return new Hierarchy(d3Hierarchy, d3View, d3subhierarchies, subhierarchies)
+  }
+  return d3buildRecursive(d3RootHierarchy, jsonStructure.hierarchy)
+}
+
+Hierarchy.prototype.subhierarchies = function() {
+}
+Hierarchy.prototype.markSelected = function() {
+  this.d3hierarchy.classed('selected', true)
+}
+
+
 // depends on d3.js, you need this before it in the file:
 // <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 document.addEventListener('DOMContentLoaded', function(){
-  // ==========  Hierarchy  ==========
-  var Hierarchy = function(d3hierarchy, d3view, d3subhierarchies, subhierarchies) {
-    this.d3hierarchy      = d3hierarchy
-    this.d3view           = d3view
-    this.d3subhierarchies = d3subhierarchies
-    this.subhierarchies   = subhierarchies
-  }
-
-  Hierarchy.d3build = function(d3RootHierarchy, jsonStructure) {
-    d3RootHierarchy.classed('root', true)
-    var d3buildRecursive = function(container, jsonHierarchy) {
-      var d3Hierarchy      = container.append('div').classed('hierarchy', true)
-      var d3View           = d3Hierarchy.append('div').classed('background', true).text(jsonHierarchy.name);
-      var d3subhierarchies = d3Hierarchy.append('div').classed('subhierarchies', true)
-      var subhierarchies   = []
-      for(var i=0; i < jsonHierarchy.subhierarchies.length; ++i) {
-        var child = d3buildRecursive(d3subhierarchies, jsonHierarchy.subhierarchies[i])
-        subhierarchies.push(child)
-      }
-      return new Hierarchy(d3Hierarchy, d3View, d3subhierarchies, subhierarchies)
-    }
-    return d3buildRecursive(d3RootHierarchy, jsonStructure.hierarchy)
-  }
-
-  Hierarchy.prototype.subhierarchies = function() {
-  }
-  Hierarchy.prototype.markSelected = function() {
-    this.d3hierarchy.classed('selected', true)
-  }
-
   // ==========  Script  ==========
   d3.json("/structure.json", function(structure) {
     var d3structure   = d3.select('body').append('div').classed('structure', true)
