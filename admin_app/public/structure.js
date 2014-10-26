@@ -57,8 +57,16 @@ var addStar = function(d3svg) {
        .attr('points', points)
 }
 Hierarchy.prototype.markSelected = function() {
-  this.selectionIcon = this.d3view.append('svg').classed('selectionIcon', true)
-  addStar(this.selectionIcon)
+  if(this.selectionIcon) {
+    this.selectionIcon.classed('selectionIcon', true).style('display', null)
+  } else {
+    this.selectionIcon = this.d3view.append('svg').classed('selectionIcon', true)
+    addStar(this.selectionIcon)
+  }
+}
+Hierarchy.prototype.markUnselected = function() {
+  if(this.selectionIcon)
+    this.selectionIcon.classed('selectionIcon', false).style('display', 'none')
 }
 
 
@@ -128,8 +136,29 @@ UserInterface.prototype.toggleChildVisibility = function() {
   this.zipper.current.toggleChildVisibility()
 }
 UserInterface.prototype.selectCurrent = function() {
-  this.selected << this.zipper.current
+  this.selected.push(this.zipper.current)
   this.zipper.current.markSelected()
+}
+UserInterface.prototype.unselectCurrent = function() {
+  for(var i = 0; i < this.selected.length; ++i)
+    if(this.selected[i] == this.zipper.current) {
+      this.selected.splice(i, 1)
+      --i
+    }
+  this.zipper.current.markUnselected()
+}
+UserInterface.prototype.isSelected = function() {
+  for(var i = 0; i < this.selected.length; ++i) {
+    if(this.selected[i] == this.zipper.current)
+      return true
+  }
+  return false
+}
+UserInterface.prototype.toggleSelected = function() {
+  if(this.isSelected())
+    this.unselectCurrent()
+  else
+    this.selectCurrent()
 }
 
 
@@ -150,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function(){
       else if (asciiValue == 'K' || event.keyIdentifier == 'Up'   ) ui.moveToPrevSibling()
       else if (asciiValue == 'L' || event.keyIdentifier == 'Right') ui.moveToFirstChild()
       else if (asciiValue == 'O' || event.keyIdentifier == 'Enter') ui.toggleChildVisibility()
-      else if (asciiValue == 'X'                                  ) ui.selectCurrent()
+      else if (asciiValue == 'X'                                  ) ui.toggleSelected()
       else return // irrelevant to us
       event.preventDefault();
     });
