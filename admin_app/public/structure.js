@@ -88,25 +88,21 @@ Hierarchy.prototype.printTree = function() {
   _printTree(this, 0)
 }
 Hierarchy.prototype.edit = function(finishedEditing) {
-  var domView = this.domView    // b/c "this" gets swapped out in functions all the time
-  domView.attr('tabindex', '10') // oh, the fucking frontend *sigh* tabbing out of the edit box goes to the url, this makes it not do that
-  var text    = domView.text()
-  domView.text("")
+  var text    = this.domView.text()
+  var domView = this.domView.text("")
   var editBox = $('<input type="text" name="name"></input>')
   editBox.val(text)
          .appendTo(this.domView)
-         .blur(function (event) {
-           text = editBox.val()
-           editBox.off('blur')
-           editBox.remove()
-           domView.text(text)
-           window.focus()
+         .blur(function (event) {      // 1. this leaves me in a non-recording state (I think it jumps to the url bar)
+           domView.text(editBox.val()) // 2. would be nice for <esc> to not update the value
+           editBox.remove()            // 3. should <enter> commit it, as well?
            finishedEditing()
          })
          .focus()
 }
 
 
+// ==========  Tarzan  ==========
 var Tarzan = function(rootHierarchy, current) {
   this.rootHierarchy = rootHierarchy
   this.current       = current
@@ -123,7 +119,7 @@ Tarzan.prototype.parent = function() {
     }
     return null
   }
-  return _parent(rootHierarchy, this.current)
+  return _parent(this.rootHierarchy, this.current)
 }
 Tarzan.prototype.indexOfChild = function(parent, child) {
   for(var i = 0; i < parent.subhierarchies.length; ++i)
@@ -182,24 +178,21 @@ UserInterface.prototype.unselectCurrent = function() {
   this.current.markUnselected()
 }
 UserInterface.prototype.isSelected = function() {
-  for(var i = 0; i < this.allSelected.length; ++i) {
+  for(var i = 0; i < this.allSelected.length; ++i)
     if(this.allSelected[i] == this.current)
       return true
-  }
   return false
 }
 UserInterface.prototype.toggleSelected = function() {
-  if(this.isSelected())
-    this.unselectCurrent()
-  else
-    this.selectCurrent()
+  if(this.isSelected()) this.unselectCurrent()
+  else                  this.selectCurrent()
 }
 UserInterface.prototype.moveSelectedToCurrent = function() {
   var newParent = this.current
   for(var i = 0; i < this.allSelected.length; ++i) {
     var selected = this.allSelected[i]
     selected.markUnselected()
-    new Tarzan(rootHierarchy, selected).parent().moveChildTo(selected, newParent)
+    new Tarzan(this.rootHierarchy, selected).parent().moveChildTo(selected, newParent)
   }
   this.allSelected = []
 }
@@ -215,15 +208,11 @@ UserInterface.prototype.editCurrent = function() {
 // ==========  Script  ==========
 // would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
 
-// declaring out here so I can access from console
-var domStructure   = null
-var rootHierarchy = null
-var ui            = null
 document.addEventListener('DOMContentLoaded', function(){
   jQuery.getJSON('/structure.json', function(structure) {
-    domStructure  = jQuery('body .structure')
-    rootHierarchy = Hierarchy.buildTree(domStructure, structure)
-    ui            = new UserInterface(rootHierarchy)
+    var domStructure  = jQuery('body .structure')
+    var rootHierarchy = Hierarchy.buildTree(domStructure, structure)
+    var ui            = new UserInterface(rootHierarchy)
 
     // loosely based off of https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.code
     window.addEventListener("keydown", function (event) {
