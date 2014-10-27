@@ -29,7 +29,6 @@ Hierarchy.buildTree = function(domRootHierarchy, jsonStructure) {
   return buildRecursive(domRootHierarchy, jsonStructure.hierarchy)
 }
 Hierarchy.prototype.isCursor = function(isCursor) {
-  console.log(isCursor)
   if(isCursor != undefined) {
     this._isCursor = isCursor
     if(isCursor) this.domHierarchy.addClass('cursor')
@@ -78,6 +77,24 @@ Hierarchy.prototype.printTree = function() {
   }
   _printTree(this, 0)
 }
+Hierarchy.prototype.edit = function(finishedEditing) {
+  var domView = this.domView // b/c "this" gets swapped out in functions all the time
+  var text    = domView.text()
+  domView.text("")
+  var editBox = $('<input type="text" name="name"></input>')
+  editBox.val(text)
+         .appendTo(this.domView)
+         .blur(function (event) {
+           text = editBox.val()
+           editBox.off('blur')
+           editBox.remove()
+           domView.text(text)
+           window.focus()
+           finishedEditing()
+         })
+         .focus()
+}
+
 
 var Tarzan = function(rootHierarchy, current) {
   this.rootHierarchy = rootHierarchy
@@ -123,6 +140,7 @@ var UserInterface = function(rootHierarchy) {
   this.rootHierarchy = rootHierarchy
   this.current       = rootHierarchy
   this.allSelected   = []
+  this.active        = true
   this.current.isCursor(true) // TODO should probably hide root and start at first child
 }
 UserInterface.prototype.moveToParent      = function() { this.moveTo('parent') }
@@ -177,6 +195,11 @@ UserInterface.prototype.moveSelectedToCurrent = function() {
 UserInterface.prototype.printCurrent = function() {
   this.current.printTree()
 }
+UserInterface.prototype.editCurrent = function() {
+  var self = this // omfgjswtf
+  self.active = false
+  this.current.edit(function() { self.active = true })
+}
 
 // ==========  Script  ==========
 // would like to separate this piece by moving it into the script itself, but I don't know how to do that :/
@@ -193,16 +216,21 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // loosely based off of https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.code
     window.addEventListener("keydown", function (event) {
-      if (event.defaultPrevented) { return } // do nothing if already consumed
       var asciiValue = String.fromCharCode(event.keyCode)
+      console.log("coming in: " + asciiValue)
+      if (event.defaultPrevented) { return } // do nothing if already consumed
+      console.log("  past defaultPrevented")
+      if(!ui.active) { return }              // don't try to process input when other shit is going on
+      console.log("  we are active!")
       if      (asciiValue == 'H' || event.keyIdentifier == 'Left' ) ui.moveToParent()
       else if (asciiValue == 'J' || event.keyIdentifier == 'Down' ) ui.moveToNextSibling()
       else if (asciiValue == 'K' || event.keyIdentifier == 'Up'   ) ui.moveToPrevSibling()
       else if (asciiValue == 'L' || event.keyIdentifier == 'Right') ui.moveToFirstChild()
-      else if (asciiValue == 'O' || event.keyIdentifier == 'Enter') ui.toggleChildVisibility()
+      else if (asciiValue == 'O'                                  ) ui.toggleChildVisibility()
       else if (asciiValue == 'S'                                  ) ui.toggleSelected()
       else if (asciiValue == 'M'                                  ) ui.moveSelectedToCurrent()
       else if (asciiValue == 'P'                                  ) ui.printCurrent()
+      else if (asciiValue == 'E'                                  ) ui.editCurrent()
       else return // irrelevant to us
       event.preventDefault()
     });
