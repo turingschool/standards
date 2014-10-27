@@ -7,8 +7,9 @@ var Hierarchy = function(domHierarchy, domView, domSubhierarchies, subhierarchie
   this.domSubhierarchies = domSubhierarchies
   this.subhierarchies    = subhierarchies
   this._isCursor         = false
+  this._isRoot           = false
 }
-Hierarchy.buildTree = function(domRootHierarchy, jsonStructure) {
+Hierarchy.buildTree = function(domStructure, jsonStructure) {
   var buildRecursive = function(domContainer, jsonHierarchy) {
     var domHierarchy      = jQuery('<div class="hierarchy"></div>')
     var domView           = jQuery('<div class="view"></div>').text(jsonHierarchy.name); // implies we are storing this data in the DOM... idk if that's good or bad
@@ -25,8 +26,17 @@ Hierarchy.buildTree = function(domRootHierarchy, jsonStructure) {
     }
     return new Hierarchy(domHierarchy, domView, domSubhierarchies, subhierarchies)
   }
-  domRootHierarchy.addClass('root')
-  return buildRecursive(domRootHierarchy, jsonStructure.hierarchy)
+  var root = buildRecursive(domStructure, jsonStructure.hierarchy)
+  root.isRoot(true)
+  return root
+}
+Hierarchy.prototype.isRoot = function(isRoot) {
+  if(isRoot != undefined) {
+    this._isRoot = isRoot
+    if(isRoot) this.domHierarchy.addClass('root')
+    else       this.domHierarchy.removeClass('root')
+  }
+  return this._isRoot
 }
 Hierarchy.prototype.isCursor = function(isCursor) {
   if(isCursor != undefined) {
@@ -78,7 +88,8 @@ Hierarchy.prototype.printTree = function() {
   _printTree(this, 0)
 }
 Hierarchy.prototype.edit = function(finishedEditing) {
-  var domView = this.domView // b/c "this" gets swapped out in functions all the time
+  var domView = this.domView    // b/c "this" gets swapped out in functions all the time
+  domView.attr('tabindex', '10') // oh, the fucking frontend *sigh* tabbing out of the edit box goes to the url, this makes it not do that
   var text    = domView.text()
   domView.text("")
   var editBox = $('<input type="text" name="name"></input>')
@@ -141,7 +152,7 @@ var UserInterface = function(rootHierarchy) {
   this.current       = rootHierarchy
   this.allSelected   = []
   this.active        = true
-  this.current.isCursor(true) // TODO should probably hide root and start at first child
+  this.moveToFirstChild()
 }
 UserInterface.prototype.moveToParent      = function() { this.moveTo('parent') }
 UserInterface.prototype.moveToNextSibling = function() { this.moveTo('nextSibling') }
@@ -149,7 +160,7 @@ UserInterface.prototype.moveToPrevSibling = function() { this.moveTo('prevSiblin
 UserInterface.prototype.moveToFirstChild  = function() { this.moveTo('firstChild') }
 UserInterface.prototype.moveTo = function(relative) {
   var newCurrent = new Tarzan(this.rootHierarchy, this.current)[relative]()
-  if(newCurrent) {
+  if(newCurrent && !newCurrent.isRoot()) {
     this.current.isCursor(false)
     this.current = newCurrent
     this.current.isCursor(true)
@@ -217,11 +228,8 @@ document.addEventListener('DOMContentLoaded', function(){
     // loosely based off of https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.code
     window.addEventListener("keydown", function (event) {
       var asciiValue = String.fromCharCode(event.keyCode)
-      console.log("coming in: " + asciiValue)
       if (event.defaultPrevented) { return } // do nothing if already consumed
-      console.log("  past defaultPrevented")
       if(!ui.active) { return }              // don't try to process input when other shit is going on
-      console.log("  we are active!")
       if      (asciiValue == 'H' || event.keyIdentifier == 'Left' ) ui.moveToParent()
       else if (asciiValue == 'J' || event.keyIdentifier == 'Down' ) ui.moveToNextSibling()
       else if (asciiValue == 'K' || event.keyIdentifier == 'Up'   ) ui.moveToPrevSibling()
