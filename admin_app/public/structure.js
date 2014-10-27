@@ -6,6 +6,7 @@ var Hierarchy = function(domHierarchy, domView, domSubhierarchies, subhierarchie
   this.domView           = domView
   this.domSubhierarchies = domSubhierarchies
   this.subhierarchies    = subhierarchies
+  this._isCursor         = false
 }
 Hierarchy.buildTree = function(domRootHierarchy, jsonStructure) {
   var buildRecursive = function(domContainer, jsonHierarchy) {
@@ -27,27 +28,17 @@ Hierarchy.buildTree = function(domRootHierarchy, jsonStructure) {
   domRootHierarchy.addClass('root')
   return buildRecursive(domRootHierarchy, jsonStructure.hierarchy)
 }
-Hierarchy.prototype.withCursor = function(isCursor) {
-  if(isCursor) this.domHierarchy.addClass('cursor')
-  else         this.domHierarchy.removeClass('cursor')
+Hierarchy.prototype.isCursor = function(isCursor) {
+  console.log(isCursor)
+  if(isCursor != undefined) {
+    this._isCursor = isCursor
+    if(isCursor) this.domHierarchy.addClass('cursor')
+    else         this.domHierarchy.removeClass('cursor')
+  }
+  return this._isCursor
 }
 Hierarchy.prototype.toggleChildVisibility = function() {
-  if(this.childrenVisible()) this.domSubhierarchies.css('display', 'none')
-  else                       this.domSubhierarchies.css('display', 'block')
-}
-Hierarchy.prototype.childrenVisible = function() {
-  return this.domSubhierarchies.css('display') != 'none'
-}
-Hierarchy.prototype.parentOf = function(descendant) {
-  for(var i=0; i < this.subhierarchies.length; ++i)
-    if(this.subhierarchies[i] == descendant)
-      return this;
-  for(var i=0; i < this.subhierarchies.length; ++i) {
-    var parent = this.subhierarchies[i].parentOf(descendant)
-    if(parent)
-      return parent
-  }
-  return null
+  this.domSubhierarchies.toggle()
 }
 Hierarchy.prototype.markSelected = function() {
   if(this.selectionIcon) {
@@ -132,7 +123,7 @@ var UserInterface = function(rootHierarchy) {
   this.rootHierarchy = rootHierarchy
   this.current       = rootHierarchy
   this.allSelected   = []
-  this.current.withCursor(true) // TODO should probably hide root and start at first child
+  this.current.isCursor(true) // TODO should probably hide root and start at first child
 }
 UserInterface.prototype.moveToParent      = function() { this.moveTo('parent') }
 UserInterface.prototype.moveToNextSibling = function() { this.moveTo('nextSibling') }
@@ -141,16 +132,15 @@ UserInterface.prototype.moveToFirstChild  = function() { this.moveTo('firstChild
 UserInterface.prototype.moveTo = function(relative) {
   var newCurrent = new Tarzan(this.rootHierarchy, this.current)[relative]()
   if(newCurrent) {
-    this.current.withCursor(false)
+    this.current.isCursor(false)
     this.current = newCurrent
-    this.current.withCursor(true)
+    this.current.isCursor(true)
   }
 }
 UserInterface.prototype.toggleChildVisibility = function() {
   this.current.toggleChildVisibility()
 }
 UserInterface.prototype.selectCurrent = function() {
-  // if(this.zipper.root)
   this.allSelected.push(this.current)
   this.current.markSelected()
 }
@@ -180,7 +170,7 @@ UserInterface.prototype.moveSelectedToCurrent = function() {
   for(var i = 0; i < this.allSelected.length; ++i) {
     var selected = this.allSelected[i]
     selected.markUnselected()
-    rootHierarchy.parentOf(selected).moveChildTo(selected, newParent)
+    new Tarzan(rootHierarchy, selected).parent().moveChildTo(selected, newParent)
   }
   this.allSelected = []
 }
