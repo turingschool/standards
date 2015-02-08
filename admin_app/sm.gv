@@ -1,0 +1,42 @@
+// http://www.graphviz.org/doc/info/attrs.html
+digraph finite_state_machine {
+  // declare nodes (idk if you actually have to declare them, or if just using them is fine
+
+  // declare relationships
+  // http://www.graphviz.org/doc/info/attrs.html
+  subgraph navigation {
+  }
+
+  subgraph happy_path  {
+    pending
+      -> needs_initial_evaluation_scores
+      -> needs_to_schedule_interview
+      -> needs_interview_scores
+      -> needs_logic_evaluation_scores
+      -> needs_invitation
+      -> needs_invitation_response
+      -> accepted_invitation [constraint = false];
+  }
+
+  subgraph fail_evaluation  {
+    needs_initial_evaluation_scores
+      -> needs_rejected_at_evaluation_notification
+      -> rejected_at_evaluation;
+  }
+
+  subgraph fail_interview  {
+    needs_interview_scores
+      -> needs_rejected_at_interview_notification
+      -> rejected_at_interview;
+  }
+
+  subgraph fail_logic_evaluation {
+    needs_logic_evaluation_scores
+      -> needs_rejected_at_logic_evaluation_notification
+      -> rejected_at_logic_evaluation;
+  }
+
+  subgraph decline_invitation  {
+    needs_invitation_response -> declined_invitation;
+  }
+}

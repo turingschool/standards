@@ -1,0 +1,121 @@
+// http://www.graphviz.org/doc/info/attrs.html
+digraph finite_state_machine {
+  node [
+    shape  = record,
+    width  = 3.5,
+    height = 0.6,
+  ];
+  rankdir = LR;
+
+  // the nodes
+
+  pending [
+    label = <pending | <font point-size="10">They are filling out their application</font>>
+  ];
+
+  needs_initial_evaluation_scores [
+    label=<needs_initial_evaluation_scores | <font point-size="10">They completed their application,<br />we have fewer than X evaluations</font>>
+  ];
+
+  needs_to_schedule_interview [
+    label=<needs_to_schedule_interview | <font point-size="10">Applicant passed evaluations,<br />needs us to schedule an interview</font>>
+  ];
+
+  needs_interview_scores [
+    label=<needs_interview_scores | <font point-size="10">Interviewers need to write their reviews</font>>
+  ];
+
+  needs_logic_evaluation_scores [
+    label=<needs_logic_evaluation_scores | <font point-size="10">Interviewers need to write their review of the logic evaluation</font>>
+  ];
+
+  needs_rejected_at_logic_evaluation_notification [
+    label=<needs_rejected_at_logic_evaluation_notification | <font point-size="10">We need to notify them that they are rejected</font>>
+  ]
+
+  needs_invitation [
+    label=<needs_invitation | <font point-size="10">Passed interview,<br />we need to invite them to enroll</font>>
+  ];
+
+  needs_invitation_response [
+    label=<needs_invitation_response | <font point-size="10">Applicant has been invited,<br />we are waiting on a response</font>>
+  ];
+
+  needs_rejected_at_evaluation_notification [
+    label=<needs_rejected_at_evaluation_notification | <font point-size="10">We need to notify them that they are rejected</font>>
+  ];
+
+  needs_rejected_at_interview_notification [
+    label=<needs_rejected_at_interview_notification | <font point-size="10">We need to notify them that they are rejected</font>>
+  ];
+
+  rejected_at_evaluation [
+    style     = filled,
+    fillcolor = firebrick,
+    fontcolor = white,
+    label     = <rejected_at_evaluation | <font point-size="10">Consensus of evalutations is to reject applicant</font>>
+  ];
+
+  rejected_at_interview [
+    style     = filled,
+    fillcolor = firebrick,
+    fontcolor = white,
+    label     = <rejected_at_interview | <font point-size="10">Applicant was interviewed,<br />was rejected based on the interview</font>>
+  ];
+
+  rejected_at_logic_evaluation [
+    style     = filled,
+    fillcolor = firebrick,
+    fontcolor = white,
+    label     = <rejected_at_logic_evaluation | <font point-size="10">Applicant was interviewed,<br />was rejected based on the logic evaluation</font>>
+  ]
+
+  declined_invitation [
+    style     = filled,
+    fillcolor = firebrick,
+    fontcolor = white,
+    label     = <declined_invitation | <font point-size="10">Applicant was invited,<br />but decided not to enroll</font>>
+  ];
+
+  accepted_invitation [
+    style     = filled,
+    fillcolor = darkolivegreen4,
+    fontcolor = white,
+    label     = <accepted_invitation | <font point-size="10">Applicant has been invited,<br />and wishes to proceed</font>>
+  ];
+
+  // the flow
+
+  subgraph happy_path  {
+    pending
+      -> needs_initial_evaluation_scores
+      -> needs_to_schedule_interview
+      -> needs_interview_scores
+      -> needs_logic_evaluation_scores
+      -> needs_invitation
+      -> needs_invitation_response
+      -> accepted_invitation [constraint = false];
+  }
+
+  subgraph fail_evaluation  {
+    needs_initial_evaluation_scores
+      -> needs_rejected_at_evaluation_notification
+      -> rejected_at_evaluation;
+  }
+
+  subgraph fail_interview  {
+    needs_interview_scores
+      -> needs_rejected_at_interview_notification
+      -> rejected_at_interview;
+  }
+
+  subgraph fail_logic_evaluation {
+    needs_logic_evaluation_scores
+      -> needs_rejected_at_logic_evaluation_notification
+      -> rejected_at_logic_evaluation;
+  }
+
+  subgraph decline_invitation  {
+    needs_invitation_response -> declined_invitation;
+  }
+}

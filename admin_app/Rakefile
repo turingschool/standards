@@ -1,0 +1,10 @@
+desc 'Run js tests'
+task 'test' do
+  sh 'mocha test/test.js'
+end
+
+desc 'Render the state machine diagram'
+task 'sm' do
+  # if this fails, try $brew install gts graphviz
+  sh 'dot -Tpng sm.gv > sm.png'
+end

@@ -1,6 +1,9 @@
 # configuration
 
-$LOAD_PATH.unshift '../../../lib'
+$LOAD_PATH.unshift File.expand_path('../../../lib',       __FILE__)
+$LOAD_PATH.unshift File.expand_path('../../../admin_app', __FILE__)
+
+# set up for testing the binary
 require 'standards/binary'
 require 'haiti'
 Haiti.configure do |config|
@@ -8,6 +11,18 @@ Haiti.configure do |config|
   config.bin_dir             = File.expand_path '../../../bin',             __FILE__
 end
 
+# set up for testing the admin server
+require 'admin_app'
+require 'capybara/poltergeist'
+Capybara.javascript_driver = :poltergeist
+World Module.new {
+  def app
+    AdminApp
+  end
+}
+
+
+# some step defs that should go not here
 standards_filepath = File.join Haiti.config.proving_grounds_dir, 'standards.json'
 s = Standards
 
